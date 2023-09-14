@@ -5,6 +5,7 @@ import { api } from "~/utils/api";
 import PromptVersion from "~/components/prompt_version";
 import PromptVariables from "~/components/prompt_variables";
 import { NextPage } from "next";
+import { getLayout } from "~/components/Layouts/DashboardLayout";
 
 export const getVariables = (template) => {
     console.debug(`template: ${JSON.stringify(template)}`);
@@ -105,5 +106,7 @@ const PackageShow: NextPage = () => {
         </Grid>
     );
 };
+
+PackageShow.getLayout = getLayout
 
 export default PackageShow;
