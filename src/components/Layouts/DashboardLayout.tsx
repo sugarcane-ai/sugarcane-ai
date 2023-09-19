@@ -22,10 +22,12 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+// import { mainListItems, secondaryListItems } from "./Dashboard/listItems";
 import { MdAccountCircle } from "react-icons/md";
 import { ListItemButton } from "@mui/material";
 import SidebarProfile from "~/components/SidebarProfile";
-import { mainListItems, secondaryListItems } from "~/app/dashboard/listItems";
+import { mainListItems, secondaryListItems } from "~/app/Dashboard/listItems";
+import RouteGuard from "../RouteGuard";
 // import Chart from './Dashboard/Chart';
 // import Deposits from './Dashboard/Deposits';
 // import Orders from './Dashboard/Orders';
@@ -157,10 +159,11 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
             sx={{
               display: "flex",
               alignItems: "center",
-              justifyContent: "flex-end",
+              justifyContent: "space-between",
               px: [1],
             }}
-          >
+          > 
+            <Typography variant="h5" fontFamily={'fantasy'}>sugarFactory</Typography>
             <IconButton onClick={toggleDrawer}>
               <ChevronLeftIcon />
             </IconButton>
@@ -205,5 +208,5 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <Dashboard>{children}</Dashboard>;
+  return <RouteGuard><Dashboard>{children}</Dashboard></RouteGuard>;
 }

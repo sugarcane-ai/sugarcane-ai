@@ -32,7 +32,7 @@ function Packages() {
                 <Typography>{pkg?.description}</Typography>
               </CardContent>
               <CardActions>
-                <MUILink href={`/dashboard/prompts/${pkg?.id}`}>View</MUILink>
+                <MUILink href={`/dashboard/prompts/${pkg.id}`}>View</MUILink>
               </CardActions>
             </Card>
           </Grid>
@@ -74,4 +74,4 @@ const PackageHome = ()=>  {
   );
 }
 PackageHome.getLayout = getLayout
-export default PackageHome 
+export default PackageHome
