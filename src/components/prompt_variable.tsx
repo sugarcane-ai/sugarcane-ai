@@ -23,11 +23,16 @@ export function PromptVariable({ pv, onChange }: { pv: PromptVariableProps, onCh
     useEffect(()=>{
         console.log("Rechecking", pv.key)
         const environmentalVariables = JSON.parse(localStorage.getItem('userEnvironmentalVariables'))
-    const localEnvironmentalVariableValue = getValueByKey(environmentalVariables,pv.key)
+        if(environmentalVariables){
+            const localEnvironmentalVariableValue = getValueByKey(environmentalVariables,pv.key)
     if(localEnvironmentalVariableValue){
         pv.value = localEnvironmentalVariableValue
         setValue(localEnvironmentalVariableValue)
     }
+        }
+        
+    
+        
     },[pv.key])
     
     const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,6 +42,7 @@ export function PromptVariable({ pv, onChange }: { pv: PromptVariableProps, onCh
 
     function getValueByKey(obj, keyToFind) {
         // Check if the object is not null or undefined and is an object
+        if(!obj) return "";
         console.log(obj)
         for (const [key, value] of Object.entries(obj)) {
             if (typeof value === "object" && value.hasOwnProperty("key") && value.key === keyToFind) {
