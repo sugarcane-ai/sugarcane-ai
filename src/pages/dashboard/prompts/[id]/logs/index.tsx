@@ -13,6 +13,8 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { getLayout } from "~/components/Layouts/DashboardLayout";
+import TimeAgo from 'react-timeago';
+
 
 interface PromptLog {
   id: string;
@@ -119,9 +121,9 @@ const handleSearch = () => {
 
                 <TableCell>{log.labelledState}</TableCell>
                 <TableCell>{log.finetunedState}</TableCell>
-
-                <TableCell>{log.createdAt.toTimeString()}</TableCell>
-                <TableCell>{log.updatedAt.toTimeString()}</TableCell>
+                
+                <TableCell><TimeAgo date={log.createdAt}/></TableCell>
+                <TableCell><TimeAgo date={log.updatedAt}/></TableCell>
                 
               </TableRow>
             ))}

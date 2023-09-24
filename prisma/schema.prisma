@@ -184,6 +184,7 @@ model VerificationToken {
 
 model PromptLog {
   id                String            @id @default(uuid())
+  userId            String
   inputId           String?
   environment       PromptEnvironment @default(DEV)
   version           String

@@ -1,16 +1,48 @@
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { generateInput, generateOutput } from "~/validators/service";
+import { generateInput, generateOutput, getPromptInput, getPromptOutput } from "~/validators/service";
 import { run } from "~/services/openai";
 import { JsonObject } from "@prisma/client/runtime/library";
 import { generateLLmConfig, generatePrompt } from "~/utils/template";
 import { promptEnvironment } from "~/validators/base";
+import { create } from "domain";
 
 export const serviceRouter = createTRPCRouter({
+
+  get: publicProcedure
+    .meta({
+      openapi: {
+        method: 'GET',
+        path: '/prompts',
+        tags: ['prompts'],
+        summary: 'Prompt As A Service',
+      },
+    })
+  .input(getPromptInput)
+  .output(getPromptOutput)
+  .query(async ({ ctx, input }) => {
+
+    console.info(`Prompt get -----------------`)
+
+    const [pv, pt] = await getPv(ctx, input)
+    
+    if(pv) {
+      console.info(`Prompt generating output ${JSON.stringify(pv)}`)
+      return {
+        template: pv.template,
+        version: pv.version,
+        createdAt: pv.createdAt,
+        updatedAt: pv.updatedAt,
+      }
+    }
+
+    return null;
+  }), 
+
   generate: publicProcedure
       .meta({
         openapi: {
           method: 'POST',
-          path: '/generate',
+          path: '/prompts/generate',
           tags: ['prompts'],
           summary: 'Prompt As A Service',
         },
@@ -18,40 +50,9 @@ export const serviceRouter = createTRPCRouter({
     .input(generateInput)
     .output(generateOutput)
     .mutation(async ({ ctx, input }) => {
-      let pt = null;
-      let pv = null;
-
+      
       const userId = input.userId || ctx.session?.user.id
-      
-      if (input.version) {
-        pv = await ctx.prisma.promptVersion.findFirst({
-          where: {
-            userId: userId,
-            promptPackageId: input.promptPackageId,
-            promptTemplateId: input.promptTemplateId,
-            version: input.version,
-          },
-        });
-      } else {
-        
-        const ptd = {
-          userId: userId,
-          promptPackageId: input.promptPackageId,
-          id: input.promptTemplateId,
-        }
-        
-        console.info(`finding the ${input.environment} version ${JSON.stringify(ptd)}`)
-        pt = await ctx.prisma.promptTemplate.findFirst({
-          where: ptd,
-          include:{
-            previewVersion: true, 
-            releaseVersion: true,
-          }
-        });
-        pv = (input.environment == promptEnvironment.Enum.RELEASE) ? pt?.releaseVersion : pt?.previewVersion
-      }
-
-      
+      let [pv, pt] = await getPv(ctx, input)
 
       console.log(`promptVersion >>>> ${JSON.stringify(pv)}`);
       if (pv) {
@@ -72,6 +73,7 @@ export const serviceRouter = createTRPCRouter({
 
         const pl = await ctx.prisma.promptLog.create({
           data: {
+            userId: userId,
             promptPackageId: pv.promptPackageId,
             promptTemplateId: pv.promptTemplateId,
             promptVersionId: pv.id,
@@ -95,10 +97,53 @@ export const serviceRouter = createTRPCRouter({
         });
 
         return pl;
-      } else {
-        console.error(`promptVersion not found >>>> ${JSON.stringify(input)}`);
       }
 
       return null;
     }),
 });
+
+
+async function getPv(ctx:any, input:any) {
+  const userId = input.userId || ctx.session?.user.id
+  let pt = null;
+  let pv = null;
+
+
+  if (input.version) {
+    console.info(`loading version ${input.version} for ${input.environment}`)
+    pv = await ctx.prisma.promptVersion.findFirst({
+      where: {
+        userId: userId,
+        promptPackageId: input.promptPackageId,
+        promptTemplateId: input.promptTemplateId,
+        version: input.version,
+      },
+    });
+  } else {
+    const ptd = {
+      userId: userId,
+      promptPackageId: input.promptPackageId,
+      id: input.promptTemplateId,
+    }
+    
+    console.info(`finding the ${input.environment} version ${JSON.stringify(ptd)}`)
+    pt = await ctx.prisma.promptTemplate.findFirst({
+      where: ptd,
+      include:{
+        previewVersion: true, 
+        releaseVersion: true,
+      }
+    });
+    pv = (input.environment == promptEnvironment.Enum.RELEASE) ? pt?.releaseVersion : pt?.previewVersion
+  }
+
+  if(!pv) {
+    console.error(`promptVersion >>>> not found - ${JSON.stringify(input)}`);
+  } else {
+    console.error(`promptVersion >>>>  ${JSON.stringify(pv)}`);
+  }
+
+  return [pv, pt];
+  
+}
