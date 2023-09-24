@@ -116,8 +116,14 @@ import { SugarcaneAIClient } from "@sugarcane-ai/kitchen-js";
 const apiKey = 'your-api-key';
 const client = new SugarcaneAIClient(apiKey);
 
-const template = client.getTemplate("${identifier}");
-console.log(template);
+const response = client.getTemplate("${identifier}");
+console.log(response.template);
+
+const response = client.generate("${identifier}", {
+  "#BOT_NAME": "Riya",
+  "#PROVIDER": "OpenAI",
+});
+console.log(response.completion);
 `;
 
   return (
