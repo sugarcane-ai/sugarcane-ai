@@ -1,6 +1,20 @@
 import { z } from "zod";
 import { promptEnvironment } from "./base";
 
+export const getPromptInput2 = z
+    .object({
+        environment: promptEnvironment.default(promptEnvironment.Enum.RELEASE),
+        
+        // Prompt Template identitication
+        username: z.string(),
+        package: z.string(),
+        template: z.string(),
+        version: z.string().default('latest'),
+    })
+    // .strict()
+export type GetPromptInput2 = z.infer<typeof getPromptInput2>;
+
+
 export const getPromptInput = z
     .object({
         userId: z.string().optional(),
@@ -31,7 +45,7 @@ export const generateInput =
         // Template Data
         data: z.record(z.any()),
       })
-      .merge(getPromptInput)
+      .merge(getPromptInput2)
       .strict()
 export type GenerateInput = z.infer<typeof generateInput>;
 
