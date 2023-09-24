@@ -1,21 +1,31 @@
 import { z } from "zod";
+import { promptEnvironment } from "./base";
 
-export const completionInput = z
+export const generateInput = z
     .object({
         userId: z.string().optional(),
+
+        environment: promptEnvironment.default(promptEnvironment.Enum.RELEASE),
+        
+        // Prompt Template identitication
         promptPackageId: z.string(),
         promptTemplateId: z.string(),
-        id: z.string(),
+        version: z.string().optional(),
 
+        // Template Data
         data: z.record(z.any()),
     })
     .strict()
-export type CompletionInput = z.infer<typeof completionInput>;
+export type GenerateInput = z.infer<typeof generateInput>;
 
 
-export const completionOutput = z
+export const generateOutput = z
     .object({
         id: z.string(),
+        
+        environment: promptEnvironment,
+
+        version: z.string(),
         prompt: z.string(),
         completion: z.string(),
 
@@ -28,5 +38,5 @@ export const completionOutput = z
         updatedAt: z.coerce.date(),
 
     }).or(z.null())
-export type CompletionOutput = z.infer<typeof completionOutput>;
+export type GenerateOutput = z.infer<typeof generateOutput>;
 
