@@ -63,6 +63,31 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   });
 };
 
+// // eslint-disable-next-line @typescript-eslint/require-await
+// export const createAPIContext = async ({ req, res }: CreateNextContextOptions): Promise<Context> => {
+//   const requestId = uuid();
+//   res.setHeader('x-request-id', requestId);
+
+//   let user: User | null = null;
+
+//   try {
+//     if (req.headers.authorization) {
+//       const token = req.headers.authorization.split(' ')[1];
+//       const userId = jwt.verify(token, jwtSecret) as string;
+//       if (userId) {
+//         user = database.users.find((_user) => _user.id === userId) ?? null;
+//       }
+//     }
+//   } catch (cause) {
+//     console.error(cause);
+//   }
+
+//   return { user, requestId };
+// };
+
+
+
+
 /**
  * 2. INITIALIZATION
  *
