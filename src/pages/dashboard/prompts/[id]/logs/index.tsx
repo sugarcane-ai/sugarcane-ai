@@ -90,6 +90,7 @@ const handleSearch = () => {
               <TableCell>LLM Model</TableCell>
               
               <TableCell>Total Tokens</TableCell>
+              <TableCell>Environment</TableCell>
               <TableCell>Latency(in ms)</TableCell>
 
               <TableCell>Labelled State</TableCell>
@@ -117,6 +118,7 @@ const handleSearch = () => {
                 <TableCell>{log.llmModel}</TableCell>
 
                 <TableCell>{log.total_tokens}</TableCell>
+                <TableCell>{log.environment}</TableCell>
                 <TableCell>{log.latency}</TableCell>
 
                 <TableCell>{log.labelledState}</TableCell>

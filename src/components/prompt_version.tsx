@@ -92,8 +92,9 @@ function PromptVersion({ ns, pp, pt, pv, handleVersionCreate, onTemplateUpdate }
     }
 
     const pl = await runMutation.mutateAsync({
-      promptPackageId: pv.promptPackageId,
-      promptTemplateId: pv.promptTemplateId,
+      username: ns.name,
+      package: pp.name,
+      template: pt.name,
       version: pv.version,
 
       environment: promptEnvironment.Enum.DEV,

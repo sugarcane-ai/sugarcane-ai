@@ -8,45 +8,19 @@ import { promptEnvironment } from "~/validators/base";
 
 export const serviceRouter = createTRPCRouter({
 
-  getPrompt2: publicProcedure
+  getPrompt: publicProcedure
   .meta({
     openapi: {
       method: 'GET',
       path: '/{username}/{package}/{template}/{version}',
       tags: ['prompts'],
-      summary: 'Prompt As A Service',
+      summary: 'Get Prompt Template',
     },
   })
-  .input(getPromptInput2)
+  .input(getPromptInput)
   .use(promptMiddleware)
   .output(getPromptOutput)
   .query(async ({ ctx, input }) => {
-
-    // const {id: userId} = await ctx.prisma.user.findFirst({
-    //   where: {
-    //     name: input.username
-    //   },
-    //   select: {id: true}
-    // })
-    // const {id: promptPackageId} = await ctx.prisma.promptPackage.findFirst({
-    //   where: {
-    //     name: input.package
-    //   },
-    //   select: {id: true}
-    // })
-    // const {id: promptTemplateId} = await ctx.prisma.promptTemplate.findFirst({
-    //   where: {
-    //     name: input.template
-    //   },
-    //   select: {id: true}
-    // })
-
-    // const newInput = {
-    //   userId,
-    //   promptPackageId,
-    //   promptTemplateId,
-    //   ...input
-    // }
 
     console.info(`Prompt get ----------------- ${JSON.stringify(input)}`)
 
@@ -65,43 +39,13 @@ export const serviceRouter = createTRPCRouter({
     return null;
   }), 
 
-  // getPrompt: publicProcedure
-  //   .meta({
-  //     openapi: {
-  //       method: 'GET',
-  //       path: '/prompts',
-  //       tags: ['prompts'],
-  //       summary: 'Prompt As A Service',
-  //     },
-  //   })
-  // .input(getPromptInput)
-  // .output(getPromptOutput)
-  // .query(async ({ ctx, input }) => {
-
-  //   console.info(`Prompt get -----------------`)
-
-  //   const [pv, pt] = await getPv(ctx, input)
-    
-  //   if(pv) {
-  //     console.info(`Prompt generating output ${JSON.stringify(pv)}`)
-  //     return {
-  //       template: pv.template,
-  //       version: pv.version,
-  //       createdAt: pv.createdAt,
-  //       updatedAt: pv.updatedAt,
-  //     }
-  //   }
-
-  //   return null;
-  // }), 
-
   generate: publicProcedure
       .meta({
         openapi: {
           method: 'POST',
           path: '/{username}/{package}/{template}/{version}/generate',
           tags: ['prompts'],
-          summary: 'Prompt As A Service',
+          summary: 'Generate prompt completion',
         },
       })
     .input(generateInput)
@@ -109,7 +53,7 @@ export const serviceRouter = createTRPCRouter({
     .output(generateOutput)
     .mutation(async ({ ctx, input }) => {
       
-      const userId = input.userId || ctx.session?.user.id
+      // const userId = input.userId;
       let [pv, pt] = await getPv(ctx, input)
 
       console.log(`promptVersion >>>> ${JSON.stringify(pv)}`);
@@ -131,7 +75,7 @@ export const serviceRouter = createTRPCRouter({
 
         const pl = await ctx.prisma.promptLog.create({
           data: {
-            userId: userId,
+            userId: input.userId,
             promptPackageId: pv.promptPackageId,
             promptTemplateId: pv.promptTemplateId,
             promptVersionId: pv.id,

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { promptEnvironment } from "./base";
 
-export const getPromptInput2 = z
+export const getPromptInput = z
     .object({
         environment: promptEnvironment.default(promptEnvironment.Enum.RELEASE),
         
@@ -12,21 +12,21 @@ export const getPromptInput2 = z
         version: z.string().default('latest'),
     })
     // .strict()
-export type GetPromptInput2 = z.infer<typeof getPromptInput2>;
-
-
-export const getPromptInput = z
-    .object({
-        userId: z.string().optional(),
-        environment: promptEnvironment.default(promptEnvironment.Enum.RELEASE),
-        
-        // Prompt Template identitication
-        promptPackageId: z.string(),
-        promptTemplateId: z.string(),
-        version: z.string().optional(),
-    })
-    // .strict()
 export type GetPromptInput = z.infer<typeof getPromptInput>;
+
+
+// export const getPromptInput2 = z
+//     .object({
+//         userId: z.string().optional(),
+//         environment: promptEnvironment.default(promptEnvironment.Enum.RELEASE),
+        
+//         // Prompt Template identitication
+//         promptPackageId: z.string(),
+//         promptTemplateId: z.string(),
+//         version: z.string().optional(),
+//     })
+//     // .strict()
+// export type GetPromptInput2 = z.infer<typeof getPromptInput2>;
 
 export const getPromptOutput = z
     .object({
@@ -45,7 +45,7 @@ export const generateInput =
         // Template Data
         data: z.record(z.any()),
       })
-      .merge(getPromptInput2)
+      .merge(getPromptInput)
       .strict()
 export type GenerateInput = z.infer<typeof generateInput>;
 
