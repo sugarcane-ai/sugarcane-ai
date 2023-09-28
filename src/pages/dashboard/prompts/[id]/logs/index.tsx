@@ -14,7 +14,6 @@ import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { getLayout } from "~/components/Layouts/DashboardLayout";
 import TimeAgo from 'react-timeago';
-import toast from 'react-hot-toast';
 import LabelIcons from "~/components/label_icon";
 
 
@@ -53,7 +52,7 @@ const PromptLogTable: NextPage = () => {
   const packageId = router.query.id as string;
 
 
-  const { data: pls } = api.prompt.getLogs.useQuery({
+  const { data: pls } = api.log.getLogs.useQuery({
     promptPackageId: packageId
   });
 
@@ -65,14 +64,6 @@ const PromptLogTable: NextPage = () => {
     // Replace 'YOUR_API_ENDPOINT' with the actual API endpoint.
     // Example: axios.get('/api/prompt-logs').then((response) => setPromptLogs(response.data));
   }, []);
-
-  const mutation = api.prompt.updateLogLabel.useMutation();
-
-
-  const handleLabelChange =  (logId: string, newLabelState: LabelledState) => {
-    mutation.mutate({ id: logId,  labelledState: newLabelState});
-    toast.success(`The label state has been successfully changed to "${newLabelState}".`);
-  };
 
 
   const handleSearch = () => {
@@ -135,7 +126,6 @@ const PromptLogTable: NextPage = () => {
                   <LabelIcons
                     logId={log.id}
                     labelledState={log.labelledState}
-                    onLabelChange={handleLabelChange}
                   />
                 </TableCell>
                 <TableCell>{log.finetunedState}</TableCell>
