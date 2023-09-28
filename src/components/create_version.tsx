@@ -33,6 +33,7 @@ export function CreateVersion({
 }: {
   pp: pp;
   pt: pt;
+  icon?: React.JSX.Element;
   v: string;
   onCreate: Function;
   forkedFromId: string | null;

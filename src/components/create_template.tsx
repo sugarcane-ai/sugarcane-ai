@@ -27,10 +27,11 @@ export function CreateTemplate({
   pp,
   onCreate,
   sx,
+ 
 }: {
   pp: pp;
   onCreate: Function;
-  sx: any
+  sx?: any
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");

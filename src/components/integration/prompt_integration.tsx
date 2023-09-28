@@ -1,4 +1,10 @@
 import CodeHighlight from "./code_highlight";
+import {
+  PromptPackage as pp,
+  PromptTemplate as pt,
+  PromptVersion as pv,
+} from "@prisma/client";
+
 
 export const PromptIntegration = ({
     ns,

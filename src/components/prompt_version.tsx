@@ -21,12 +21,13 @@ import SaveIcon from '@mui/icons-material/Save';
 import { CreateVersion } from "./create_version";
 import {inc} from 'semver'
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
+import { VersionOutput,VersionSchema } from "~/validators/prompt_version";
 import { PromptEnvironment, promptEnvironment } from "~/validators/base";
 import LogLabel from "./dataset/log_label";
 
 
 function PromptVersion({ ns, pp, pt, pv, handleVersionCreate, onTemplateUpdate }:
-  { ns:any, pp: pp, pt: pt, pv: pv, handleVersionCreate: Function, onTemplateUpdate: Function }) {  
+  { ns:any, pp: pp, pt: pt, pv: VersionSchema, handleVersionCreate: Function, onTemplateUpdate: Function }) {  
   const [version, setVersion] = useState<string>(pv?.version);
   const [template, setTemplate] = useState(pv?.template || '');
   const [provider, setProvider] = useState(pv?.llmProvider || '');
@@ -88,7 +89,7 @@ function PromptVersion({ ns, pp, pt, pv, handleVersionCreate, onTemplateUpdate }
 
     console.log(`running template version ${version}`);
 
-    let data = {};
+    let data :{ [key: string]: any } = {};
     for (const item of pvrs) {
       data[`${item.type}${item.key}`] = item.value;
     }
@@ -155,8 +156,8 @@ function PromptVersion({ ns, pp, pt, pv, handleVersionCreate, onTemplateUpdate }
             </Button>)}
             
             <CreateVersion
-              pp={pp as pp}
-              pt={pt as pt}
+              pp={pp}
+              pt={pt}
               forkedFromId={pv.id}
               v={inc(version, 'patch') as string}
               onCreate={handleVersionCreate}

@@ -28,7 +28,7 @@ const PromptTemplate = ({ ns, pp, pt, onTemplateUpdate}: { ns: any, pp: pp; pt: 
 
   const [activeTab, setActiveTab] = useState(0);
 
-  const handleChangeTab = (event, newValue) => {
+  const handleChangeTab = (event:any, newValue:number) => {
     setActiveTab(newValue);
   };
 
@@ -62,8 +62,8 @@ const PromptTemplate = ({ ns, pp, pt, onTemplateUpdate}: { ns: any, pp: pp; pt: 
                 ))}
               <Box sx={{ flexGrow: 1, p:2 }} >
                 <CreateVersion
-                  pp={pp as pp}
-                  pt={pt as pt}
+                  pp={pp}
+                  pt={pt}
                   onCreate={handleVersionCreate}
                 ></CreateVersion>
               </Box>
@@ -72,8 +72,8 @@ const PromptTemplate = ({ ns, pp, pt, onTemplateUpdate}: { ns: any, pp: pp; pt: 
                 key={-1}
                 icon={
                   <CreateVersion
-                    pp={pp as pp}
-                    pt={pt as pt}
+                    pp={pp}
+                    pt={pt}
                     onCreate={handleVersionCreate}
                   ></CreateVersion>
                 }

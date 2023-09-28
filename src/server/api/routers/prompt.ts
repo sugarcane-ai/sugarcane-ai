@@ -272,7 +272,7 @@ export const promptRouter = createTRPCRouter({
         publishedAt: new Date(),
       }
 
-      let templateData = {}
+      let templateData :{[key:string]:any} = {}
       templateData[`${input.environment}VersionId`] = input.promptVersionId
 
       // data[`${input.environment}Version`] = {

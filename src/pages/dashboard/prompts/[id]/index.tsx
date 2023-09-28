@@ -11,9 +11,10 @@ import toast from 'react-hot-toast';
 import PromptTemplate from "~/components/prompt_template";
 import DatasetIcon from '@mui/icons-material/Dataset';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
+import { NextPageWithLayout } from "~/pages/_app";
 
 
-const PackageShow: NextPage = () => {
+const PackageShow: NextPageWithLayout = () => {
     const router = useRouter();
     const packageId = router.query.id as string;
 
@@ -67,6 +68,7 @@ const PackageShow: NextPage = () => {
     }
 
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+        console.log(`handleTabChange <<<<>>>>`);
     };
 
     return (
@@ -148,7 +150,7 @@ const PackageShow: NextPage = () => {
                         
                     </Toolbar>
                 )}
-                {pt && <PromptTemplate ns={ns} pt={pt} pp={pp} onTemplateUpdate={handleTemplateUpdate}></PromptTemplate>}
+                {pt && <PromptTemplate ns={ns} pt={pt} pp={pp as pp} onTemplateUpdate={handleTemplateUpdate}></PromptTemplate>}
             </Box>
         </>
     );

@@ -79,6 +79,8 @@ const versionSchema = z.object({
     updatedAt: z.coerce.date(),
 })
 
+export type VersionSchema = z.infer<typeof versionSchema>
+
 export const versionOutput = versionSchema.or(z.null())
 export type VersionOutput = z.infer<typeof versionOutput>;
 
