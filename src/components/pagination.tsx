@@ -1,33 +1,27 @@
 import React from "react";
-import ReactPaginate from "react-paginate";
+import Paginate from '@mui/material/Pagination';
 
 
 interface PaginationProps {
-  pageCount: number;
-  onPageChange: (selectedPage: number) => void;
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (newPage: number) => void;
 }
 
 
-const Pagination: React.FC<PaginationProps> = ({pageCount, onPageChange}) => {
+const Pagination: React.FC<PaginationProps> = ({currentPage, totalPages, onPageChange,}) => {
+
+  const handlePageChange = (event, newPage) => {
+    onPageChange(newPage);
+  };
 
   return (
-    <ReactPaginate
-      previousLabel={"Previous"}
-      nextLabel={"Next"}
-      pageCount={pageCount}
-      onPageChange={onPageChange}
-      nextLinkClassName="pagination__link"
-      disabledClassName="pagination__link--disabled"
-      pageClassName="page-item"
-      pageLinkClassName="page-link"
-      previousClassName="page-item"
-      previousLinkClassName="page-link"
-      nextClassName="page-item"
-      breakLabel="..."
-      breakClassName="page-item"
-      breakLinkClassName="page-link"
-      containerClassName="pagination"
-      activeClassName="active"
+    <Paginate
+      count={totalPages}
+      page={currentPage}
+      onChange={handlePageChange}
+      variant="outlined"
+      shape="rounded"
     />
   )
 }

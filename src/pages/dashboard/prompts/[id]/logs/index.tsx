@@ -61,12 +61,12 @@ const PromptLogTable: NextPage = () => {
 
   const [promptLogs, setPromptLogs] = useState<PromptLog[]>([]);
   const [searchText, setSearchText] = useState<string>("");
-  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
 
-  const pageCount = Math.ceil(pls?.length / itemsPerPage)
-  const startIndex = currentPage * itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
+  const totalPages = Math.ceil(pls?.length / itemsPerPage);
 
 
 
@@ -82,8 +82,8 @@ const PromptLogTable: NextPage = () => {
     // Filter the promptLogs array based on the searchText.
   };
 
-  const handlePageChange = (selectedPage: { selected: number }) => {
-    setCurrentPage(selectedPage.selected);
+  const handlePageChange = (newPage:number) => {
+    setCurrentPage(newPage);
   };
 
   return (
@@ -153,9 +153,10 @@ const PromptLogTable: NextPage = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <div className="pt-5">
+      <div className="pt-5 flex justify-center items-center">
         <Pagination
-          pageCount={pageCount}
+          currentPage={currentPage}
+          totalPages={totalPages || 0}
           onPageChange={handlePageChange}
         />
       </div>
