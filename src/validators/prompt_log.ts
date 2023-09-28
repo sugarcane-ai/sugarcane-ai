@@ -20,6 +20,7 @@ const logSchema = z.object({
     promptTemplateId: z.string(),
     promptVersionId: z.string(),
     prompt: z.string(),
+    version: z.string(),
     completion: z.string(),
     llmProvider: z.string(),
     llmModel: z.string(),

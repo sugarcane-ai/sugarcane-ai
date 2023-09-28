@@ -15,12 +15,14 @@ import { api } from "~/utils/api";
 import { getLayout } from "~/components/Layouts/DashboardLayout";
 import TimeAgo from 'react-timeago';
 import LabelIcons from "~/components/label_icon";
+import Pagination from "~/components/pagination";
 
 
 interface PromptLog {
   id: string;
   inputId?: string;
   prompt: string;
+  version: string;
   completion: string;
   llmProvider: string;
   llmModel: string;
@@ -33,7 +35,6 @@ interface PromptLog {
   completion_tokens: number;
   total_tokens: number;
   extras: Record<string, any>;
-
   labelledState: LabelledState;
   finetunedState: FinetunedState;
   promptPackageId: string;
@@ -45,6 +46,8 @@ interface PromptLog {
 
 type LabelledState = "UNLABELLED" | "SELECTED" | "REJECTED" | "NOTSURE";
 type FinetunedState = "UNPROCESSED" | "PROCESSED";
+
+const itemsPerPage = 10;
 
 const PromptLogTable: NextPage = () => {
   // const [promptLogs, setPromptLogs] = useState<PromptLog[]>([])
@@ -58,6 +61,14 @@ const PromptLogTable: NextPage = () => {
 
   const [promptLogs, setPromptLogs] = useState<PromptLog[]>([]);
   const [searchText, setSearchText] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(0);
+
+
+  const pageCount = Math.ceil(pls?.length / itemsPerPage)
+  const startIndex = currentPage * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+
 
   useEffect(() => {
     // Fetch data from your backend API using Axios or any other library.
@@ -69,6 +80,10 @@ const PromptLogTable: NextPage = () => {
   const handleSearch = () => {
     // Implement the search logic here.
     // Filter the promptLogs array based on the searchText.
+  };
+
+  const handlePageChange = (selectedPage: { selected: number }) => {
+    setCurrentPage(selectedPage.selected);
   };
 
   return (
@@ -88,9 +103,9 @@ const PromptLogTable: NextPage = () => {
               <TableCell>ID</TableCell>
               <TableCell>Prompt</TableCell>
               <TableCell>Completion</TableCell>
+              <TableCell>Version</TableCell>
               <TableCell>LLM Provider</TableCell>
               <TableCell>LLM Model</TableCell>
-
               <TableCell>Total Tokens</TableCell>
               <TableCell>Environment</TableCell>
               <TableCell>Latency(in ms)</TableCell>
@@ -104,7 +119,7 @@ const PromptLogTable: NextPage = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {pls?.map((log) => (
+             {pls?.slice(startIndex, endIndex).map((log) => (
               <TableRow key={log.id}>
                 <TableCell>{log.id}</TableCell>
                 <TableCell>
@@ -115,7 +130,7 @@ const PromptLogTable: NextPage = () => {
                   {log.completion}
                   <p>tokens: {log.completion_tokens}</p>
                 </TableCell>
-
+                <TableCell>{log.version}</TableCell>
                 <TableCell>{log.llmProvider}</TableCell>
                 <TableCell>{log.llmModel}</TableCell>
 
@@ -138,6 +153,12 @@ const PromptLogTable: NextPage = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <div className="pt-5">
+        <Pagination
+          pageCount={pageCount}
+          onPageChange={handlePageChange}
+        />
+      </div>
     </div>
   );
 };

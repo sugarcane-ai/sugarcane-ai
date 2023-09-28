@@ -34,6 +34,7 @@
     "react-hotkeys": "^2.0.0",
     "react-icons": "^4.11.0",
     "react-modal": "^3.16.1",
+    "react-paginate": "^8.2.0",
     "react-syntax-highlighter": "^15.5.0",
     "react-timeago": "^7.2.0",
     "recharts": "^2.8.0",
