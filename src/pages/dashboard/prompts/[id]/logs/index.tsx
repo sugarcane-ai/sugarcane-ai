@@ -7,13 +7,15 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
+  Paper
 } from "@mui/material";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { getLayout } from "~/components/Layouts/DashboardLayout";
 import TimeAgo from 'react-timeago';
+import toast from 'react-hot-toast';
+import LabelIcons from "~/components/label_icon";
 
 
 interface PromptLog {
@@ -32,7 +34,7 @@ interface PromptLog {
   completion_tokens: number;
   total_tokens: number;
   extras: Record<string, any>;
-  
+
   labelledState: LabelledState;
   finetunedState: FinetunedState;
   promptPackageId: string;
@@ -51,7 +53,7 @@ const PromptLogTable: NextPage = () => {
   const packageId = router.query.id as string;
 
 
-  const { data: pls } = api.prompt.getLogs.useQuery({ 
+  const { data: pls } = api.prompt.getLogs.useQuery({
     promptPackageId: packageId
   });
 
@@ -64,7 +66,16 @@ const PromptLogTable: NextPage = () => {
     // Example: axios.get('/api/prompt-logs').then((response) => setPromptLogs(response.data));
   }, []);
 
-const handleSearch = () => {
+  const mutation = api.prompt.updateLogLabel.useMutation();
+
+
+  const handleLabelChange =  (logId: string, newLabelState: LabelledState) => {
+    mutation.mutate({ id: logId,  labelledState: newLabelState});
+    toast.success(`The label state has been successfully changed to "${newLabelState}".`);
+  };
+
+
+  const handleSearch = () => {
     // Implement the search logic here.
     // Filter the promptLogs array based on the searchText.
   };
@@ -88,7 +99,7 @@ const handleSearch = () => {
               <TableCell>Completion</TableCell>
               <TableCell>LLM Provider</TableCell>
               <TableCell>LLM Model</TableCell>
-              
+
               <TableCell>Total Tokens</TableCell>
               <TableCell>Environment</TableCell>
               <TableCell>Latency(in ms)</TableCell>
@@ -102,7 +113,7 @@ const handleSearch = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {pls && pls.map((log) => (
+            {pls?.map((log) => (
               <TableRow key={log.id}>
                 <TableCell>{log.id}</TableCell>
                 <TableCell>
@@ -113,20 +124,25 @@ const handleSearch = () => {
                   {log.completion}
                   <p>tokens: {log.completion_tokens}</p>
                 </TableCell>
-                
+
                 <TableCell>{log.llmProvider}</TableCell>
                 <TableCell>{log.llmModel}</TableCell>
 
                 <TableCell>{log.total_tokens}</TableCell>
                 <TableCell>{log.environment}</TableCell>
                 <TableCell>{log.latency}</TableCell>
-
-                <TableCell>{log.labelledState}</TableCell>
+                <TableCell>
+                  <LabelIcons
+                    logId={log.id}
+                    labelledState={log.labelledState}
+                    onLabelChange={handleLabelChange}
+                  />
+                </TableCell>
                 <TableCell>{log.finetunedState}</TableCell>
-                
+
                 <TableCell><TimeAgo date={log.createdAt}/></TableCell>
                 <TableCell><TimeAgo date={log.updatedAt}/></TableCell>
-                
+
               </TableRow>
             ))}
           </TableBody>
@@ -135,6 +151,7 @@ const handleSearch = () => {
     </div>
   );
 };
+
 
 PromptLogTable.getLayout = getLayout
 

@@ -31,6 +31,7 @@ import {
 import {
   getLogsInput,
   logListOutput,
+  updateLabel
 } from "~/validators/prompt_log";
 import { JsonObject } from "@prisma/client/runtime/library";
 import { Visibility } from "@mui/icons-material";
@@ -126,7 +127,7 @@ export const promptRouter = createTRPCRouter({
           },
         });
       }
-      
+
       console.log(`template output -------------- ${JSON.stringify(pt)}`);
 
       return pt;
@@ -354,5 +355,30 @@ export const promptRouter = createTRPCRouter({
       });
       console.log(`pls -------------- ${JSON.stringify(versions)}`);
       return versions;
-    })
+  }),
+
+    updateLogLabel: publicProcedure
+    .input(updateLabel)
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session?.user.id;
+      let pL = null;
+      console.log(`update label -------------- ${JSON.stringify(input)}`);
+
+      if (userId) {
+        pL = await ctx.prisma.promptLog.update({
+          where: {
+            id: input.id,
+            userId: userId,
+          },
+          data: {
+            labelledState: input.labelledState,
+          },
+        });
+      }
+      console.log(`updated label -------------- ${JSON.stringify(pL)}`);
+
+      return pL;
+    }),
 });
+
+
