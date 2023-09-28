@@ -18,6 +18,7 @@ import LabelIcons from "~/components/label_icon";
 import Pagination from "~/components/pagination";
 
 
+
 interface PromptLog {
   id: string;
   inputId?: string;
@@ -109,17 +110,14 @@ const PromptLogTable: NextPage = () => {
               <TableCell>Total Tokens</TableCell>
               <TableCell>Environment</TableCell>
               <TableCell>Latency(in ms)</TableCell>
-
               <TableCell>Labelled State</TableCell>
               <TableCell>Finetuned State</TableCell>
-
               <TableCell>Created At</TableCell>
               <TableCell>Updated At</TableCell>
-
             </TableRow>
           </TableHead>
           <TableBody>
-             {pls?.slice(startIndex, endIndex).map((log) => (
+            {pls?.slice(startIndex, endIndex).map((log) => (
               <TableRow key={log.id}>
                 <TableCell>{log.id}</TableCell>
                 <TableCell>
@@ -133,7 +131,6 @@ const PromptLogTable: NextPage = () => {
                 <TableCell>{log.version}</TableCell>
                 <TableCell>{log.llmProvider}</TableCell>
                 <TableCell>{log.llmModel}</TableCell>
-
                 <TableCell>{log.total_tokens}</TableCell>
                 <TableCell>{log.environment}</TableCell>
                 <TableCell>{log.latency}</TableCell>
@@ -144,10 +141,8 @@ const PromptLogTable: NextPage = () => {
                   />
                 </TableCell>
                 <TableCell>{log.finetunedState}</TableCell>
-
                 <TableCell><TimeAgo date={log.createdAt}/></TableCell>
                 <TableCell><TimeAgo date={log.updatedAt}/></TableCell>
-
               </TableRow>
             ))}
           </TableBody>
