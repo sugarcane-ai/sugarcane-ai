@@ -77,7 +77,7 @@ const PackageShow: NextPageWithLayout = () => {
                 {pp && (
                     <Toolbar>
                         <Typography variant="h4" component="span" sx={{ mt: 1, mb: 2 }}>
-                            {ns.name} / {pp.name} /
+                            {ns?.name} / {pp.name} /
                         </Typography>
                         {pts && pts?.length > 0 ?
                             (

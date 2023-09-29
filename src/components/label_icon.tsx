@@ -10,7 +10,7 @@ interface LabelStateIconsProps {
   labelledState: string;
 }
 
-const labelStateIcons = {
+const labelStateIcons:{[key:string]:any} = {
   UNLABELLED: Icons.ThumbUp,
   SELECTED: Icons.CheckCircle,
   REJECTED: Icons.Cancel,

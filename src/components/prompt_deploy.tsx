@@ -118,7 +118,7 @@ function PromptDeploy({ ns,user, pp, pt, pv,onTemplateUpdate }: { ns:any,user?: 
             <div>
               <p>Deployment successful!</p>
               <p>You can access it over the API</p>
-              <PromptIntegration ns={ns} pp={pp} pt={pt} pv={pv}></PromptIntegration>
+              <PromptIntegration ns={ns} pp={pp} pt={pt} pv={pv as pv}></PromptIntegration>
               <Button color="primary" autoFocus onClick={handleCloseModal}>
                 Close
               </Button>

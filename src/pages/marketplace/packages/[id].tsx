@@ -68,8 +68,8 @@ const MarketplacePage: NextPage = () => {
   return (
     <Container>
       <Header></Header>
-      <PromptHeader ns={pp?.User} pp={pp}></PromptHeader>
-      <MyTabs pp={pp}></MyTabs>
+      <PromptHeader ns={pp?.User} pp={pp as pp}></PromptHeader>
+      <MyTabs pp={pp as pp}></MyTabs>
     </Container>
   );
 };

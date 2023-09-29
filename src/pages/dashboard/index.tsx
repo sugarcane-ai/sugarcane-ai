@@ -6,7 +6,7 @@ import { getLayout } from "~/components/Layouts/DashboardLayout";
 import { api } from "~/utils/api";
 
 const Index = () => {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  // const hello = api.example.hello.useQuery({ text: "from tRPC" });
 
   const handlePackageCreate = () => {
     console.log

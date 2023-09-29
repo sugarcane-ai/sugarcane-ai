@@ -50,7 +50,7 @@ export const promptRouter = createTRPCRouter({
         userId: ctx.session?.user.id,
       }
 
-      if(input.visibility) {
+      if(input?.visibility) {
         query.visibility = input.visibility
       }
 

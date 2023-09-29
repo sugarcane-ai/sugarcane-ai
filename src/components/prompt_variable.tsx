@@ -27,9 +27,7 @@ export function PromptVariable({
 
   useEffect(() => {
     console.log("Rechecking", pv.key);
-    const environmentalVariables = JSON.parse(
-      localStorage.getItem("userEnvironmentalVariables"),
-    );
+    const environmentalVariables = JSON.parse(localStorage.getItem("userEnvironmentalVariables") || 'null');
     if (environmentalVariables) {
       const gPv = getValueByKey(
         environmentalVariables,
@@ -48,7 +46,7 @@ export function PromptVariable({
 function evaluateValue(k: string, v: string): string {
     
     const environmentalVariables = JSON.parse(
-      localStorage.getItem("userEnvironmentalVariables"),
+      localStorage.getItem("userEnvironmentalVariables") || 'null'
     );
 
     if (environmentalVariables) {
@@ -60,7 +58,7 @@ function evaluateValue(k: string, v: string): string {
       console.log(`gPv: ${pv.key} global: ${gPv} current: ${v}`);
       
       if (!v || v == "" || v == "null" && gPv) {
-        return gPv;
+        return gPv?gPv:'';
       }
     }
 
