@@ -33,6 +33,7 @@ interface PromptLog {
   };
   latency: number;
   prompt_tokens: number;
+  environment: string;
   completion_tokens: number;
   total_tokens: number;
   extras: Record<string, any>;
@@ -56,18 +57,19 @@ const PromptLogTable: NextPage = () => {
   const packageId = router.query.id as string;
 
 
-  const { data: pls } = api.log.getLogs.useQuery({
-    promptPackageId: packageId
-  });
 
   const [promptLogs, setPromptLogs] = useState<PromptLog[]>([]);
   const [searchText, setSearchText] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
+  // const [totalPages, setTotalPages] = useState<number>(0);
 
+  const { data: pls } = api.log.getLogs.useQuery({
+    promptPackageId: packageId,
+    page: currentPage,
+    perPage: itemsPerPage,
+  });
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const totalPages = Math.ceil(pls?.length / itemsPerPage);
+  const totalPages = pls?.totalPages || 0
 
 
 
@@ -117,7 +119,7 @@ const PromptLogTable: NextPage = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {pls?.slice(startIndex, endIndex).map((log) => (
+            {pls?.data.map((log) => (
               <TableRow key={log.id}>
                 <TableCell>{log.id}</TableCell>
                 <TableCell>
@@ -151,7 +153,7 @@ const PromptLogTable: NextPage = () => {
       <div className="pt-5 flex justify-center items-center">
         <Pagination
           currentPage={currentPage}
-          totalPages={totalPages || 0}
+          totalPages={totalPages}
           onPageChange={handlePageChange}
         />
       </div>
