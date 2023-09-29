@@ -9,6 +9,8 @@ export const getLogsInput = z
         promptPackageId: z.string(),
         promptTemplateId: z.string().optional(),
         promptVersionId: z.string().optional(),
+        page: z.number(),
+        perPage: z.number(),
     })
     .strict()
 export type GetLogsInput = z.infer<typeof getLogsInput>;
@@ -49,7 +51,7 @@ export const updateLabel = z.object({
 export const logOutput = logSchema.or(z.null())
 export type LogOutput = z.infer<typeof logOutput>;
 
-export const logListOutput = z.array(logSchema)
+export const logListOutput = z.object({data: z.array(logSchema), totalPages: z.number()})
 export type LogListOutput = z.infer<typeof logListOutput>;
 
 
