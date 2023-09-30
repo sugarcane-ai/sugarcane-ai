@@ -7,7 +7,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper
+  Paper,
+  Button
 } from "@mui/material";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -15,9 +16,6 @@ import { api } from "~/utils/api";
 import { getLayout } from "~/components/Layouts/DashboardLayout";
 import TimeAgo from 'react-timeago';
 import LabelIcons from "~/components/label_icon";
-import Pagination from "~/components/pagination";
-
-
 
 interface PromptLog {
   id: string;
@@ -58,25 +56,27 @@ const PromptLogTable: NextPage = () => {
 
 
 
-  const [promptLogs, setPromptLogs] = useState<PromptLog[]>([]);
+  // const [promptLogs, setPromptLogs] = useState<PromptLog[]>([]);
   const [searchText, setSearchText] = useState<string>("");
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  // const [totalPages, setTotalPages] = useState<number>(0);
 
-  const { data: pls } = api.log.getLogs.useQuery({
-    promptPackageId: packageId,
-    page: currentPage,
-    perPage: itemsPerPage,
-  });
+  const { data, hasNextPage, fetchNextPage, refetch } = api.log.getLogs.useInfiniteQuery(
+    {
+      promptPackageId: packageId,
+      perPage: itemsPerPage,
+    },
+    {
+      getNextPageParam: (lastPage) => {
+        return lastPage.hasNextPage ? lastPage.nextCursor : undefined;
+      },
 
-  const totalPages = pls?.totalPages || 0
+    }
+  );
 
-
+  const promptLogs = data ? data.pages.flatMap((page) => page.data) : [];
 
   useEffect(() => {
-    // Fetch data from your backend API using Axios or any other library.
-    // Replace 'YOUR_API_ENDPOINT' with the actual API endpoint.
-    // Example: axios.get('/api/prompt-logs').then((response) => setPromptLogs(response.data));
+    // Fetch initial page of data
+    refetch();
   }, []);
 
 
@@ -85,8 +85,8 @@ const PromptLogTable: NextPage = () => {
     // Filter the promptLogs array based on the searchText.
   };
 
-  const handlePageChange = (newPage:number) => {
-    setCurrentPage(newPage);
+  const loadMore = () => {
+    fetchNextPage();
   };
 
   return (
@@ -119,7 +119,7 @@ const PromptLogTable: NextPage = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {pls?.data.map((log) => (
+            {promptLogs.map((log) => (
               <TableRow key={log.id}>
                 <TableCell>{log.id}</TableCell>
                 <TableCell>
@@ -151,11 +151,16 @@ const PromptLogTable: NextPage = () => {
         </Table>
       </TableContainer>
       <div className="pt-5 flex justify-center items-center">
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-        />
+        {hasNextPage && (
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={loadMore}
+            className="ml-2"
+          >
+            Load More
+          </Button>
+        )}
       </div>
     </div>
   );
