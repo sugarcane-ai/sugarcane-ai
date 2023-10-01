@@ -1,4 +1,3 @@
-import { PromptTemplate } from "@prisma/client";
 import { ppid } from "process";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import {

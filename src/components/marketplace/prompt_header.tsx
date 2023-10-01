@@ -3,9 +3,8 @@ import { Container, Typography, Button, Avatar, Link, Box, Paper, Grid, Chip, St
 import LikeButton from './like_button';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import {
-  PromptPackage as pp,
-  PromptTemplate as pt,
-} from "@prisma/client";
+  PackageOutput as pp,
+} from "~/validators/prompt_package";
 
 
 const PromptHeader = ({

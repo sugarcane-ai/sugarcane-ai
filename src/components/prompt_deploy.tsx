@@ -16,11 +16,9 @@ import {
   Radio,
 } from "@mui/material";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
-import {
-  PromptPackage as pp,
-  PromptTemplate as pt,
-  PromptVersion as pv,
-} from "@prisma/client";
+import { PackageOutput as pp } from "~/validators/prompt_package";
+import { DeployTemplateInput, TemplateOutput as pt } from "~/validators/prompt_template";
+import { VersionOutput as pv } from "~/validators/prompt_version";
 import { api } from "~/utils/api";
 import toast from "react-hot-toast";
 import { PromptIntegration } from "./integration/prompt_integration";
@@ -64,12 +62,12 @@ function PromptDeploy({ ns,user, pp, pt, pv,onTemplateUpdate }: { ns:any,user?: 
 
     deployMutation.mutate({
       promptTemplateId: pv.promptTemplateId,
-      promptPackageId: pt.promptPackageId,
+      promptPackageId: pt?.promptPackageId,
       promptVersionId: pv.id,
 
       environment: environmentType,
       changelog: changelog,
-    });
+    } as DeployTemplateInput);
 
     // Simulate deployment delay with a timeout (you can replace this with your actual deployment logic)
     // setTimeout(() => {

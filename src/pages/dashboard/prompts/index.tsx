@@ -15,8 +15,9 @@ import {
 import { CreatePackage } from "~/components/create_package";
 import { api } from "~/utils/api";
 import { MutationObserverSuccessResult } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { PromptPackage } from "@prisma/client";
+import { PackageOutput as pp } from "~/validators/prompt_package";
+import { TemplateOutput as pt } from "~/validators/prompt_template";
+import { VersionOutput as pv } from "~/validators/prompt_version";
 import toast from 'react-hot-toast';
 import { getLayout } from "~/components/Layouts/DashboardLayout";
 
@@ -52,7 +53,7 @@ function Packages() {
 const PackageHome = ()=>  {
   const router = useRouter();
   
-  function handlePackageCreationSuccess(createdPackage: PromptPackage) {
+  function handlePackageCreationSuccess(createdPackage: pp) {
     toast.success("Package Created Successfully");
     router.push("/dashboard/prompts/" + createdPackage.id);
   }

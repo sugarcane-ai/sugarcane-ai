@@ -17,7 +17,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { PromptPackage as pp, PromptTemplate as pt } from "@prisma/client";
+import { PackageOutput as pp } from "~/validators/prompt_package";
+import { TemplateOutput as pt } from "~/validators/prompt_template";
 // import AddIcon from '@mui/icons-material/Add';
 // import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -45,7 +46,7 @@ export function CreateTemplate({
 
   const handleSubmit = (e: any) => {
     onCreate && onCreate({
-      promptPackageId: pp.id,
+      promptPackageId: pp?.id,
       name: name,
       description: description,
     });

@@ -14,7 +14,9 @@ import PromptOutput from "./prompt_output";
 import PromptPerformance from "./prompt_performance";
 import PromptDeploy from "./prompt_deploy";
 import toast from 'react-hot-toast';
-import { PromptPackage as pp, PromptTemplate as pt, PromptVersion as pv } from "@prisma/client";
+import { PackageOutput as pp } from "~/validators/prompt_package";
+import { TemplateOutput as pt } from "~/validators/prompt_template";
+import { VersionOutput as pv } from "~/validators/prompt_version";
 import PromptVariables, { PromptVariableProps } from "./prompt_variables";
 import { getUniqueJsonArray, getVariables } from "~/utils/template";
 import SaveIcon from '@mui/icons-material/Save';
@@ -24,6 +26,7 @@ import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { VersionOutput,VersionSchema } from "~/validators/prompt_version";
 import { PromptEnvironment, promptEnvironment } from "~/validators/base";
 import LogLabel from "./dataset/log_label";
+import { GenerateInput } from "~/validators/service";
 
 
 function PromptVersion({ ns, pp, pt, pv, handleVersionCreate, onTemplateUpdate }:
@@ -96,9 +99,9 @@ function PromptVersion({ ns, pp, pt, pv, handleVersionCreate, onTemplateUpdate }
 
     const pl = await runMutation.mutateAsync({
       username: ns.name,
-      package: pp.name,
-      template: pt.name,
-      version: pv.version,
+      package: pp?.name || '',
+      template: pt?.name || '',
+      version: pv.version || '',
 
       environment: promptEnvironment.Enum.DEV,
       data: data
