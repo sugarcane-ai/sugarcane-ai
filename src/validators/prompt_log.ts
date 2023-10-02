@@ -3,6 +3,9 @@ import { z } from "zod";
 import { promptEnvironment } from "./base";
 import { InputJsonValue } from "~/generated/prisma-client-zod.ts";
 
+const allowedLabelledStates = ["UNLABELLED", "SELECTED", "REJECTED", "NOTSURE"] as const;
+export type LabelledState = typeof allowedLabelledStates[number];
+
 export const getLogsInput = z
   .object({
     userId: z.string().optional(),
@@ -46,7 +49,7 @@ const logSchema = z.object({
 
 export const updateLabel = z.object({
   id: z.string(),
-  labelledState: z.string()
+  labelledState: z.enum(allowedLabelledStates),
 });
 
 export const logOutput = logSchema.or(z.null())

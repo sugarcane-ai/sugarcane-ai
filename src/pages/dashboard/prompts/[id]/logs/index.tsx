@@ -16,6 +16,8 @@ import { api } from "~/utils/api";
 import { getLayout } from "~/components/Layouts/DashboardLayout";
 import TimeAgo from 'react-timeago';
 import LabelIcons from "~/components/label_icon";
+import { NextPageWithLayout } from "~/pages/_app";
+import { LabelledState } from "~/validators/prompt_log";
 
 interface PromptLog {
   id: string;
@@ -44,12 +46,12 @@ interface PromptLog {
   updatedAt: string;
 }
 
-type LabelledState = "UNLABELLED" | "SELECTED" | "REJECTED" | "NOTSURE";
+// type LabelledState = "UNLABELLED" | "SELECTED" | "REJECTED" | "NOTSURE";
 type FinetunedState = "UNPROCESSED" | "PROCESSED";
 
 const itemsPerPage = 10;
 
-const PromptLogTable: NextPage = () => {
+const PromptLogTable: NextPageWithLayout = () => {
   // const [promptLogs, setPromptLogs] = useState<PromptLog[]>([])
   const router = useRouter();
   const packageId = router.query.id as string;
