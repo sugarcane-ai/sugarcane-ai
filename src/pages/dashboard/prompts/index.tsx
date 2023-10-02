@@ -18,11 +18,13 @@ import { MutationObserverSuccessResult } from "@tanstack/react-query";
 import { PackageOutput as pp } from "~/validators/prompt_package";
 import { TemplateOutput as pt } from "~/validators/prompt_template";
 import { VersionOutput as pv } from "~/validators/prompt_version";
-import toast from 'react-hot-toast';
+import toast from "react-hot-toast";
 import { getLayout } from "~/components/Layouts/DashboardLayout";
+import { useRouter } from "next/router";
 
 function Packages() {
-  const { data: packages, refetch: refectchPackages } = api.prompt.getPackages.useQuery({});
+  const { data: packages, refetch: refectchPackages } =
+    api.prompt.getPackages.useQuery({});
   return (
     <Grid container spacing={1}>
       {packages && packages.length > 0 ? (
@@ -35,8 +37,14 @@ function Packages() {
               </CardContent>
               <CardActions>
                 <MUILink href={`/dashboard/prompts/${pkg?.id}`}>View</MUILink>
-                <MUILink href={`/dashboard/prompts/${pkg?.id}/logs`}>Logs</MUILink>
-                <Chip sx={{ml: 10}} label={pkg?.visibility} variant="outlined" />
+                <MUILink href={`/dashboard/prompts/${pkg?.id}/logs`}>
+                  Logs
+                </MUILink>
+                <Chip
+                  sx={{ ml: 10 }}
+                  label={pkg?.visibility}
+                  variant="outlined"
+                />
               </CardActions>
             </Card>
           </Grid>
@@ -50,12 +58,12 @@ function Packages() {
   );
 }
 
-const PackageHome = ()=>  {
+const PackageHome = () => {
   const router = useRouter();
-  
+
   function handlePackageCreationSuccess(createdPackage: pp) {
     toast.success("Package Created Successfully");
-    router.push("/dashboard/prompts/" + createdPackage.id);
+    router.push("/dashboard/prompts/" + createdPackage?.id);
   }
   const mutation = api.prompt.createPackage.useMutation({
     onSuccess: (createdPackage) => {
@@ -76,6 +84,6 @@ const PackageHome = ()=>  {
       <Packages />
     </>
   );
-}
-PackageHome.getLayout = getLayout
-export default PackageHome
+};
+PackageHome.getLayout = getLayout;
+export default PackageHome;

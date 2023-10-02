@@ -69,7 +69,7 @@ const PreferencesModal: React.FC<PreferencesModalProps> = ({
   const [value, setValue] = React.useState(0);
   const [openAIKey, setOpenAIKey] = React.useState("");
   const [userEnvironmentalVariables, setUserEnvironmentalVariables] =
-  React.useState<(EnvironmentalVariable | undefined)[]>([]);
+    React.useState<(EnvironmentalVariable | undefined)[]>([]);
 
   React.useEffect(() => {
     let localOpenAIKey = localStorage.getItem("openAIKey");
@@ -98,15 +98,18 @@ const PreferencesModal: React.FC<PreferencesModalProps> = ({
     ]);
   }
 
-
-  function updateEnvironmentalVariableAtIndex(object:EnvironmentalVariable|undefined,key:string,newValue:string){
-    if(object!==undefined && key ==='key'){
-      object.key = newValue
+  function updateEnvironmentalVariableAtIndex(
+    object: EnvironmentalVariable | undefined,
+    key: string,
+    newValue: string,
+  ) {
+    if (object !== undefined && key === "key") {
+      object.key = newValue;
     }
-    if(object!==undefined && key ==='value'){
-      object.value = newValue
+    if (object !== undefined && key === "value") {
+      object.value = newValue;
     }
-    return object
+    return object;
   }
 
   function updateUserEnvironmentalVariables(
@@ -116,7 +119,11 @@ const PreferencesModal: React.FC<PreferencesModalProps> = ({
   ) {
     const updatedData = userEnvironmentalVariables;
     if (updatedData[index] !== undefined) {
-      updatedData[index] = updateEnvironmentalVariableAtIndex(updatedData[index],type,newValue)
+      updatedData[index] = updateEnvironmentalVariableAtIndex(
+        updatedData[index],
+        type,
+        newValue,
+      );
       setUserEnvironmentalVariables([...updatedData]);
     }
   }
@@ -158,9 +165,7 @@ const PreferencesModal: React.FC<PreferencesModalProps> = ({
           </Tabs>
           <div className="w-full">
             <TabPanel value={value} index={0}>
-              <Typography fontWeight={"700"}>
-                Global Variables
-              </Typography>
+              <Typography fontWeight={"700"}>Global Variables</Typography>
               <Box mt={2}>
                 <TableContainer component={Paper}>
                   <Table>
@@ -171,57 +176,58 @@ const PreferencesModal: React.FC<PreferencesModalProps> = ({
                       </TableRow>
                     </TableHead> */}
                     <TableBody>
-                      {userEnvironmentalVariables?.map((variable, index) => (
-                        <TableRow key={index}>
-                          <TableCell sx={{ padding: 0 }}>
-                            <TextField
-                              value={variable?.key}
-                              onChange={(e) => {
-                                updateUserEnvironmentalVariables(
-                                  index,
-                                  "key",
-                                  e.target.value,
-                                );
-                              }}
-                              size="small"
-                              placeholder="Key"
-                              sx={{ border: "none", outline: "none" }}
-                            />
-                          </TableCell>
-                          <TableCell sx={{ padding: 0 }}>
-                            <TextField
-                              value={variable?.value}
-                              onChange={(e) => {
-                                updateUserEnvironmentalVariables(
-                                  index,
-                                  "value",
-                                  e.target.value,
-                                );
-                              }}
-                              size="small"
-                              placeholder="Value"
-                            />
-                          </TableCell>
-                          <TableCell
-                            sx={{
-                              paddingLeft: 1.5,
-                              paddingRight: 1.5,
-                              paddingTop: 0,
-                              paddingBottom: 0,
-                            }}
-                          >
-                            {" "}
-                            <IconButton aria-label="delete">
-                              <MdDelete
-                                onClick={() =>
-                                  deleteUserEnvironmentalVariable(index)
-                                }
-                                size={16}
+                      {userEnvironmentalVariables &&
+                        userEnvironmentalVariables?.map((variable, index) => (
+                          <TableRow key={index}>
+                            <TableCell sx={{ padding: 0 }}>
+                              <TextField
+                                value={variable?.key}
+                                onChange={(e) => {
+                                  updateUserEnvironmentalVariables(
+                                    index,
+                                    "key",
+                                    e.target.value,
+                                  );
+                                }}
+                                size="small"
+                                placeholder="Key"
+                                sx={{ border: "none", outline: "none" }}
                               />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                            </TableCell>
+                            <TableCell sx={{ padding: 0 }}>
+                              <TextField
+                                value={variable?.value}
+                                onChange={(e) => {
+                                  updateUserEnvironmentalVariables(
+                                    index,
+                                    "value",
+                                    e.target.value,
+                                  );
+                                }}
+                                size="small"
+                                placeholder="Value"
+                              />
+                            </TableCell>
+                            <TableCell
+                              sx={{
+                                paddingLeft: 1.5,
+                                paddingRight: 1.5,
+                                paddingTop: 0,
+                                paddingBottom: 0,
+                              }}
+                            >
+                              {" "}
+                              <IconButton aria-label="delete">
+                                <MdDelete
+                                  onClick={() =>
+                                    deleteUserEnvironmentalVariable(index)
+                                  }
+                                  size={16}
+                                />
+                              </IconButton>
+                            </TableCell>
+                          </TableRow>
+                        ))}
                     </TableBody>
                   </Table>
                 </TableContainer>
