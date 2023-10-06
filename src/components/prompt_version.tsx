@@ -20,7 +20,11 @@ import { CreateVersion } from "./create_version";
 import { inc } from "semver";
 import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
 import { VersionOutput, VersionSchema } from "~/validators/prompt_version";
-import { PromptEnvironment, promptEnvironment } from "~/validators/base";
+import {
+  PromptEnvironment,
+  Username,
+  promptEnvironment,
+} from "~/validators/base";
 import LogLabel from "./dataset/log_label";
 import { GenerateInput } from "~/validators/service";
 
@@ -32,7 +36,7 @@ function PromptVersion({
   handleVersionCreate,
   onTemplateUpdate,
 }: {
-  ns: any;
+  ns: Username;
   pp: pp;
   pt: pt;
   pv: VersionSchema;
@@ -105,7 +109,7 @@ function PromptVersion({
     }
 
     const pl = await generateMutation.mutateAsync({
-      username: ns.name,
+      username: ns,
       package: pp?.name || "",
       template: pt?.name || "",
       version: pv.version || "",

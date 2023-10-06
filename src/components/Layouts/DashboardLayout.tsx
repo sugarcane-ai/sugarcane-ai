@@ -27,6 +27,11 @@ import PreferencesModal from "../PreferencesDialog";
 import SharePackageDialog from "../SharePackageDialog";
 import BugReport from "~/components/Layouts/bug_report";
 import LikeButton from "~/components/marketplace/like_button";
+import { Tab, Tabs } from "@mui/material";
+import DatasetIcon from "@mui/icons-material/Dataset";
+import AnalyticsIcon from "@mui/icons-material/Analytics";
+import HomeIcon from "@mui/icons-material/Home";
+
 // import Chart from './Dashboard/Chart';
 // import Deposits from './Dashboard/Deposits';
 // import Orders from './Dashboard/Orders';
@@ -107,7 +112,10 @@ const defaultTheme = createTheme({
 });
 
 export function Dashboard({ children }: { children: React.ReactNode }) {
-  const [open, setOpen] = React.useState(true);
+  const router = useRouter();
+  const { username, packagename } = router.query;
+  const showSidebar = false;
+  const [open, setOpen] = React.useState(showSidebar);
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -129,10 +137,30 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
   const handleSharePackageClose = () => {
     setSharePackageOpen(false);
   };
-  const router = useRouter();
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    console.log(`handleTabChange <<<<>>>>`);
+  };
+
+  const userPackage = `${username}/${packagename}`;
+  const pathPrefix = `\/${userPackage}`;
+  const tabRoutes = [
+    { path: `${pathPrefix}/`, label: "Home", icon: <HomeIcon /> },
+    { path: `${pathPrefix}/logs`, label: "Logs", icon: <DatasetIcon /> },
+    {
+      path: `${pathPrefix}/analytics`,
+      label: "Insights",
+      icon: <AnalyticsIcon />,
+    },
+    // Add more tabs as needed
+  ];
+  const currentTabIndex = tabRoutes.findIndex(
+    (route) => router.pathname === route.path,
+  );
 
   // Check if the current route matches the pattern '/dashboard/prompts/[id]'
-  const isPromptsRoute = router.pathname.startsWith("/dashboard/prompts/");
+  // const isPromptsRoute = router.pathname.startsWith("/dashboard/prompts/");
+  const isPromptsRoute = username && packagename;
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -144,25 +172,29 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
               pr: "24px", // keep right padding when drawer closed
             }}
           >
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              onClick={toggleDrawer}
-              sx={{
-                marginRight: "36px",
-                ...(open && { display: "none" }),
-              }}
-            >
-              <MenuIcon />
-            </IconButton>
+            {showSidebar && (
+              <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="open drawer"
+                onClick={toggleDrawer}
+                sx={{
+                  marginRight: "36px",
+                  ...(open && { display: "none" }),
+                }}
+              >
+                <MenuIcon />
+              </IconButton>
+            )}
             <Typography
               component="h1"
               variant="h6"
               color="inherit"
               noWrap
               sx={{ flexGrow: 1 }}
-            ></Typography>
+            >
+              {userPackage}
+            </Typography>
             {isPromptsRoute && (
               <div className="flex items-center gap-3">
                 <IconButton onClick={handleOpen} color="primary">
@@ -188,30 +220,32 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
             </IconButton> */}
           </Toolbar>
         </AppBar>
-        <Drawer variant="permanent" open={open}>
-          <Toolbar
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              px: [1],
-            }}
-          >
-            <Typography variant="h5" fontFamily={"fantasy"}>
-              sugarFactory
-            </Typography>
-            <IconButton onClick={toggleDrawer}>
-              <ChevronLeftIcon />
-            </IconButton>
-          </Toolbar>
-          <Divider />
-          <List>
-            {mainListItems}
-            <Divider sx={{ my: 1 }} />
-            {/* {secondaryListItems} */}
-          </List>
-          <SidebarProfile />
-        </Drawer>
+        {showSidebar && (
+          <Drawer variant="permanent" open={open}>
+            <Toolbar
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                px: [1],
+              }}
+            >
+              <Typography variant="h5" fontFamily={"fantasy"}>
+                Sugar Factory
+              </Typography>
+              <IconButton onClick={toggleDrawer}>
+                <ChevronLeftIcon />
+              </IconButton>
+            </Toolbar>
+            <Divider />
+            <List>
+              {mainListItems}
+              <Divider sx={{ my: 1 }} />
+              {/* {secondaryListItems} */}
+            </List>
+            <SidebarProfile />
+          </Drawer>
+        )}
         <Box
           component="main"
           sx={{
@@ -225,6 +259,23 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
           }}
         >
           <Toolbar />
+          <Toolbar>
+            <Box sx={{ flexGrow: 1 }}>
+              <Tabs value={currentTabIndex} onChange={handleTabChange}>
+                {tabRoutes.map((route, index) => (
+                  <Tab
+                    key={index}
+                    label={route.label}
+                    component={Link}
+                    iconPosition="start"
+                    icon={route.icon}
+                    href={route.path}
+                  />
+                ))}
+              </Tabs>
+            </Box>
+          </Toolbar>
+
           <Container maxWidth={false} sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={1}>
               {children}

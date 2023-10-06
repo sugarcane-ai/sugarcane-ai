@@ -1,5 +1,9 @@
 import { ppid } from "process";
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  ifPublicProcedure,
+  promptMiddleware,
+} from "~/server/api/trpc";
 import {
   getPackagesInput,
   getPackageInput,
@@ -31,7 +35,7 @@ import { JsonObject } from "@prisma/client/runtime/library";
 import { Visibility } from "@mui/icons-material";
 
 export const promptRouter = createTRPCRouter({
-  getPackages: publicProcedure
+  getPackages: ifPublicProcedure
     .meta({
       openapi: {
         method: "GET",
@@ -54,13 +58,14 @@ export const promptRouter = createTRPCRouter({
       return packages;
     }),
 
-  getPackage: publicProcedure
+  getPackage: ifPublicProcedure
     .input(getPackageInput)
+    .use(promptMiddleware)
     .output(packageOutput)
     .query(async ({ ctx, input }) => {
       let query = {
-        userId: ctx.session?.user.id,
-        id: input.id,
+        userId: ctx.userId,
+        id: ctx.packageId,
       };
 
       const pkg = await ctx.prisma.promptPackage.findFirst({
@@ -70,7 +75,7 @@ export const promptRouter = createTRPCRouter({
       return pkg;
     }),
 
-  createPackage: publicProcedure
+  createPackage: ifPublicProcedure
     .input(createPackageInput)
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session?.user.id;
@@ -89,7 +94,7 @@ export const promptRouter = createTRPCRouter({
       return promptPackage;
     }),
 
-  createTemplate: publicProcedure
+  createTemplate: ifPublicProcedure
     .input(createTemplateInput)
     .output(templateOutput)
     .mutation(async ({ ctx, input }) => {
@@ -113,12 +118,12 @@ export const promptRouter = createTRPCRouter({
         });
       }
 
-      console.log(`template output -------------- ${JSON.stringify(pt)}`);
+      // console.log(`template output -------------- ${JSON.stringify(pt)}`);
 
       return pt;
     }),
 
-  // updateTemplate: publicProcedure
+  // updateTemplate: ifPublicProcedure
   // .input(updateTemplateInput)
   // .output(TemplateOutput)
   // .mutation(async ({ ctx, input }) => {
@@ -138,22 +143,23 @@ export const promptRouter = createTRPCRouter({
   //     return pt;
   // }),
 
-  getTemplates: publicProcedure
+  getTemplates: ifPublicProcedure
     .input(getTemplatesInput)
+    .use(promptMiddleware)
     .output(templateListOutput)
     .query(async ({ ctx, input }) => {
       // console.log(`templates -------------- ${JSON.stringify(input)}`);
       const templates = await ctx.prisma.promptTemplate.findMany({
         where: {
-          userId: ctx.session?.user.id,
-          promptPackageId: input.promptPackageId,
+          userId: ctx.userId as string,
+          promptPackageId: ctx.packageId as string,
         },
         include: {
           previewVersion: true,
           releaseVersion: true,
         },
       });
-      console.log(`templates -------------- ${JSON.stringify(templates)}`);
+      // console.log(`templates -------------- ${JSON.stringify(templates)}`);
       return templates;
     }),
 
@@ -161,7 +167,7 @@ export const promptRouter = createTRPCRouter({
   //   return "you can now see this secret message!";
   // }),
 
-  createVersion: publicProcedure
+  createVersion: ifPublicProcedure
     .input(createVersionInput)
     .output(versionOutput)
     .mutation(async ({ ctx, input }) => {
@@ -218,7 +224,7 @@ export const promptRouter = createTRPCRouter({
       return pv;
     }),
 
-  updateVersion: publicProcedure
+  updateVersion: ifPublicProcedure
     .input(updateVersionInput)
     .output(versionOutput)
     .mutation(async ({ ctx, input }) => {
@@ -249,7 +255,7 @@ export const promptRouter = createTRPCRouter({
       return pv;
     }),
 
-  deployTemplate: publicProcedure
+  deployTemplate: ifPublicProcedure
     .input(deployTemplateInput)
     // .output(versionOutput)
     .mutation(async ({ ctx, input }) => {
@@ -304,7 +310,7 @@ export const promptRouter = createTRPCRouter({
       return { pv, pt };
     }),
 
-  getVersions: publicProcedure
+  getVersions: ifPublicProcedure
     .input(getVersionsInput)
     .output(versionListOutput)
     .query(async ({ ctx, input }) => {
@@ -319,7 +325,7 @@ export const promptRouter = createTRPCRouter({
           createdAt: "desc",
         },
       });
-      console.log(`versions output -------------- ${JSON.stringify(versions)}`);
+      // console.log(`versions output -------------- ${JSON.stringify(versions)}`);
       return versions;
     }),
 });

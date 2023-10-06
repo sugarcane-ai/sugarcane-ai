@@ -28,30 +28,43 @@ import { useSession } from "next-auth/react";
 import { CreateTemplate } from "~/components/create_template";
 import toast from "react-hot-toast";
 import PromptTemplate from "~/components/prompt_template";
-import DatasetIcon from "@mui/icons-material/Dataset";
-import AnalyticsIcon from "@mui/icons-material/Analytics";
 import { NextPageWithLayout } from "~/pages/_app";
-import { colorType } from "~/validators/base";
+import { Username, colorType } from "~/validators/base";
 
-const PackageShow: NextPageWithLayout = () => {
+const PackageShowPage: NextPageWithLayout = () => {
   const router = useRouter();
   const packageId = router.query.id as string;
 
+  return (
+    <PackageShow username="ankurthehustler" packagename="hello"></PackageShow>
+  );
+};
+
+export const PackageShow = ({
+  username,
+  packagename, // packageId,
+}: {
+  // packageId: string;
+  username: Username;
+  packagename: string;
+}) => {
   const { data: sessionData } = useSession();
 
   // TODO: Fix this NS based on the route rather than current user
-  const ns = sessionData?.user;
+  const ns = username;
 
   // Load data
   const { data: pp, refetch: rpp } = api.prompt.getPackage.useQuery({
-    id: packageId,
+    username: username,
+    packagename: packagename,
   });
   // console.log(`pp <<<<>>>> ${JSON.stringify(pp)}`);
   const [ptId, setPtId] = useState<string>("");
   const [pt, setPt] = useState<pt>();
 
   const { data: pts, refetch: rpts } = api.prompt.getTemplates.useQuery({
-    promptPackageId: packageId,
+    username: username,
+    packagename: packagename,
   });
   // console.log(`pts <<<<>>>> ${JSON.stringify(pts)}`);
 
@@ -87,17 +100,13 @@ const PackageShow: NextPageWithLayout = () => {
     rpts();
   };
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    console.log(`handleTabChange <<<<>>>>`);
-  };
-
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
         {pp && (
           <Toolbar>
             <Typography variant="h4" component="span" sx={{ mt: 1, mb: 2 }}>
-              {ns?.name} / {pp.name} /
+              {ns} / {pp.name} /
             </Typography>
             {pts && pts?.length > 0 ? (
               <FormControl
@@ -141,25 +150,6 @@ const PackageShow: NextPageWithLayout = () => {
                   }}
                   component="span"
                 >
-                  <Box sx={{ flexGrow: 1 }}>
-                    <Tabs value={-1} onChange={handleTabChange}>
-                      <Tab
-                        label="Logs"
-                        icon={<DatasetIcon />}
-                        iconPosition="start"
-                        component={Link}
-                        href={`/dashboard/prompts/${pp.id}/logs`}
-                      />
-                      <Tab
-                        label="Insights"
-                        icon={<AnalyticsIcon />}
-                        iconPosition="start"
-                        component={Link}
-                        href={`/dashboard/prompts/${pp.id}/analytics`}
-                      />
-                    </Tabs>
-                  </Box>
-
                   <Box sx={{ mt: 2, mb: 2 }}>
                     <Typography component="span" sx={{ mr: 1 }}>
                       Preview :{" "}
@@ -197,6 +187,6 @@ const PackageShow: NextPageWithLayout = () => {
   );
 };
 
-PackageShow.getLayout = getLayout;
+PackageShowPage.getLayout = getLayout;
 
-export default PackageShow;
+export default PackageShowPage;

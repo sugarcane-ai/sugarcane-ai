@@ -6,7 +6,7 @@ export const getPromptInput = z.object({
 
   // Prompt Template identitication
   username: z.string(),
-  package: z.string(),
+  packagename: z.string(),
   template: z.string(),
   version: z.string().default("latest"),
 

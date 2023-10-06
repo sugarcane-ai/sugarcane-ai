@@ -27,27 +27,6 @@ export const mainListItems = (
         <ListItemText primary="Packages" />
       </ListItemButton>
     </Link>
-    {/* <Link href="/dashboard/dataset">
-      <ListItemButton >
-        <ListItemIcon>
-          <Dataset />
-        </ListItemIcon>
-        <ListItemText primary="Dataset" />
-      </ListItemButton>
-    </Link> */}
-    {/* 
-    <ListItemButton>
-      <ListItemIcon>
-        <BarChartIcon />
-      </ListItemIcon>
-      <ListItemText primary="Reports" />
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <LayersIcon />
-      </ListItemIcon>
-      <ListItemText primary="Integrations" />
-    </ListItemButton> */}
   </React.Fragment>
 );
 

@@ -22,6 +22,7 @@ import { getServerAuthSession } from "~/server/auth";
 import { prisma } from "~/server/db";
 import { PrismaClient } from "@prisma/client";
 import { GenerateInput } from "~/validators/service";
+import { PackageId, PromptPackage, UserId, Username } from "~/validators/base";
 
 /**
  * 1. CONTEXT
@@ -34,6 +35,11 @@ import { GenerateInput } from "~/validators/service";
 type NullableSession = Session | null;
 interface CreateContextOptions {
   session: NullableSession;
+  prisma: PrismaClient;
+  username: Username;
+  promptPackage: PromptPackage;
+  userId: UserId;
+  packageId: PackageId;
 }
 
 /**
@@ -50,6 +56,10 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
     session: opts.session,
     prisma,
+    username: null,
+    promptPackage: null,
+    userId: null,
+    packageId: null,
   };
 };
 
@@ -62,14 +72,24 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
 export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const { req, res } = opts;
 
+  // You can now use the 'params' object to access the router values
+
   const requestId = uuid();
   res.setHeader("x-request-id", requestId);
 
   // Get the session from the server using the getServerSession wrapper function
   const session = await getServerAuthSession({ req, res });
 
+  console.warn(`------------  context ------------`);
+  console.warn(req.query);
+  // console.warn(username);
+  // console.warn(promptPackage);
+  console.warn(`------------  context ------------`);
+
   return createInnerTRPCContext({
     session,
+    // username,
+    // promptPackage,
   });
 };
 
@@ -160,6 +180,47 @@ const loggerMiddleware = t.middleware(async (opts) => {
  */
 export const publicProcedure = t.procedure.use(loggerMiddleware);
 
+const usernamePackageMiddleware = t.middleware(async (opts) => {
+  console.warn(`------------  middleware ------------`);
+  console.warn(opts.ctx.username);
+  console.warn(opts.ctx.promptPackage);
+  console.warn(`------------  middleware ------------`);
+
+  if (opts.ctx.username) {
+    const { id: userId } = await opts.ctx.prisma.user.findFirst({
+      where: {
+        name: opts.ctx.username,
+      },
+      select: { id: true },
+    });
+    opts.ctx.userId = userId;
+  }
+
+  if (opts.ctx.promptPackage) {
+    const { id: packageId } = await opts.ctx.prisma.promptPackage.findFirst({
+      where: {
+        userId: userId,
+        name: opts.ctx.promptPackage,
+      },
+      select: { id: true },
+    });
+
+    opts.ctx.packageId = packageId;
+  }
+
+  return opts.next();
+});
+
+/**
+ * Conditional Public (unauthenticated) procedure
+ *
+ * This is the base piece you use to build new queries and mutations on your tRPC API. It does not
+ * guarantee that a user querying is authorized, but you can still access user session data if they
+ * are logged in.
+ */
+export const ifPublicProcedure = t.procedure.use(loggerMiddleware);
+// .use(usernamePackageMiddleware);
+
 /** Reusable middleware that enforces users are logged in before running the procedure. */
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
   if (!ctx.session?.user) {
@@ -174,7 +235,10 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
 });
 
 export const promptMiddleware = experimental_standaloneMiddleware<{
-  ctx: { session: NullableSession; prisma: PrismaClient }; // defaults to 'object' if not defined
+  ctx: CreateContextOptions;
+  // ctx: {
+  //   session: NullableSession;
+  //   prisma: PrismaClient }; // defaults to 'object' if not defined
   input: GenerateInput;
   meta: any;
   // 'meta', not defined here, defaults to 'object | undefined'
@@ -186,7 +250,7 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
   //   });
   // }
 
-  console.log(`promptMiddleware ------------ ${JSON.stringify(opts.input)}`);
+  console.log(`---- promptMiddleware ----- ${JSON.stringify(opts.input)}`);
 
   if (opts.input?.username) {
     const { id: userId } = (await opts.ctx.prisma.user.findFirst({
@@ -195,20 +259,27 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
       },
       select: { id: true },
     })) as { id: string | null };
-    opts.input.userId = userId;
+    opts.ctx.userId = userId;
   }
 
-  if (opts.input?.package) {
+  if (opts.input?.packagename) {
     const { id: promptPackageId } =
       (await opts.ctx.prisma.promptPackage.findFirst({
         where: {
-          name: opts.input.package,
+          userId: opts.ctx.userId,
+          name: opts.input.packagename,
         },
         select: { id: true },
       })) as { id: string | null };
 
-    opts.input.promptPackageId = promptPackageId;
+    if (!promptPackageId) {
+      throw new TRPCError({ code: "NOT_FOUND" });
+    } else {
+      opts.ctx.packageId = promptPackageId;
+    }
   }
+
+  // validation
 
   if (opts.input?.template) {
     const { id: promptTemplateId } =
@@ -220,6 +291,8 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
       })) as { id: string | null };
     opts.input.promptTemplateId = promptTemplateId;
   }
+
+  console.log(`---- promptMiddleware  end----- ${JSON.stringify(opts.input)}`);
 
   return opts.next();
 });

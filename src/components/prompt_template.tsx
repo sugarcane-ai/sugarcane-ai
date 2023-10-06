@@ -5,8 +5,13 @@ import { api } from "~/utils/api";
 import PromptVersion from "~/components/prompt_version";
 import { PackageOutput as pp } from "~/validators/prompt_package";
 import { TemplateOutput as pt } from "~/validators/prompt_template";
-import { GetVersionInput, GetVersionsInput, VersionOutput as pv } from "~/validators/prompt_version";
+import {
+  GetVersionInput,
+  GetVersionsInput,
+  VersionOutput as pv,
+} from "~/validators/prompt_version";
 import { CreateVersion } from "./create_version";
+import { Username } from "~/validators/base";
 const Item = styled(Paper)(({ theme }) => ({
   width: "100%",
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -16,17 +21,28 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-const PromptTemplate = ({ ns, pp, pt, onTemplateUpdate}: { ns: any, pp: pp; pt: pt, onTemplateUpdate: Function }) => {
-  const { data: pvs, refetch: refectVersions } = api.prompt.getVersions.useQuery({
-    promptPackageId: pt?.promptPackageId,
-    promptTemplateId: pt?.id,
-  } as GetVersionsInput);
+const PromptTemplate = ({
+  ns,
+  pp,
+  pt,
+  onTemplateUpdate,
+}: {
+  ns: Username;
+  pp: pp;
+  pt: pt;
+  onTemplateUpdate: Function;
+}) => {
+  const { data: pvs, refetch: refectVersions } =
+    api.prompt.getVersions.useQuery({
+      promptPackageId: pt?.promptPackageId,
+      promptTemplateId: pt?.id,
+    } as GetVersionsInput);
 
   // console.log(`pvs <<<<>>>> ${JSON.stringify(pvs)}`);
 
   const [activeTab, setActiveTab] = useState(0);
 
-  const handleChangeTab = (event:any, newValue:number) => {
+  const handleChangeTab = (event: any, newValue: number) => {
     setActiveTab(newValue);
   };
 
@@ -58,7 +74,7 @@ const PromptTemplate = ({ ns, pp, pt, onTemplateUpdate}: { ns: any, pp: pp; pt: 
                     aria-label={`Version ${pv.version}`}
                   />
                 ))}
-              <Box sx={{ flexGrow: 1, p:2 }} >
+              <Box sx={{ flexGrow: 1, p: 2 }}>
                 <CreateVersion
                   pp={pp}
                   pt={pt}

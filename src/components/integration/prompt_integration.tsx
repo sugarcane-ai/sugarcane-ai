@@ -1,3 +1,4 @@
+import { Username } from "~/validators/base";
 import CodeHighlight from "./code_highlight";
 import { PackageOutput as pp } from "~/validators/prompt_package";
 import { TemplateOutput as pt } from "~/validators/prompt_template";
@@ -9,12 +10,12 @@ export const PromptIntegration = ({
   pt,
   pv,
 }: {
-  ns: any;
+  ns: Username;
   pp: pp;
   pt: pt;
   pv: pv;
 }) => {
-  const identifier = `${ns?.name}/${pp?.name}/${pt?.name || "<template>"}#${
+  const identifier = `${ns}/${pp?.name}/${pt?.name || "<template>"}#${
     pv?.version || "latest"
   }`;
 

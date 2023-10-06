@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { packageVisibility } from "./base";
+import { packageVisibility, promptPackage, username } from "./base";
 import { templateSchema } from "./prompt_template";
 
 const RESERVED_NAMES = [
@@ -59,7 +59,8 @@ export type GetPackagesInput = z.infer<typeof getPackagesInput>;
 
 export const getPackageInput = z
   .object({
-    id: z.string().uuid(),
+    username: username,
+    packagename: promptPackage,
     visibility: z.null().optional().or(packageVisibility),
   })
   .strict()
