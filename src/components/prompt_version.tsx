@@ -274,9 +274,9 @@ function PromptVersion({
               color="success"
               variant="outlined"
               onClick={handleTest}
-              disabled={template.length <= 10}
+              disabled={true}
             >
-              Test
+              Backtest
             </Button>
 
             <Button
@@ -289,12 +289,6 @@ function PromptVersion({
             </Button>
 
             <Grid container justifyContent={"flex-end"}>
-              {/* <Typography mt={1}>
-                {
-                  providerModels[pt?.modelType as keyof typeof providerModels]
-                    ?.label
-                }
-              </Typography> */}
               <Chip
                 sx={{ m: 1 }}
                 label={
