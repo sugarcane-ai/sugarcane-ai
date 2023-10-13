@@ -3,6 +3,8 @@ import { Button, Dialog, Paper, Typography, Box } from "@mui/material";
 import { MdBuild } from "react-icons/md";
 import LLMParameter from "./llm_parameter";
 import { LlmConfigSchema, VersionSchema } from "~/validators/prompt_version";
+import { TemplateOutput as pt } from "~/validators/prompt_template";
+import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
 
 // export interface LLMConfigProps {
 //   temperature: number,
@@ -19,6 +21,7 @@ const LLMConfigModal = ({
   onClose,
   config,
   setConfig,
+  pt,
 }: {
   isOpen: boolean;
   onClose: Function;
@@ -169,10 +172,12 @@ function LLMConfig({
   config,
   setConfig,
   pv,
+  pt,
 }: {
   config: LlmConfigSchema;
   setConfig: (config: LlmConfigSchema) => void;
   pv: VersionSchema;
+  pt: pt;
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -187,16 +192,18 @@ function LLMConfig({
 
   return (
     <>
-      <Button
-        size="small"
-        startIcon={<MdBuild />}
-        onClick={handleOpenModal}
-        variant="text"
-        color="primary"
-        disabled={!!pv.publishedAt}
-      >
-        Parameters
-      </Button>
+      {pt?.modelType === ModelTypeSchema.Enum.TEXTTOTEXT && (
+        <Button
+          size="small"
+          startIcon={<MdBuild />}
+          onClick={handleOpenModal}
+          variant="text"
+          color="primary"
+          disabled={!!pv.publishedAt}
+        >
+          Parameters
+        </Button>
+      )}
       <LLMConfigModal
         isOpen={isOpen}
         onClose={handleCloseModal}

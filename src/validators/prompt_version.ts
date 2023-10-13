@@ -38,6 +38,7 @@ export const createVersionInput = z
     promptTemplateId: z.string(),
     version: z.string(),
     forkedFromId: z.null().or(z.string().uuid()),
+    moduleType: z.string().nullable(),
   })
   .strict()
   .required();

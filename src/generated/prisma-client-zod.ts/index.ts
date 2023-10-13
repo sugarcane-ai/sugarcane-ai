@@ -58,15 +58,15 @@ export const PromptVariablesScalarFieldEnumSchema = z.enum(['id','userId','promp
 
 export const PromptPackageScalarFieldEnumSchema = z.enum(['id','userId','name','description','visibility','createdAt','updatedAt']);
 
-export const PromptTemplateScalarFieldEnumSchema = z.enum(['id','userId','promptPackageId','name','description','previewVersionId','releaseVersionId','createdAt','updatedAt']);
+export const PromptTemplateScalarFieldEnumSchema = z.enum(['id','userId','promptPackageId','name','description','previewVersionId','releaseVersionId','createdAt','updatedAt','modelType']);
 
-export const PromptVersionScalarFieldEnumSchema = z.enum(['id','forkedFromId','userId','version','template','inputFields','templateFields','llmProvider','llmModel','llmConfig','lang','changelog','publishedAt','outAccuracy','outLatency','outCost','promptPackageId','promptTemplateId','createdAt','updatedAt']);
+export const PromptVersionScalarFieldEnumSchema = z.enum(['id','forkedFromId','userId','version','template','inputFields','templateFields','llmProvider','llmModelType','llmModel','llmConfig','lang','changelog','publishedAt','outAccuracy','outLatency','outCost','promptPackageId','promptTemplateId','createdAt','updatedAt']);
 
 export const UserScalarFieldEnumSchema = z.enum(['id','name','email','emailVerified','image','createdAt','updatedAt']);
 
 export const VerificationTokenScalarFieldEnumSchema = z.enum(['identifier','token','expires','createdAt','updatedAt']);
 
-export const PromptLogScalarFieldEnumSchema = z.enum(['id','userId','inputId','environment','version','prompt','completion','llmProvider','llmModel','llmConfig','latency','prompt_tokens','completion_tokens','total_tokens','extras','labelledState','finetunedState','promptPackageId','promptTemplateId','promptVersionId','createdAt','updatedAt']);
+export const PromptLogScalarFieldEnumSchema = z.enum(['id','userId','inputId','environment','version','prompt','completion','llmModelType','llmProvider','llmModel','llmConfig','latency','prompt_tokens','completion_tokens','total_tokens','extras','labelledState','finetunedState','promptPackageId','promptTemplateId','promptVersionId','createdAt','updatedAt']);
 
 export const SortOrderSchema = z.enum(['asc','desc']);
 
@@ -93,6 +93,10 @@ export type FinetunedStateType = `${z.infer<typeof FinetunedStateSchema>}`
 export const PromptEnvironmentSchema = z.enum(['DEV','PREVIEW','RELEASE']);
 
 export type PromptEnvironmentType = `${z.infer<typeof PromptEnvironmentSchema>}`
+
+export const ModelTypeSchema = z.enum(['TEXTTOTEXT','TEXTTOIMAGE']);
+
+export type ModelTypeType = `${z.infer<typeof ModelTypeSchema>}`
 
 /////////////////////////////////////////
 // MODELS
@@ -186,6 +190,7 @@ export const PromptTemplateSchema = z.object({
   releaseVersionId: z.string().nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
+  modelType: z.string(),
 })
 
 export type PromptTemplate = z.infer<typeof PromptTemplateSchema>
@@ -203,6 +208,7 @@ export const PromptVersionSchema = z.object({
   inputFields: z.string().array(),
   templateFields: z.string().array(),
   llmProvider: z.string(),
+  llmModelType: z.string().nullable(),
   llmModel: z.string(),
   llmConfig: InputJsonValue,
   lang: z.string().array(),
@@ -263,6 +269,7 @@ export const PromptLogSchema = z.object({
   version: z.string(),
   prompt: z.string(),
   completion: z.string(),
+  llmModelType: z.string().nullable(),
   llmProvider: z.string(),
   llmModel: z.string(),
   llmConfig: InputJsonValue,
