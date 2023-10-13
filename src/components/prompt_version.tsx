@@ -312,6 +312,9 @@ function PromptVersion({
               ></LLMConfig>
             </Grid>
           </Stack>
+          <Box sx={{ m: 1 }}>
+            <PromptVariables vars={pvrs} onChange={handleVariablesChange} />
+          </Box>
         </Box>
 
         <Box sx={{ m: 1 }}>
@@ -340,9 +343,6 @@ function PromptVersion({
               )}
             </Stack>
           )}
-        </Box>
-        <Box sx={{ m: 1 }}>
-          <PromptVariables vars={pvrs} onChange={handleVariablesChange} />
         </Box>
       </Box>
     </>

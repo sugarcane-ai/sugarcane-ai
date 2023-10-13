@@ -210,7 +210,7 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
           <List>
             {mainListItems}
             <Divider sx={{ my: 1 }} />
-            {/* {secondaryListItems} */}
+            {secondaryListItems}
           </List>
           <SidebarProfile />
         </Drawer>
