@@ -8,6 +8,7 @@ import {
   Stack,
   Checkbox,
   Typography,
+  Chip,
 } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import LLMSelector from "./llm_selector";
@@ -288,12 +289,19 @@ function PromptVersion({
             </Button>
 
             <Grid container justifyContent={"flex-end"}>
-              <Typography mt={1.5}>
+              {/* <Typography mt={1}>
                 {
                   providerModels[pt?.modelType as keyof typeof providerModels]
                     ?.label
                 }
-              </Typography>
+              </Typography> */}
+              <Chip
+                sx={{ m: 1 }}
+                label={
+                  providerModels[pt?.modelType as keyof typeof providerModels]
+                    ?.label
+                }
+              />
               <LLMSelector
                 initialProvider={provider}
                 initialModel={model}
