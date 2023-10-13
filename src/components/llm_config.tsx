@@ -191,7 +191,7 @@ function LLMConfig({
 
   return (
     <>
-      {pt?.modelType === ModelTypeSchema.Enum.TEXTTOTEXT && (
+      {pt?.modelType === ModelTypeSchema.Enum.TEXT2TEXT && (
         <Button
           size="small"
           startIcon={<MdBuild />}

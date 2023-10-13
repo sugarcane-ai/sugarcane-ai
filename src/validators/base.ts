@@ -21,12 +21,12 @@ type ModelType = {
 };
 
 type ProviderModels = {
-  TEXTTOTEXT: ModelType;
-  TEXTTOIMAGE: ModelType;
+  TEXT2TEXT: ModelType;
+  TEXT2IMAGE: ModelType;
 };
 
 export const providerModels: ProviderModels = {
-  TEXTTOTEXT: {
+  TEXT2TEXT: {
     label: "Text-to-Text",
     enabled: true,
     providers: [
@@ -57,7 +57,7 @@ export const providerModels: ProviderModels = {
       ],
     },
   },
-  TEXTTOIMAGE: {
+  TEXT2IMAGE: {
     label: "Text-to-Image",
     enabled: true,
     providers: [

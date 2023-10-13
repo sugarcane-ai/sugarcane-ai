@@ -94,7 +94,7 @@ export const PromptEnvironmentSchema = z.enum(['DEV','PREVIEW','RELEASE']);
 
 export type PromptEnvironmentType = `${z.infer<typeof PromptEnvironmentSchema>}`
 
-export const ModelTypeSchema = z.enum(['TEXTTOTEXT','TEXTTOIMAGE']);
+export const ModelTypeSchema = z.enum(['TEXT2TEXT','TEXT2IMAGE']);
 
 export type ModelTypeType = `${z.infer<typeof ModelTypeSchema>}`
 
@@ -181,6 +181,7 @@ export type PromptPackage = z.infer<typeof PromptPackageSchema>
 /////////////////////////////////////////
 
 export const PromptTemplateSchema = z.object({
+  modelType: ModelTypeSchema,
   id: z.string().uuid(),
   userId: z.string(),
   promptPackageId: z.string(),
@@ -190,7 +191,6 @@ export const PromptTemplateSchema = z.object({
   releaseVersionId: z.string().nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-  modelType: z.string(),
 })
 
 export type PromptTemplate = z.infer<typeof PromptTemplateSchema>
@@ -200,6 +200,7 @@ export type PromptTemplate = z.infer<typeof PromptTemplateSchema>
 /////////////////////////////////////////
 
 export const PromptVersionSchema = z.object({
+  llmModelType: ModelTypeSchema,
   id: z.string().uuid(),
   forkedFromId: z.string().nullable(),
   userId: z.string(),
@@ -208,7 +209,6 @@ export const PromptVersionSchema = z.object({
   inputFields: z.string().array(),
   templateFields: z.string().array(),
   llmProvider: z.string(),
-  llmModelType: z.string().nullable(),
   llmModel: z.string(),
   llmConfig: InputJsonValue,
   lang: z.string().array(),
@@ -261,6 +261,7 @@ export type VerificationToken = z.infer<typeof VerificationTokenSchema>
 
 export const PromptLogSchema = z.object({
   environment: PromptEnvironmentSchema,
+  llmModelType: ModelTypeSchema,
   labelledState: LabelledStateSchema,
   finetunedState: FinetunedStateSchema,
   id: z.string().uuid(),
@@ -269,7 +270,6 @@ export const PromptLogSchema = z.object({
   version: z.string(),
   prompt: z.string(),
   completion: z.string(),
-  llmModelType: z.string().nullable(),
   llmProvider: z.string(),
   llmModel: z.string(),
   llmConfig: InputJsonValue,

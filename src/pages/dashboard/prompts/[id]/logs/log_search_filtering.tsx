@@ -38,11 +38,11 @@ const LogSearchFiltering: React.FC<LogSearchFilteringProps> = ({
 
   const llmProviderOptions = [
     { value: "", label: "All Provider" },
-    ...providerModels.TEXTTOTEXT.providers.map(({ name, label }) => ({
+    ...providerModels.TEXT2TEXT.providers.map(({ name, label }) => ({
       value: name,
       label,
     })),
-    ...providerModels.TEXTTOIMAGE.providers.map(({ name, label }) => ({
+    ...providerModels.TEXT2IMAGE.providers.map(({ name, label }) => ({
       value: name,
       label,
     })),

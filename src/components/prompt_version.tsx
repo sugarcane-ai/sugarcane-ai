@@ -329,7 +329,7 @@ function PromptVersion({
                   </Box>
                 )}
               </Grid>
-              {pt?.modelType === ModelTypeSchema.Enum.TEXTTOTEXT && (
+              {pt?.modelType === ModelTypeSchema.Enum.TEXT2TEXT && (
                 <Grid container alignItems="center" alignContent={"center"}>
                   <PromptPerformance
                     data={promptPerformance}

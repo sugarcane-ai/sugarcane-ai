@@ -14,7 +14,7 @@ const PromptOutput = ({
 }) => {
   return (
     <Box>
-      {modelType === ModelTypeSchema.Enum.TEXTTOTEXT ? (
+      {modelType === ModelTypeSchema.Enum.TEXT2TEXT ? (
         <Typography variant="body2" textAlign={"left"}>
           {output}
         </Typography>

@@ -5,7 +5,7 @@ export function generateOutput(
   llmModelType: string,
   latency: number,
 ) {
-  if (llmModelType === ModelTypeSchema.Enum.TEXTTOTEXT) {
+  if (llmModelType === ModelTypeSchema.Enum.TEXT2TEXT) {
     if (response?.choices?.length > 0) {
       return {
         completion: response.choices[0]?.text || "",

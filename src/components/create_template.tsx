@@ -40,13 +40,13 @@ export function CreateTemplate({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [modelType, setModelType] = useState<string>(
-    ModelTypeSchema.Enum.TEXTTOTEXT,
+    ModelTypeSchema.Enum.TEXT2TEXT,
   );
 
   const handleClose = () => {
     setName("");
     setDescription("");
-    setModelType(ModelTypeSchema.Enum.TEXTTOTEXT);
+    setModelType(ModelTypeSchema.Enum.TEXT2TEXT);
     setIsOpen(false);
   };
 

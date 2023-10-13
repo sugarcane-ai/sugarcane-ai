@@ -173,7 +173,7 @@ export const promptRouter = createTRPCRouter({
 
       console.log(`create version -------------- ${JSON.stringify(input)}`);
 
-      let modelType = input.moduleType === ModelTypeSchema.Enum.TEXTTOTEXT;
+      let modelType = input.moduleType === ModelTypeSchema.Enum.TEXT2TEXT;
 
       let template = modelType
         ? `I am looking at the {@OBJECT}`
