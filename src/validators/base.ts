@@ -63,7 +63,7 @@ export const providerModels: ProviderModels = {
     providers: [
       { name: "runwayml", label: "RunwayMl", enabled: true },
       { name: "prompthero", label: "PromptHero", enabled: true },
-      { name: "stabilityai", label: "StabilityAI", enabled: true },
+      { name: "stabilityai", label: "StabilityAI", enabled: false },
     ],
     models: {
       runwayml: [
