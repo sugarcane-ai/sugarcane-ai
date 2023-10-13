@@ -21,7 +21,6 @@ const LLMConfigModal = ({
   onClose,
   config,
   setConfig,
-  pt,
 }: {
   isOpen: boolean;
   onClose: Function;
