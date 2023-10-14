@@ -138,7 +138,7 @@ function PromptVersion({
       template: pt?.name || "",
       version: pv.version || "",
       isDevelopment: checked,
-      llmModelType: pt?.modelType,
+      // llmModelType: pt?.modelType,
       environment: promptEnvironment.Enum.DEV,
       data: data,
     } as GenerateInput);
