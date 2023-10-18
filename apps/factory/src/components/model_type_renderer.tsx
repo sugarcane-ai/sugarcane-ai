@@ -23,9 +23,7 @@ const ModelTypeRenderer: React.FC<ModelTypeRendererProps> = ({
       <>
         {tokens ? (
           <>
-            <Typography variant="body2" textAlign="left">
-              {output}
-            </Typography>
+            {output}
             <p>tokens: {tokens}</p>
           </>
         ) : (
