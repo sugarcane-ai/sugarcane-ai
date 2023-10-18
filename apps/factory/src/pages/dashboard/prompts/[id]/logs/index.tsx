@@ -24,6 +24,7 @@ import {
   ModelTypeType,
   ModelTypeSchema,
 } from "~/generated/prisma-client-zod.ts";
+import ModelTypeRenderer from "~/components/model_type_renderer";
 
 interface PromptLog {
   id: string;
@@ -168,17 +169,12 @@ const PromptLogTable: NextPageWithLayout = () => {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {log.llmModelType === ModelTypeSchema.Enum.TEXT2TEXT ? (
-                    <>
-                      {log.completion}
-                      <p>tokens: {log.completion_tokens}</p>
-                    </>
-                  ) : (
-                    <img
-                      className="h-48 w-96 object-contain"
-                      src={log.completion}
-                    />
-                  )}
+                  <ModelTypeRenderer
+                    modelType={log.llmModelType}
+                    output={log.completion}
+                    tokens={log.completion_tokens}
+                    imgClassName={"h-48 w-96 object-contain"}
+                  />
                 </TableCell>
                 <TableCell>{log.version}</TableCell>
                 <TableCell>{log.llmProvider}</TableCell>
