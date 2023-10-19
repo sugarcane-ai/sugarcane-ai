@@ -7,7 +7,7 @@ import {
   ModelTypeSchema,
   ModelTypeType,
 } from "~/generated/prisma-client-zod.ts";
-import ModelTypeRenderer from "./model_type_renderer";
+import PromptCompletion from "./prompt_completion";
 
 const PromptOutput = ({
   output,
@@ -18,7 +18,7 @@ const PromptOutput = ({
 }) => {
   return (
     <Box>
-      <ModelTypeRenderer
+      <PromptCompletion
         modelType={modelType}
         output={output}
         imgClassName={"h-48 w-48 object-fill"}

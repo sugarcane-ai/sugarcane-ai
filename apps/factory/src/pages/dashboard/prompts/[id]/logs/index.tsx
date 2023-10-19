@@ -24,7 +24,7 @@ import {
   ModelTypeType,
   ModelTypeSchema,
 } from "~/generated/prisma-client-zod.ts";
-import ModelTypeRenderer from "~/components/model_type_renderer";
+import PromptCompletion from "~/components/prompt_completion";
 
 interface PromptLog {
   id: string;
@@ -169,7 +169,7 @@ const PromptLogTable: NextPageWithLayout = () => {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  <ModelTypeRenderer
+                  <PromptCompletion
                     modelType={log.llmModelType}
                     output={log.completion}
                     tokens={log.completion_tokens}

@@ -5,14 +5,14 @@ import {
   ModelTypeSchema,
 } from "~/generated/prisma-client-zod.ts";
 
-interface ModelTypeRendererProps {
+interface PromptCompletionProps {
   modelType: ModelTypeType;
   output: string;
   tokens?: number;
   imgClassName?: string;
 }
 
-const ModelTypeRenderer: React.FC<ModelTypeRendererProps> = ({
+const PromptCompletion: React.FC<PromptCompletionProps> = ({
   modelType,
   output,
   tokens,
@@ -38,4 +38,4 @@ const ModelTypeRenderer: React.FC<ModelTypeRendererProps> = ({
   }
 };
 
-export default ModelTypeRenderer;
+export default PromptCompletion;
