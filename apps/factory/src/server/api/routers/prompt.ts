@@ -76,19 +76,28 @@ export const promptRouter = createTRPCRouter({
     .input(createPackageInput)
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.jwt?.id as string;
-      let promptPackage = null;
 
-      if (userId) {
-        promptPackage = await ctx.prisma.promptPackage.create({
+      if (!userId) {
+        throw new Error("User ID is not available");
+      }
+
+      try {
+        const promptPackage = await ctx.prisma.promptPackage.create({
           data: {
             name: input.name,
             description: input.description,
-
+            visibility: input.visibility,
             userId: userId,
           },
         });
+        return promptPackage;
+      } catch (error: any) {
+        // console.log(error);
+        if (error.code === "P2002") {
+          throw new Error("Package with this name already exist");
+        }
+        throw new Error("Something went wrong");
       }
-      return promptPackage;
     }),
 
   createTemplate: protectedProcedure
