@@ -4,6 +4,10 @@
 
 # npm like package ecosystem for Prompts 🤖
 
+# npm like package ecosystem for Prompts 🤖
+
+### Open Source Framework to build, train and monetise cross LLM and high accuracy Prompt Packages powered by Micro LLMs
+
 ### Open Source Framework to build, train and monetise cross LLM and high accuracy Prompt Packages powered by Micro LLMs
 
 [![License](https://img.shields.io/github/license/sugarcane-ai/sugarcane-ai.github.io)](https://github.com/sugarcane-ai/sugarcane-ai.github.io/blob/develop/LICENSE)
@@ -12,11 +16,15 @@
 
 ### Important News : Prompt Package Playgroud launching on 1st November 2023 : ⭐ Star this Repo to support us ⭐
 
+### Important News : Prompt Package Playgroud launching on 1st November 2023 : ⭐ Star this Repo to support us ⭐
+
 ---
 
 1. [Introduction](#introduction--)
 2. [Key Features of Microservices Framework](#key-features--)
    - [Sugar Factory 🏭](#sugar-factory--)
+   - [Sugar hub 🛒](#sugar-hub--)
+   - [Sugar Farm 🚜](#sugar-farm--)
    - [Sugar hub 🛒](#sugar-hub--)
    - [Sugar Farm 🚜](#sugar-farm--)
    - [Sugar Bakery 🍞](#sugar-bakery--)
@@ -61,7 +69,14 @@ We believe that a community driven package ecosystem is a long term solution for
 <br> </br>
 ![Sugar Factory](public/images/sugar/sugarfactory.png)
 
+<br> </br>
+![Sugar Factory](public/images/sugar/sugarfactory.png)
+
 ##### View Demo : [Decouple your Prompts with Sugarcane AI](/docs/guides/demo/)
+
+<br> </br>
+
+### Sugar Hub 🛒 <a name="sugar-hub--"></a>
 
 <br> </br>
 
@@ -69,11 +84,19 @@ We believe that a community driven package ecosystem is a long term solution for
 
 ##### Managed Marketplace for high quality GenAI assets
 
+##### Managed Marketplace for high quality GenAI assets
+
 ##### Key Features :
 
-    - Implement workflows/plugins with just a few lines of code
-    - Client libraries supporting multiple languages
-    - Integrate managed prompt packages from Sugar Hub
+    - Publish, share and monetise your prompt packages
+    - Discover and use managed prompts in Sugar Bakery
+    - Leverage Open datasets and Finetuned Micro LLMs
+
+<br> </br>
+
+![Sugar Hub](public/images/sugar/sugarhub.png)
+
+<br> </br>
 
 ### Sugar Farm 🚜 <a name="sugar-farm--"></a>
 
@@ -89,10 +112,19 @@ We believe that a community driven package ecosystem is a long term solution for
 
 ### Sugar Bakery 🍞 <a name="sugar-bakery--"></a>
 
+<br> </br>
+
+### Sugar Bakery 🍞 <a name="sugar-bakery--"></a>
+
+##### SDK for **Application Develpers** to develop cross-LLM business logic applications
+
 ##### SDK for **Application Develpers** to develop cross-LLM business logic applications
 
 ##### Key Features :
 
+    - Implement workflows/plugins with just a few lines of code
+    - Client libraries supporting multiple languages
+    - Integrate managed prompt packages from Sugar Hub
     - Implement workflows/plugins with just a few lines of code
     - Client libraries supporting multiple languages
     - Integrate managed prompt packages from Sugar Hub
@@ -247,10 +279,6 @@ pnpm install
 ### Local Setup
 
 - Run `pnpm dev` to start service
-
-### Project Build
-
-- Run `pnpm run  -r build`
 
 Explore our [Documentation](https://sugarcaneai.dev/docs/) for detailed instructions on getting started with Sugarcane AI. Dive into our Quick Start guide to build your first AI app in no time!
 
