@@ -22,7 +22,7 @@ import { FormRadioInput } from "./form_components/formRadioInput";
 export function CreatePackage({
   onSubmit,
   status,
-  customError, // customError,
+  customError,
 }: {
   onSubmit: Function;
   status: string;
@@ -34,6 +34,7 @@ export function CreatePackage({
     control,
     handleSubmit,
     setError,
+    clearErrors,
     formState: { errors },
     watch,
     reset,
@@ -45,6 +46,14 @@ export function CreatePackage({
     },
     resolver: zodResolver(createPackageInput),
   });
+
+  useEffect(() => {
+    if (customError && customError.error) {
+      setError("name", { type: "manual", message: customError.error?.name });
+    } else {
+      clearErrors("name");
+    }
+  }, [customError, setError, clearErrors]);
 
   useEffect(() => {
     if (status === "success") {
@@ -60,9 +69,6 @@ export function CreatePackage({
   const onFormSubmit = (data: CreatePackageInput) => {
     try {
       onSubmit(data);
-      if (customError) {
-        setError("name", { type: "manual", message: customError.error.name });
-      }
     } catch (error) {
       console.log(error);
     }
