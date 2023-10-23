@@ -34,6 +34,15 @@ declare module "next-auth" {
   // }
 }
 
+function generateRandomUsername(username: string, length = 3) {
+  const characters = "abcdefghijklmnopqrstuvwxyz0123456789";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    username += characters[randomIndex];
+  }
+  return username;
+}
+
 /**
  * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
  *
@@ -42,6 +51,17 @@ declare module "next-auth" {
 function getAuthOptions(): NextAuthOptions {
   let options: NextAuthOptions = {
     callbacks: {
+      async signIn({ user }: any) {
+        if (user && user.username) {
+          const existingUser = await prisma.user.findUnique({
+            where: { username: user.username },
+          });
+          if (existingUser) {
+            user.username = generateRandomUsername(user.username);
+          }
+        }
+        return true;
+      },
       session: ({ session, user }) => ({
         ...session,
         user: {
@@ -95,10 +115,28 @@ function getAuthOptions(): NextAuthOptions {
       GithubProvider({
         clientId: env.GITHUB_CLIENT_ID,
         clientSecret: env.GITHUB_SECRET,
+        profile: (profile) => {
+          return {
+            id: profile.id,
+            name: profile.name,
+            username: profile.login,
+            email: profile.email,
+            image: profile.avatar_url,
+          };
+        },
       }),
       GoogleProvider({
         clientId: env.GOOGLE_CLIENT_ID,
         clientSecret: env.GOOGLE_CLIENT_SECRET,
+        profile: (profile) => {
+          return {
+            id: profile.sub,
+            name: profile.name,
+            username: profile.email.split("@")[0],
+            email: profile.email,
+            image: profile.picture,
+          };
+        },
       }),
 
       CredentialsProvider({
@@ -159,6 +197,16 @@ function getAuthOptions(): NextAuthOptions {
       DiscordProvider({
         clientId: env.DISCORD_CLIENT_ID,
         clientSecret: env.DISCORD_CLIENT_SECRET,
+        profile: (profile) => {
+          let userAvatar = `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png`;
+          return {
+            id: profile.id,
+            username: profile.username,
+            name: profile.global_name,
+            email: profile.email,
+            image: userAvatar,
+          };
+        },
       }),
     );
   }
