@@ -52,13 +52,34 @@ function generateRandomUsername(username: string, length = 3) {
 function getAuthOptions(): NextAuthOptions {
   let options: NextAuthOptions = {
     callbacks: {
-      async signIn({ user }: any) {
-        if (user && user.username) {
-          const existingUser = await prisma.user.findUnique({
-            where: { username: user.username },
-          });
+      async signIn({ user, account, profile }: any) {
+        if (user) {
+          let existingUser;
+          if (user.username) {
+            existingUser = await prisma.user.findUnique({
+              where: { username: user.username },
+            });
+          }
           if (existingUser) {
             user.username = generateRandomUsername(user.username);
+          } else {
+            let username =
+              profile.username ||
+              profile.login ||
+              (profile.email && profile.email.split("@")[0]);
+
+            const userWithNewUsername = await prisma.user.findUnique({
+              where: { username: username },
+            });
+            username = userWithNewUsername
+              ? generateRandomUsername(username)
+              : username;
+            await prisma.user.update({
+              where: { id: user.id },
+              data: {
+                username: username,
+              },
+            });
           }
         }
         return true;
