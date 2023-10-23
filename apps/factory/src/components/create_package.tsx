@@ -22,15 +22,18 @@ import { FormRadioInput } from "./form_components/formRadioInput";
 export function CreatePackage({
   onSubmit,
   status,
+  customError, // customError,
 }: {
   onSubmit: Function;
   status: string;
+  customError: any;
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const {
     control,
     handleSubmit,
+    setError,
     formState: { errors },
     watch,
     reset,
@@ -55,7 +58,14 @@ export function CreatePackage({
   };
 
   const onFormSubmit = (data: CreatePackageInput) => {
-    onSubmit(data);
+    try {
+      onSubmit(data);
+      if (customError) {
+        setError("name", { type: "manual", message: customError.error.name });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

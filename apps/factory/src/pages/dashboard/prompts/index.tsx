@@ -62,6 +62,7 @@ function Packages() {
 const PackageHome = () => {
   const router = useRouter();
   const [status, setStatus] = useState("");
+  const [customError, setCustomError] = useState({});
 
   function handlePackageCreationSuccess(createdPackage: pp) {
     setStatus("success");
@@ -69,19 +70,14 @@ const PackageHome = () => {
     router.push("/dashboard/prompts/" + createdPackage?.id);
   }
 
-  const handlePackageCreationError = (error: any) => {
-    setStatus("error");
-    toast.error(error.message);
-  };
-
   const mutation = api.prompt.createPackage.useMutation({
     onError: (error) => {
-      // Handle the error case
-      handlePackageCreationError(error);
+      const errorData = JSON.parse(error.message);
+      setCustomError(errorData);
     },
     onSuccess: (createdPackage) => {
       if (createdPackage !== null) {
-        // Handle the success case with createdPackage
+        setCustomError({});
         handlePackageCreationSuccess(createdPackage);
       } else {
         // Handle the case where createdPackage is null
@@ -95,7 +91,11 @@ const PackageHome = () => {
   // console.log("mutate", mutation);
   return (
     <>
-      <CreatePackage onSubmit={mutation.mutate} status={status}></CreatePackage>
+      <CreatePackage
+        onSubmit={mutation.mutate}
+        status={status}
+        customError={customError}
+      ></CreatePackage>
       <Packages />
     </>
   );
