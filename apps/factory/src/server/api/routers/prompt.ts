@@ -44,9 +44,16 @@ export const promptRouter = createTRPCRouter({
     .input(getPackagesInput)
     .output(packageListOutput)
     .query(async ({ ctx, input }) => {
+      const userId = ctx.jwt?.id as string;
+      if (!userId) {
+        console.log("No userId exist");
+        throw new Error("User Id not exist");
+      }
       let query = {
         userId: ctx.jwt?.id as string,
+        // userId:"29ba7283-fe27-4033-979b-f5187ed2cd04"
       };
+
       console.log(`packages input -------------- ${JSON.stringify(query)}`);
 
       const packages = await ctx.prisma.promptPackage.findMany({
@@ -68,7 +75,7 @@ export const promptRouter = createTRPCRouter({
       const pkg = await ctx.prisma.promptPackage.findFirst({
         where: query,
       });
-      // console.log(`package -------------- ${JSON.stringify(pkg)}`);
+      console.log(`package -------------- ${JSON.stringify(pkg)}`);
       return pkg;
     }),
 
@@ -76,11 +83,6 @@ export const promptRouter = createTRPCRouter({
     .input(createPackageInput)
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.jwt?.id as string;
-
-      if (!userId) {
-        throw new Error("User ID is not available");
-      }
-
       try {
         const promptPackage = await ctx.prisma.promptPackage.create({
           data: {
@@ -92,7 +94,7 @@ export const promptRouter = createTRPCRouter({
         });
         return promptPackage;
       } catch (error: any) {
-        // console.log(error);
+        console.log(`Error in creating Package-----------------  ${error}`);
         if (error.code === "P2002") {
           throw new Error("Package with this name already exist");
         }
@@ -154,7 +156,7 @@ export const promptRouter = createTRPCRouter({
     .input(getTemplatesInput)
     .output(templateListOutput)
     .query(async ({ ctx, input }) => {
-      // console.log(`templates -------------- ${JSON.stringify(input)}`);
+      console.log(`templates -------------- ${JSON.stringify(input)}`);
       const templates = await ctx.prisma.promptTemplate.findMany({
         where: {
           userId: ctx.jwt?.id as string,
