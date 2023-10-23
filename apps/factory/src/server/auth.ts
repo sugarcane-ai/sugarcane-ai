@@ -23,6 +23,7 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: DefaultSession["user"] & {
       id: string;
+      username: string;
       // ...other properties
       // role: UserRole;
     };
@@ -62,11 +63,11 @@ function getAuthOptions(): NextAuthOptions {
         }
         return true;
       },
-      session: ({ session, user }) => ({
+      session: ({ session, user, token }) => ({
         ...session,
         user: {
           ...session.user,
-          // id: user.id,
+          username: token.username,
         },
       }),
       redirect: ({ url, baseUrl }: { url: string; baseUrl: string }) => {
@@ -74,7 +75,7 @@ function getAuthOptions(): NextAuthOptions {
         return "/dashboard";
       },
 
-      jwt({ token, user, account, profile, session }) {
+      jwt({ token, user, account, profile, session }: any) {
         let newToken = token;
         // Persist the OAuth access_token and or the user id to the token right after signin
 
@@ -88,6 +89,7 @@ function getAuthOptions(): NextAuthOptions {
 
           // token.accessToken = account.access_token;
           token.id = user.id;
+          token.username = user.username;
           const newToken = {
             v: 1,
             sub: token.sub,
@@ -215,6 +217,7 @@ function getAuthOptions(): NextAuthOptions {
 }
 
 export const authOptions: NextAuthOptions = getAuthOptions();
+console.log("authOptions:", authOptions);
 
 /**
  * Wrapper for `getServerSession` so that you don't need to import the `authOptions` in every file.
