@@ -70,7 +70,7 @@ export const promptRouter = createTRPCRouter({
         where: query,
       });
       console.log(`package -------------- ${JSON.stringify(pkg)}`);
-      // console.log(pkg);
+
       return pkg;
     }),
 
@@ -156,7 +156,7 @@ export const promptRouter = createTRPCRouter({
     .input(getTemplatesInput)
     .output(templateListOutput)
     .query(async ({ ctx, input }) => {
-      // console.log(`templates -------------- ${JSON.stringify(input)}`);
+      console.log(`templates -------------- ${JSON.stringify(input)}`);
       const templates = await ctx.prisma.promptTemplate.findMany({
         where: {
           userId: ctx.jwt?.id as string,
