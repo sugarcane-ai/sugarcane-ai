@@ -4,6 +4,10 @@
 
 # npm like package ecosystem for Prompts 🤖
 
+# npm like package ecosystem for Prompts 🤖
+
+### Open Source Framework to build, train and monetise cross LLM and high accuracy Prompt Packages powered by Micro LLMs
+
 ### Open Source Framework to build, train and monetise cross LLM and high accuracy Prompt Packages powered by Micro LLMs
 
 [![License](https://img.shields.io/github/license/sugarcane-ai/sugarcane-ai.github.io)](https://github.com/sugarcane-ai/sugarcane-ai.github.io/blob/develop/LICENSE)
@@ -73,15 +77,9 @@ We believe that a community driven package ecosystem is a long term solution for
 
 ##### Key Features :
 
-    - Publish, share and monetise your prompt packages
-    - Discover and use managed prompts in Sugar Bakery
-    - Leverage Open datasets and Finetuned Micro LLMs
-
-<br> </br>
-
-![Sugar Hub](public/images/sugar/sugarhub.png)
-
-<br> </br>
+    - Implement workflows/plugins with just a few lines of code
+    - Client libraries supporting multiple languages
+    - Integrate managed prompt packages from Sugar Hub
 
 ### Sugar Farm 🚜 <a name="sugar-farm--"></a>
 
