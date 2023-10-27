@@ -44,6 +44,7 @@ import {
   ModelTypeSchema,
   ModelTypeType,
 } from "~/generated/prisma-client-zod.ts";
+import PromotOutputLog from "./prompt_output_log";
 
 function PromptVersion({
   ns,
@@ -345,6 +346,13 @@ function PromptVersion({
                 </Grid>
               )}
             </Stack>
+          )}
+        </Box>
+        <Box sx={{ m: 1 }}>
+          {pl && (
+            <>
+              <PromotOutputLog pl={pl} />
+            </>
           )}
         </Box>
       </Box>
