@@ -37,7 +37,6 @@ import { GenerateInput, GenerateOutput } from "~/validators/service";
 
 const isDev = process.env.NODE_ENV === "development";
 import LabelIcons from "./label_icon";
-import { LogOutput } from "~/validators/prompt_log";
 import _debounce from "lodash/debounce";
 import { providerModels } from "~/validators/base";
 import {
