@@ -37,13 +37,13 @@ import { GenerateInput, GenerateOutput } from "~/validators/service";
 
 const isDev = process.env.NODE_ENV === "development";
 import LabelIcons from "./label_icon";
-import { LogOutput } from "~/validators/prompt_log";
 import _debounce from "lodash/debounce";
 import { providerModels } from "~/validators/base";
 import {
   ModelTypeSchema,
   ModelTypeType,
 } from "~/generated/prisma-client-zod.ts";
+import PromotOutputLog from "./prompt_output_log";
 
 function PromptVersion({
   ns,
@@ -345,6 +345,13 @@ function PromptVersion({
                 </Grid>
               )}
             </Stack>
+          )}
+        </Box>
+        <Box sx={{ m: 1 }}>
+          {pl && (
+            <>
+              <PromotOutputLog pl={pl} />
+            </>
           )}
         </Box>
       </Box>
