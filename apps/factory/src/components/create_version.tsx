@@ -16,17 +16,21 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { PackageOutput as pp } from "~/validators/prompt_package";
-import { TemplateOutput as pt } from "~/validators/prompt_template";
-import {
-  CreateVersionInput,
-  VersionOutput as pv,
-} from "~/validators/prompt_version";
+import type { PackageOutput as pp } from "~/validators/prompt_package";
+import type { TemplateOutput as pt } from "~/validators/prompt_template";
+import { VersionOutput as pv } from "~/validators/prompt_version";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { parse, valid } from "semver";
 import toast from "react-hot-toast";
 import { api } from "~/utils/api";
 import ForkRightIcon from "@mui/icons-material/ForkRight";
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FormTextInput } from "./form_components/formTextInput";
+import type { CreateVersionInput } from "~/validators/prompt_version";
+import { createVersionInput } from "~/validators/prompt_version";
+import { error } from "console";
 
 CreateVersion.defaultProps = {
   icon: <AddCircleIcon />,
@@ -49,14 +53,41 @@ export function CreateVersion({
   forkedFromId: string | null;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [version, setVersion] = useState(v);
+  // const [version, setVersion] = useState(v);
+
+  const {
+    control,
+    handleSubmit,
+    setError,
+    clearErrors,
+    formState: { errors },
+    watch,
+    reset,
+  } = useForm<CreateVersionInput>({
+    defaultValues: {
+      version: v,
+      promptPackageId: pp?.id,
+      promptTemplateId: pt?.id,
+      forkedFromId: forkedFromId,
+      moduleType: pt?.modelType,
+    },
+    resolver: zodResolver(createVersionInput),
+  });
 
   const handleClose = () => {
-    // setVersion("")
+    reset();
     setIsOpen(false);
   };
 
   const pvCreateMutation = api.prompt.createVersion.useMutation({
+    onError: (error) => {
+      const errorData = JSON.parse(error.message);
+      console.log(errorData);
+      setError("version", {
+        type: "manual",
+        message: errorData.error?.message,
+      });
+    },
     onSuccess: (pv) => {
       if (pv !== null) {
         onCreate(pv);
@@ -66,15 +97,16 @@ export function CreateVersion({
     },
   });
 
-  const handleSubmit = (e: any) => {
-    const data = {
+  const onFormSubmit = (data: CreateVersionInput) => {
+    const response = {
       promptPackageId: pp?.id,
       promptTemplateId: pt?.id,
-      version: version,
+      version: data.version,
       forkedFromId: forkedFromId,
       moduleType: pt?.modelType,
     };
-    pvCreateMutation.mutate(data as CreateVersionInput);
+    console.log(response);
+    pvCreateMutation.mutate(response as CreateVersionInput);
   };
 
   return (
@@ -106,16 +138,13 @@ export function CreateVersion({
           <DialogContentText></DialogContentText>
 
           <Stack spacing={2} mt={2}>
-            <FormControl>
-              <FormLabel>Version</FormLabel>
-              <TextField
-                variant="outlined"
-                value={version}
-                error={!valid(version)}
-                onChange={(e) => setVersion(e.target.value)}
-                helperText={"Use semantic versioning (e.g. 1.0.1)"}
-              />
-            </FormControl>
+            <FormTextInput
+              name="version"
+              control={control}
+              label="Version"
+              error={!!errors.version}
+              helperText={errors.version?.message}
+            />
           </Stack>
         </DialogContent>
 
@@ -127,7 +156,7 @@ export function CreateVersion({
           </Button>
           <Button
             size="small"
-            onClick={handleSubmit}
+            onClick={handleSubmit(onFormSubmit)}
             variant="outlined"
             color="primary"
           >

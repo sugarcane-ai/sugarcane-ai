@@ -34,16 +34,16 @@ import { VersionOutput, VersionSchema } from "~/validators/prompt_version";
 import { PromptEnvironment, promptEnvironment } from "~/validators/base";
 import LogLabel from "./dataset/log_label";
 import { GenerateInput, GenerateOutput } from "~/validators/service";
-
-const isDev = process.env.NODE_ENV === "development";
 import LabelIcons from "./label_icon";
+import { LogOutput } from "~/validators/prompt_log";
 import _debounce from "lodash/debounce";
 import { providerModels } from "~/validators/base";
 import {
   ModelTypeSchema,
   ModelTypeType,
 } from "~/generated/prisma-client-zod.ts";
-import PromotOutputLog from "./prompt_output_log";
+
+const isDev = process.env.NODE_ENV === "development";
 
 function PromptVersion({
   ns,
@@ -329,20 +329,11 @@ function PromptVersion({
                   modelType={pt?.modelType as ModelTypeType}
                 ></PromptOutput>
                 {pl && (
-                  <Box
-                    sx={{
-                      ml: 5,
-                      justifyContent: "space-evenly",
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
+                  <Box sx={{ ml: 5 }}>
                     <LabelIcons
                       logId={pl?.id}
                       labelledState={pl?.labelledState}
                     />
-                    |
-                    <PromotOutputLog pl={pl} />
                   </Box>
                 )}
               </Grid>
