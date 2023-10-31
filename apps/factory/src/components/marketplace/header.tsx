@@ -11,7 +11,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 
 const Header = ({ headerName }: { headerName: string }) => {
   return (
-    <AppBar position="sticky" color="default">
+    <AppBar position="sticky" color="default" className="mb-10">
       <Toolbar>
         <Container maxWidth="lg">
           <Box
