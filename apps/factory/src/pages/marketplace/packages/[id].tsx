@@ -65,7 +65,7 @@ const MarketplacePage: NextPage = () => {
 
   return (
     <Container>
-      <Header></Header>
+      <Header headerName={"Sugar Hub"}></Header>
       <PromptHeader pp={pp as ppt}></PromptHeader>
       <MyTabs pp={pp as ppt}></MyTabs>
     </Container>
