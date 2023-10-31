@@ -3,6 +3,7 @@ import {
   InputJsonValue,
   ModelTypeSchema,
 } from "~/generated/prisma-client-zod.ts";
+import semver from "semver";
 
 const versionNameInput = z.string();
 
@@ -39,14 +40,9 @@ export const createVersionInput = z
   .object({
     promptPackageId: z.string(),
     promptTemplateId: z.string(),
-    version: z
-      .string()
-      .refine((version) => version.trim() !== "", {
-        message: "Version must not be empty",
-      })
-      .refine((version) => /^\d+\.\d+\.\d+$/.test(version), {
-        message: "Version must be in semantic format (e.g., '1.0.1')",
-      }),
+    version: z.string().refine((version) => semver.valid(version) !== null, {
+      message: "Version must be in semantic format (e.g., '1.0.1')",
+    }),
     forkedFromId: z.null().or(z.string().uuid()),
     moduleType: ModelTypeSchema,
   })
