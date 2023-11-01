@@ -8,6 +8,7 @@ import {
   Checkbox,
   Grid,
   Typography,
+  Dialog,
 } from "@mui/material";
 import { api } from "~/utils/api";
 import { promptEnvironment } from "~/validators/base";
@@ -16,11 +17,9 @@ import { getUniqueJsonArray, getVariables } from "~/utils/template";
 import { GenerateInput, GenerateOutput } from "~/validators/service";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import PromptOutput from "./prompt_output";
-import {
-  ModelTypeSchema,
-  ModelTypeType,
-} from "~/generated/prisma-client-zod.ts";
-import { NIL } from "uuid";
+import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
+import { useSession, signIn } from "next-auth/react";
+import Link from "@mui/material/Link";
 const isDev = process.env.NODE_ENV === "development";
 
 interface PromptTemplateViewProps {
@@ -36,13 +35,16 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   template,
   version,
 }) => {
+  const { data: session, status } = useSession();
   const [checked, setChecked] = useState(isDev);
   const [pvrs, setVariables] = useState<PromptVariableProps[]>();
   const [pl, setPl] = useState<GenerateOutput>(null);
   const [promptOutput, setPromptOutput] = useState("");
   const [promptPerformance, setPromptPerformacne] = useState({});
+  const [isOpen, setIsOpen] = useState(false);
+  const handleOpen = () => setIsOpen(true);
 
-  const { data } = api.service.getPrompt.useQuery({
+  const { data } = api.cube.getPrompt.useQuery({
     username: username,
     package: packageName,
     template: template,
@@ -145,11 +147,21 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                 <Button
                   color="success"
                   variant="outlined"
-                  onClick={handleRun}
+                  onClick={session ? handleRun : handleOpen}
                   // disabled={data?.template.length <= 10}
                 >
                   Run
                 </Button>
+                {!session && isOpen && (
+                  <Box>
+                    <Typography className="mt-2">
+                      <Link href="#" onClick={() => void signIn()}>
+                        Signup
+                      </Link>{" "}
+                      to run the task!
+                    </Typography>
+                  </Box>
+                )}
               </Stack>
 
               <Box sx={{ m: 1 }}>
