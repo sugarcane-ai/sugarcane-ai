@@ -115,7 +115,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
 
   return (
     <>
-      <Header headerName={"Sugar Cube"} />
+      <Header headerName={"Sugar Cubes"} />
       <Container className="center">
         <div className="dark:border-gray-70  w-full rounded-lg border p-4 shadow sm:p-6">
           {(data && data.releaseVersion === version) || !version ? (
