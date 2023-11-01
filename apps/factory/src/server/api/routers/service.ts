@@ -90,27 +90,27 @@ export async function getPv(ctx: any, input: any) {
     `figuring out version for ${input.environment} version ${input.version}`,
   );
 
-  const ptd = {
-    userId: userId,
-    promptPackageId: input.promptPackageId,
-    id: input.promptTemplateId,
-  };
-
-  console.log(`ptd ----->>>>>> ${JSON.stringify(ptd)}`);
-
-  console.info(
-    `finding the ${input.environment} version ${JSON.stringify(ptd)}`,
-  );
-
-  pt = await ctx.prisma.promptTemplate.findFirst({
-    where: ptd,
-    include: {
-      previewVersion: true,
-      releaseVersion: true,
-    },
-  });
-
   if (!input.version && input.environment in promptEnvironment.Values) {
+    const ptd = {
+      // userId: userId, disabled this for shared URL
+      promptPackageId: input.promptPackageId,
+      id: input.promptTemplateId,
+    };
+
+    console.log(`ptd ----->>>>>> ${JSON.stringify(ptd)}`);
+
+    console.info(
+      `finding the ${input.environment} version ${JSON.stringify(ptd)}`,
+    );
+
+    pt = await ctx.prisma.promptTemplate.findFirst({
+      where: ptd,
+      include: {
+        previewVersion: true,
+        releaseVersion: true,
+      },
+    });
+
     pv =
       input.environment == promptEnvironment.Enum.RELEASE
         ? pt?.releaseVersion

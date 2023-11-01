@@ -33,7 +33,6 @@ export const cubeRouter = createTRPCRouter({
           updatedAt: pv.updatedAt,
           description: pt?.description,
           modelType: pv.llmModelType,
-          releaseVersion: pt?.releaseVersion?.version,
         };
       }
       return null;

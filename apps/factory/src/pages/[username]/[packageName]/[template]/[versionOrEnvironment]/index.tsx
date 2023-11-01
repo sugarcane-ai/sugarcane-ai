@@ -11,7 +11,7 @@ const TemplateWithVersion = () => {
   const username = router.query.username as string;
   const packageName = router.query.packageName as string;
   const template = router.query.template as string;
-  const version = router.query.version as string;
+  const versionOrEnvironment = router.query.versionOrEnvironment as string;
 
   return (
     <>
@@ -19,7 +19,7 @@ const TemplateWithVersion = () => {
         username={username}
         packageName={packageName}
         template={template}
-        version={version}
+        versionOrEnvironment={versionOrEnvironment}
       />
     </>
   );

@@ -1,6 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 import PromptTemplateView from "~/components/prompt_template_view";
+import { promptEnvironment } from "~/validators/base";
 
 const TemplateWithoutVersion = () => {
   const router = useRouter();
@@ -14,7 +15,7 @@ const TemplateWithoutVersion = () => {
         username={username}
         packageName={packageName}
         template={template}
-        version={""}
+        versionOrEnvironment={promptEnvironment.Enum.RELEASE}
       />
     </>
   );

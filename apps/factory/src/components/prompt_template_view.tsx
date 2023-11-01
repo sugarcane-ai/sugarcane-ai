@@ -26,14 +26,14 @@ interface PromptTemplateViewProps {
   username: string;
   packageName: string;
   template: string;
-  version: string;
+  versionOrEnvironment: string;
 }
 
 const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   username,
   packageName,
   template,
-  version,
+  versionOrEnvironment,
 }) => {
   const { data: session, status } = useSession();
   const [checked, setChecked] = useState(isDev);
@@ -48,8 +48,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     username: username,
     package: packageName,
     template: template,
-    environment: promptEnvironment.Enum.RELEASE,
-    version: version,
+    versionOrEnvironment: versionOrEnvironment?.toUpperCase(),
   });
 
   useEffect(() => {
@@ -79,7 +78,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const generateMutation = api.service.generate.useMutation(); // Make sure to import 'api' and set up the service
 
   const handleRun = async (e: any) => {
-    console.log(`running template version ${version}`);
+    console.log(`running template version ${versionOrEnvironment}`);
 
     let data: { [key: string]: any } = {};
     for (const item of pvrs as PromptVariableProps[]) {
@@ -90,9 +89,9 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
       username: username,
       package: packageName || "",
       template: template || "",
-      versionOrEnvironment: version || "",
+      versionOrEnvironment: versionOrEnvironment?.toUpperCase() || "",
       isDevelopment: checked,
-      environment: promptEnvironment.Enum.RELEASE,
+
       data: data,
     } as GenerateInput);
 
@@ -118,7 +117,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
       <Header headerName={"Sugar Cubes"} />
       <Container className="center">
         <div className="dark:border-gray-70  w-full rounded-lg border p-4 shadow sm:p-6">
-          {(data && data.releaseVersion === version) || !version ? (
+          {data || !versionOrEnvironment ? (
             <>
               <h5 className="mb-3 text-base font-semibold text-gray-900 dark:text-white md:text-xl">
                 {data?.description}
