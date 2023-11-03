@@ -282,9 +282,9 @@ function PromptVersion({
               variant="outlined"
               onClick={handleRun}
               disabled={template.length <= 10}
-              loadingPosition="end"
+              loadingPosition="start"
               loading={isLoading}
-              sx={{ width: "7rem" }}
+              sx={{ width: "8rem" }}
             >
               {isLoading ? (
                 <>
