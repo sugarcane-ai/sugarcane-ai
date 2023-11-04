@@ -76,9 +76,9 @@ export function CreatePackage({
 
   return (
     <>
-      <Grid container justifyContent="flex-end">
-        <Button size="small" variant="outlined" onClick={() => setIsOpen(true)}>
-          Create
+      <Grid container justifyContent="flex-start">
+        <Button size="medium" variant="outlined" onClick={() => setIsOpen(true)}>
+          Create Prompt Package
         </Button>
       </Grid>
 
