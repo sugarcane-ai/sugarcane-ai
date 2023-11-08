@@ -12,7 +12,7 @@ import { Avatar } from "@mui/material";
 import Logo from "../../../public/favicon.ico";
 const Header = () => {
   return (
-    <AppBar position="sticky" color="default">
+    <AppBar position="sticky" sx={{ backgroundColor: "#1c1c1c" }}>
       <Toolbar>
         <Container maxWidth="lg">
           <Box
@@ -23,7 +23,7 @@ const Header = () => {
           >
             <Typography variant="h6" component="div">
               <Link href="/" color="inherit" underline="none">
-                <IconButton sx={{ p: 0 }}>
+                <IconButton sx={{ p: 0, marginRight: "1rem" }}>
                   <Avatar alt="logo" src={Logo.src} />
                 </IconButton>
                 Sugar Hub
