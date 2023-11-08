@@ -6,6 +6,7 @@ import {
   Paper,
   Button,
   CircularProgress,
+  Box,
 } from "@mui/material";
 import Header from "~/components/marketplace/header";
 import { NextPage } from "next";
@@ -14,10 +15,12 @@ import PublicPackages from "~/components/marketplace/public_package";
 const MarketplacePage: NextPage = () => {
   return (
     <>
-      <Header></Header>
-      <Container>
-        <PublicPackages></PublicPackages>
-      </Container>
+      <Box sx={{ backgroundColor: "#1c1c1c" }}>
+        <Header></Header>
+        <Container>
+          <PublicPackages></PublicPackages>
+        </Container>
+      </Box>
     </>
   );
 };

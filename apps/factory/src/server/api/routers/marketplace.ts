@@ -27,7 +27,13 @@ export const marketplaceRouter = createTRPCRouter({
         },
       });
       console.log(`packages out -------------- ${JSON.stringify(packages)}`);
-      return packages;
+
+      // sort according to date when packages were created
+      const sortedPackageArray = packages.sort(
+        (packageA, packageB) =>
+          Number(packageB.createdAt) - Number(packageA.createdAt),
+      );
+      return sortedPackageArray;
     }),
 
   getPackage: publicProcedure
