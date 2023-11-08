@@ -9,6 +9,7 @@ import {
   Grid,
   Avatar,
   IconButton,
+  Box,
 } from "@mui/material";
 
 import { api } from "~/utils/api";
@@ -63,7 +64,7 @@ function PublicPackages() {
                 <Typography>{pkg?.description}</Typography>
               </CardContent>
               <CardActions>
-                <PromptTags></PromptTags>
+                {/* <PromptTags></PromptTags> */}
                 <Grid
                   direction="row"
                   container
@@ -75,9 +76,21 @@ function PublicPackages() {
           </Grid>
         ))
       ) : (
-        <Grid item xs={12}>
-          <Typography sx={{ color: "#FFFFFF" }}>No cards created</Typography>
-        </Grid>
+        <Box
+          sx={{
+            width: "100vw",
+            height: "100vh",
+            padding: "0",
+            margin: "0",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Typography sx={{ color: "#FFFFFF", fontSize: "1.4rem" }}>
+            No cards created
+          </Typography>
+        </Box>
       )}
     </Grid>
   );
