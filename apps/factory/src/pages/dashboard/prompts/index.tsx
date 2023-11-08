@@ -62,7 +62,18 @@ function Packages(props) {
             <Card>
               <CardHeader title={pkg?.name} />
               <CardContent>
-                <Typography>{pkg?.description}</Typography>
+                <Typography
+                  sx={{
+                    height: "3em",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    display: "-webkit-box",
+                    WebkitLineClamp: "2",
+                    WebkitBoxOrient: "vertical",
+                  }}
+                >
+                  {pkg?.description}
+                </Typography>
               </CardContent>
               <CardActions>
                 <Chip
