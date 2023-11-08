@@ -235,7 +235,7 @@ export const promptRouter = createTRPCRouter({
       } catch (error: any) {
         console.log(`Error in creating version -------------- ${error}`);
         if (error.code === "P2002" && error.meta?.target.includes("version")) {
-          const errorMessage = { error: { message: "Name already exist" } };
+          const errorMessage = { error: { message: "Version already exist" } };
           throw new Error(JSON.stringify(errorMessage));
         }
         throw new Error("Something went wrong");
