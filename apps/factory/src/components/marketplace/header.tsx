@@ -8,7 +8,8 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-
+import { Avatar } from "@mui/material";
+import Logo from "../../../public/favicon.ico";
 const Header = () => {
   return (
     <AppBar position="sticky" color="default">
@@ -22,9 +23,9 @@ const Header = () => {
           >
             <Typography variant="h6" component="div">
               <Link href="/" color="inherit" underline="none">
-                {/* <IconButton edge="start" color="inherit" aria-label="menu">
-                  <MenuIcon />
-                </IconButton> */}
+                <IconButton sx={{ p: 0 }}>
+                  <Avatar alt="logo" src={Logo.src} />
+                </IconButton>
                 Sugar Hub
               </Link>
             </Typography>
