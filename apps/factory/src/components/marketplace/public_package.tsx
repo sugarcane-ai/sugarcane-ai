@@ -41,9 +41,6 @@ function PublicPackages() {
                 }
                 action={
                   <span>
-                    <IconButton aria-label="settings" sx={{ color: "#FFFFFF" }}>
-                      <LikeButton count={100}></LikeButton>
-                    </IconButton>
                     <IconButton
                       href={`/marketplace/packages/${pkg?.id}`}
                       sx={{ color: "#FFFFFF" }}

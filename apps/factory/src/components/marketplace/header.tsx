@@ -12,7 +12,7 @@ import { Avatar } from "@mui/material";
 import Logo from "../../../public/favicon.ico";
 const Header = () => {
   return (
-    <AppBar position="sticky" sx={{ backgroundColor: "#1c1c1c" }}>
+    <AppBar position="sticky" sx={{ backgroundColor: "#272727" }}>
       <Toolbar>
         <Container maxWidth="lg">
           <Box

@@ -15,7 +15,7 @@ import PublicPackages from "~/components/marketplace/public_package";
 const MarketplacePage: NextPage = () => {
   return (
     <>
-      <Box sx={{ backgroundColor: "#1c1c1c" }}>
+      <Box sx={{ backgroundColor: "#272727" }}>
         <Header></Header>
         <Container>
           <PublicPackages></PublicPackages>
