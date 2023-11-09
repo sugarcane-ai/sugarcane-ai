@@ -39,10 +39,17 @@ const PromptTemplate = ({
 
   // console.log(`pvs <<<<>>>> ${JSON.stringify(pvs)}`);
 
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(() => {
+    if (typeof window !== "undefined") {
+      return parseInt(localStorage.getItem("activeVersion") || "0", 10);
+    } else {
+      return 0;
+    }
+  });
 
   const handleChangeTab = (event: any, newValue: number) => {
     setActiveTab(newValue);
+    localStorage.setItem("activeVersion", `${newValue}`);
   };
 
   const handleVersionCreate = (pv: any) => {

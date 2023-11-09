@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   Box,
@@ -48,7 +48,14 @@ const PackageShow: NextPageWithLayout = () => {
     id: packageId,
   });
   // console.log(`pp <<<<>>>> ${JSON.stringify(pp)}`);
-  const [ptId, setPtId] = useState<string>("");
+  // const [ptId, setPtId] = useState<string>("");
+  const [ptId, setPtId] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("ptId") || "";
+    } else {
+      return "";
+    }
+  });
   const [pt, setPt] = useState<pt>();
 
   const { data: pts, refetch: rpts } = api.prompt.getTemplates.useQuery({
@@ -56,10 +63,17 @@ const PackageShow: NextPageWithLayout = () => {
   });
   // console.log(`pts <<<<>>>> ${JSON.stringify(pts)}`);
 
+  useEffect(() => {
+    setPt(pts?.find((pt) => pt.id == ptId));
+  });
+
   const handleTemplateSelection = (e: any) => {
     const id = e.target.value;
     setPtId(id);
     setPt(pts?.find((pt) => pt.id == id));
+    if (typeof window !== "undefined") {
+      localStorage.setItem("ptId", id);
+    }
   };
 
   const ptCreateMutation = api.prompt.createTemplate.useMutation({
