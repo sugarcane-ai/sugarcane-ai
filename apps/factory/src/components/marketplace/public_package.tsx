@@ -29,7 +29,7 @@ function PublicPackages() {
       {packages && packages.length > 0 ? (
         packages.map((pkg, index) => (
           <Grid item key={index} xs={12} sm={6} md={12} lg={12}>
-            <Card sx={{ backgroundColor: "#1e1e1e", color: "#FFFFFF" }}>
+            <Card sx={{ backgroundColor: "#454545", color: "#FFFFFF" }}>
               <CardHeader
                 title={`${pkg?.User.username} / ${pkg?.name}`}
                 avatar={
@@ -60,15 +60,6 @@ function PublicPackages() {
               <CardContent>
                 <Typography>{pkg?.description}</Typography>
               </CardContent>
-              <CardActions>
-                {/* <PromptTags></PromptTags> */}
-                <Grid
-                  direction="row"
-                  container
-                  alignItems="left"
-                  spacing={2}
-                ></Grid>
-              </CardActions>
             </Card>
           </Grid>
         ))

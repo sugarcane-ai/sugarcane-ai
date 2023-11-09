@@ -109,10 +109,19 @@ export const PromptIntegration = ({
     <>
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <TabList onChange={handleChange} aria-label="lab API tabs example">
-            <Tab label="Javascript" value="1" />
-            <Tab label="Python" value="2" />
-            <Tab label="Curl" value="3" />
+          <TabList
+            onChange={handleChange}
+            aria-label="lab API tabs example"
+            TabIndicatorProps={{ style: { background: "white" } }}
+            sx={{
+              ".Mui-selected": {
+                color: `#FFFFFF`,
+              },
+            }}
+          >
+            <Tab label="Javascript" value="1" sx={{ color: "white" }} />
+            <Tab label="Python" value="2" sx={{ color: "white" }} />
+            <Tab label="Curl" value="3" sx={{ color: "white" }} />
           </TabList>
         </Box>
         <TabPanel value="1">

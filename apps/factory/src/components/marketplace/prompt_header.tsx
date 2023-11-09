@@ -22,7 +22,8 @@ const PromptHeader = ({ pp }: { pp: pp }) => {
   return (
     <Paper
       elevation={0}
-      className="from-gray-50-to-white border-b border-gray-100 bg-gradient-to-t"
+      // className="from-gray-50-to-white border-b border-gray-100 bg-gradient-to-t"
+      sx={{ backgroundColor: "#454545" }}
     >
       <Container maxWidth="lg" sx={{ pt: 6, sm: { pt: 9 } }}>
         <Stack direction="row" spacing={1} sx={{ p: 1 }}>
@@ -73,7 +74,13 @@ const PromptHeader = ({ pp }: { pp: pp }) => {
           {/* <Grid  direction="row" container alignItems="center" spacing={2}> */}
           {tags &&
             tags.map((tag, index) => (
-              <Chip key={index} label={tag} variant="outlined" sx={{ ml: 2 }} />
+              <Chip
+                key={index}
+                label={tag}
+                variant="outlined"
+                sx={{ ml: 2 }}
+                sx={{ color: "#FFFFFF" }}
+              />
             ))}
 
           {/* </Grid> */}

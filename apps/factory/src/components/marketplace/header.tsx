@@ -9,10 +9,11 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Avatar } from "@mui/material";
-import Logo from "../../../public/favicon.ico";
+import Logo1 from "../../../public/navbar-logo.png";
+import Logo2 from "../../../public/favicon.ico";
 const Header = () => {
   return (
-    <AppBar position="sticky" sx={{ backgroundColor: "#272727" }}>
+    <AppBar position="sticky" sx={{ backgroundColor: "#1c1c1c" }}>
       <Toolbar>
         <Container maxWidth="lg">
           <Box
@@ -21,10 +22,14 @@ const Header = () => {
             justifyContent="space-between"
             width="100%"
           >
-            <Typography variant="h6" component="div">
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ fontWeight: "1000" }}
+            >
               <Link href="/" color="inherit" underline="none">
                 <IconButton sx={{ p: 0, marginRight: "1rem" }}>
-                  <Avatar alt="logo" src={Logo.src} />
+                  <Avatar alt="logo" src={Logo1.src} />
                 </IconButton>
                 Sugar Hub
               </Link>
@@ -43,6 +48,9 @@ const Header = () => {
                 Documentation
               </Link> */}
             </nav>
+            <IconButton sx={{ p: 0, marginRight: "1rem" }}>
+              <Avatar alt="logo" src={Logo2.src} />
+            </IconButton>
           </Box>
         </Container>
       </Toolbar>
