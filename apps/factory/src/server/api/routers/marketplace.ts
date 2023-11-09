@@ -29,14 +29,11 @@ export const marketplaceRouter = createTRPCRouter({
       console.log(`packages out -------------- ${JSON.stringify(packages)}`);
 
       // sort according to date when packages were created
-      // const sortedPackageArray = packages.sort(
-      //   (packageA, packageB) =>
-      //     Number(packageB.createdAt) - Number(packageA.createdAt),
-      // );
+
       packages.sort((packageA, packageB) => {
         return (
-          -new Date(packageA.createdAt).valueOf() +
-          new Date(packageB.createdAt).valueOf()
+          new Date(packageB.createdAt).valueOf() -
+          new Date(packageA.createdAt).valueOf()
         );
       });
       return packages;
