@@ -11,6 +11,7 @@ import {
   Snackbar,
   Alert,
   Chip,
+  Button,
 } from "@mui/material";
 import { CreatePackage } from "~/components/create_package";
 import UpdatePackage from "~/components/update_package";
@@ -75,6 +76,14 @@ function Packages() {
     });
   };
 
+  const truncateDescription = (description: string, maxLines: number) => {
+    const lines = description.split(" ");
+    if (lines.length <= maxLines * 10) {
+      return description;
+    }
+    return lines.slice(0, maxLines * 10).join(" ") + "...";
+  };
+
   return (
     <Grid container spacing={1}>
       {packages && packages.length > 0 ? (
@@ -82,9 +91,39 @@ function Packages() {
           <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
             <Card>
               <CardHeader title={pkg?.name} />
-              <CardContent>
-                <Typography>{pkg?.description}</Typography>
-              </CardContent>
+              {pkg?.description ? (
+                <CardContent>
+                  <Typography
+                    variant="body2"
+                    style={{
+                      overflow: "hidden",
+                      height: "40px",
+                      textOverflow: "ellipsis",
+                      display: "-webkit-box",
+                      WebkitBoxOrient: "vertical",
+                      WebkitLineClamp: 2,
+                    }}
+                  >
+                    {truncateDescription(pkg?.description || "", 2)}
+                  </Typography>
+                </CardContent>
+              ) : (
+                <CardContent>
+                  <Typography
+                    variant="body2"
+                    style={{
+                      height: "40px",
+                      alignItems: "center",
+                      alignContent: "center",
+                      paddingBottom: "20px",
+                      fontSize: "17px",
+                      opacity: "60%",
+                    }}
+                  >
+                    {"No description entered"}
+                  </Typography>
+                </CardContent>
+              )}
               <CardActions>
                 <Chip
                   sx={{ mr: 2 }}
@@ -92,16 +131,47 @@ function Packages() {
                   label={pkg?.visibility}
                   // variant="conti"
                 />
-                <MUILink href={`/dashboard/prompts/${pkg?.id}`}>View</MUILink>
-                <MUILink href={`/dashboard/prompts/${pkg?.id}/logs`}>
+                {/* <div style={{paddingLeft:'1px'}}> */}
+                <Button
+                  href={`/dashboard/prompts/${pkg?.id}`}
+                  style={{
+                    accentColor: "black",
+                    borderColor: "GrayText",
+                    borderRadius: "25px",
+                    padding: 0,
+                    textTransform: "none",
+                  }}
+                >
+                  View
+                </Button>
+                <Button
+                  href={`/dashboard/prompts/${pkg?.id}/logs`}
+                  style={{
+                    accentColor: "black",
+                    borderColor: "GrayText",
+                    borderRadius: "25px",
+                    padding: 0,
+                    textTransform: "none",
+                  }}
+                >
                   Logs
-                </MUILink>
-                <MUILink
+                </Button>
+                {/* <div style={{ padding: 0 }}> */}
+                <Button
                   sx={{ cursor: "pointer" }}
                   onClick={() => handleOpen(pkg!.id)}
+                  style={{
+                    accentColor: "black",
+                    borderColor: "GrayText",
+                    left: 1,
+                    borderRadius: "25px",
+                    padding: "0px",
+                    textTransform: "none",
+                  }}
                 >
                   Edit
-                </MUILink>
+                </Button>
+                {/* </div> */}
               </CardActions>
             </Card>
           </Grid>
