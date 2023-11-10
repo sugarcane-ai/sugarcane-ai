@@ -204,7 +204,7 @@ function PromptVersion({
           ></TextField> */}
           <Box display="inline" id={"prompt-version-actions" + pt?.id}>
             {!pv.publishedAt && (
-              <Tooltip title="Deploy" placement="top-start">
+              <Tooltip title="Save Version" placement="top-start">
                 <Button color="success" variant="text" onClick={handleSave}>
                   <SaveIcon />
                 </Button>
@@ -220,7 +220,9 @@ function PromptVersion({
             ></CreateVersion>
 
             {pv.publishedAt ? (
-              <PublishedWithChangesIcon />
+              <Tooltip title="Published Version" placement="top-start">
+                <PublishedWithChangesIcon />
+              </Tooltip>
             ) : (
               <PromptDeploy
                 ns={ns}

@@ -201,7 +201,7 @@ const PackageShow: NextPageWithLayout = () => {
                     {pt?.previewVersion?.version && (
                       <Typography component="span" sx={{ ml: 1, p: 2 }}>
                         <PublicUrl
-                          title={"Preview Url"}
+                          title={"Preview URL"}
                           url={`/${ns?.username}/${pp.name}/${ptName}/preview`}
                         />
                       </Typography>
@@ -218,7 +218,7 @@ const PackageShow: NextPageWithLayout = () => {
                     {pt?.releaseVersion?.version && (
                       <Typography component="span" sx={{ ml: 1, p: 2 }}>
                         <PublicUrl
-                          title={"Release Url"}
+                          title={"Release URL"}
                           url={`/${ns?.username}/${pp.name}/${ptName}/release`}
                         />
                       </Typography>
