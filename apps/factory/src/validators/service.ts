@@ -40,7 +40,9 @@ export const getPromptOutput = z
   .object({
     version: z.string().optional(),
     template: z.string(),
-
+    description: z.string().optional(),
+    modelType: ModelTypeSchema,
+    versionOrEnvironment: z.string().default(promptEnvironment.Enum.RELEASE),
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
   })
@@ -73,6 +75,9 @@ export const generateOutput = z
     total_tokens: z.number(),
 
     labelledState: LabelledStateSchema,
+    llmProvider: z.string(),
+    llmModel: z.string(),
+    llmModelType: ModelTypeSchema,
 
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),

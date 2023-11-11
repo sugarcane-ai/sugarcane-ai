@@ -33,10 +33,18 @@ import HomeIcon from "@mui/icons-material/Home";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
 import { NextPageWithLayout } from "~/pages/_app";
 import { colorType } from "~/validators/base";
+import PublicUrl from "~/components/integration/public_url";
 
 const PackageShow: NextPageWithLayout = () => {
   const router = useRouter();
-  const packageId = router.query.id as string;
+  const { pathname, query } = router;
+  const packageId = query.id as string;
+
+  // to handle the status of mutation
+  const [status, setStatus] = useState("");
+
+  //to throw error that we receive from backend
+  const [customError, setCustomError] = useState({});
 
   const { data: sessionData } = useSession();
 
@@ -49,6 +57,7 @@ const PackageShow: NextPageWithLayout = () => {
   });
   // console.log(`pp <<<<>>>> ${JSON.stringify(pp)}`);
   const [ptId, setPtId] = useState<string>("");
+  const [ptName, setPtName] = useState<string>("");
   const [pt, setPt] = useState<pt>();
 
   const { data: pts, refetch: rpts } = api.prompt.getTemplates.useQuery(
@@ -56,30 +65,47 @@ const PackageShow: NextPageWithLayout = () => {
       promptPackageId: packageId,
     },
     {
-      onSuccess(item) {
-        if (item.length != 0) {
-          setPtId(item[0]!.id);
-          setPt(item[0]);
+      onSuccess(lPts) {
+        if (lPts.length != 0 && !ptId) {
+          let ptId: string = query.ptid ? (query.ptid as string) : lPts[0]!.id;
+          handleTemplateSelection(ptId, lPts);
         }
       },
     },
   );
-  // console.log(`pts <<<<>>>> ${JSON.stringify(pts)}`);
 
-  const handleTemplateSelection = (e: any) => {
-    const id = e.target.value;
-    setPtId(id);
-    setPt(pts?.find((pt) => pt.id == id));
+  const handleTemplateSelection = (ptId: string, lPts: pt[] = []) => {
+    const selectedTemplate = lPts?.find((pt) => pt?.id === ptId);
+
+    console.log(
+      `ptId <> selected ${ptId} ${lPts?.length} ${selectedTemplate?.name}`,
+    );
+
+    // Update url query
+    query.ptid = ptId;
+    router.push({ pathname: pathname, query: query });
+
+    // Set states
+    setPtName(selectedTemplate?.name as string);
+    setPtId(ptId);
+    setPt(selectedTemplate);
   };
 
   const ptCreateMutation = api.prompt.createTemplate.useMutation({
+    onError: (error) => {
+      const errorData = JSON.parse(error.message);
+      setCustomError(errorData);
+    },
     onSuccess: (uPt) => {
       if (uPt !== null) {
+        toast.success("Template Created Successfully");
+        setStatus("success");
         pts?.push(uPt);
         rpts();
         setPt(uPt);
         setPtId(uPt?.id);
-        toast.success("Template Created Successfully");
+      } else {
+        toast.error("Something went wrong, Please try again");
       }
     },
   });
@@ -122,7 +148,7 @@ const PackageShow: NextPageWithLayout = () => {
                   label="Select Template"
                   id="pt-selector"
                   value={ptId}
-                  onChange={handleTemplateSelection}
+                  onChange={(e) => handleTemplateSelection(e.target.value, pts)}
                 >
                   {pts.map((t, index) => (
                     <MenuItem key={"pt-" + index} value={t.id}>
@@ -137,6 +163,8 @@ const PackageShow: NextPageWithLayout = () => {
             <CreateTemplate
               pp={pp as pp}
               onCreate={ptCreateMutation.mutate}
+              status={status}
+              customError={customError}
             ></CreateTemplate>
             {pt && <Box sx={{ flexGrow: 1 }}></Box>}
             {pt && (
@@ -189,6 +217,14 @@ const PackageShow: NextPageWithLayout = () => {
                         variant="outlined"
                       />
                     </Typography>
+                    {pt?.previewVersion?.version && (
+                      <Typography component="span" sx={{ ml: 1, p: 2 }}>
+                        <PublicUrl
+                          title={"Preview URL"}
+                          url={`/${ns?.username}/${pp.name}/${ptName}/preview`}
+                        />
+                      </Typography>
+                    )}
                     <Typography component="span" sx={{ ml: 1 }}>
                       Release :{" "}
                       <Chip
@@ -198,6 +234,14 @@ const PackageShow: NextPageWithLayout = () => {
                         variant="outlined"
                       />
                     </Typography>
+                    {pt?.releaseVersion?.version && (
+                      <Typography component="span" sx={{ ml: 1, p: 2 }}>
+                        <PublicUrl
+                          title={"Release URL"}
+                          url={`/${ns?.username}/${pp.name}/${ptName}/release`}
+                        />
+                      </Typography>
+                    )}
                   </Box>
                 </Paper>
               </Box>

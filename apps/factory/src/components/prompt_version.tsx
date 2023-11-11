@@ -9,6 +9,7 @@ import {
   Checkbox,
   Typography,
   Chip,
+  Tooltip,
 } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import LLMSelector from "./llm_selector";
@@ -38,13 +39,14 @@ import LoadingButton from "@mui/lab/LoadingButton";
 
 const isDev = process.env.NODE_ENV === "development";
 import LabelIcons from "./label_icon";
-import { LogOutput } from "~/validators/prompt_log";
 import _debounce from "lodash/debounce";
 import { providerModels } from "~/validators/base";
 import {
   ModelTypeSchema,
   ModelTypeType,
 } from "~/generated/prisma-client-zod.ts";
+import PromotOutputLog from "./prompt_output_log";
+import { displayModes } from "~/validators/base";
 
 function PromptVersion({
   ns,
@@ -214,9 +216,11 @@ function PromptVersion({
           ></TextField> */}
           <Box display="inline" id={"prompt-version-actions" + pt?.id}>
             {!pv.publishedAt && (
-              <Button color="success" variant="text" onClick={handleSave}>
-                <SaveIcon />
-              </Button>
+              <Tooltip title="Save Version" placement="top-start">
+                <Button color="success" variant="text" onClick={handleSave}>
+                  <SaveIcon />
+                </Button>
+              </Tooltip>
             )}
 
             <CreateVersion
@@ -228,7 +232,9 @@ function PromptVersion({
             ></CreateVersion>
 
             {pv.publishedAt ? (
-              <PublishedWithChangesIcon />
+              <Tooltip title="Published Version" placement="top-start">
+                <PublishedWithChangesIcon />
+              </Tooltip>
             ) : (
               <PromptDeploy
                 ns={ns}
@@ -337,7 +343,11 @@ function PromptVersion({
             </Grid>
           </Stack>
           <Box sx={{ m: 1 }}>
-            <PromptVariables vars={pvrs} onChange={handleVariablesChange} />
+            <PromptVariables
+              vars={pvrs}
+              onChange={handleVariablesChange}
+              mode={displayModes.Enum.VIEW}
+            />
           </Box>
         </Box>
 
@@ -350,11 +360,20 @@ function PromptVersion({
                   modelType={pt?.modelType as ModelTypeType}
                 ></PromptOutput>
                 {pl && (
-                  <Box sx={{ ml: 5 }}>
+                  <Box
+                    sx={{
+                      ml: 5,
+                      justifyContent: "space-evenly",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
                     <LabelIcons
                       logId={pl?.id}
                       labelledState={pl?.labelledState}
                     />
+                    |
+                    <PromotOutputLog pl={pl} />
                   </Box>
                 )}
               </Grid>

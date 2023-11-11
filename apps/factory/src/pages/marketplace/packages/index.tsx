@@ -15,8 +15,15 @@ import PublicPackages from "~/components/marketplace/public_package";
 const MarketplacePage: NextPage = () => {
   return (
     <>
-      <Box sx={{ backgroundColor: "#1c1c1c" }}>
-        <Header></Header>
+      <Box
+        sx={{
+          backgroundColor: "#1c1c1c",
+          height: "100vh",
+          width: "100vw",
+          overflowY: "scroll",
+        }}
+      >
+        <Header headerName={"Sugar Hub"}></Header>
         <Container>
           <PublicPackages></PublicPackages>
         </Container>

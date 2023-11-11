@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
+import { RESERVED_NAMES } from "./reserved_names";
 
 const templateNameInput = z
   .string()
@@ -12,7 +13,10 @@ const templateNameInput = z
   .regex(/^[a-z0-9-]+$/, {
     message: "Name must only contain lowercase letters, numbers, and dashes.",
   })
-  .transform((value) => value.toLowerCase());
+  .transform((value) => value.toLowerCase())
+  .refine((value) => !RESERVED_NAMES.includes(value), {
+    message: "This name is reserved.",
+  });
 
 export const getTemplatesInput = z
   .object({
@@ -81,7 +85,7 @@ export const templateSchema = z.object({
 
   name: z.string(),
   description: z.string(),
-  modelType: z.string(),
+  modelType: ModelTypeSchema,
 
   releaseVersionId: z.string().or(z.null()),
   previewVersionId: z.string().or(z.null()),

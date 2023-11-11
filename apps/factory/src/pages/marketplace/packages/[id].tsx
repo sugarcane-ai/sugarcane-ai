@@ -9,8 +9,6 @@ import {
   CardActions,
   IconButton,
   Card,
-  Avatar,
-  CardHeader,
   Box,
   TableContainer,
   Table,
@@ -22,13 +20,7 @@ import {
 import Header from "~/components/marketplace/header";
 import { NextPage } from "next";
 import { api } from "~/utils/api";
-import PromptVariables from "~/components/prompt_variables";
 import { packageVisibility } from "~/validators/base";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ShareIcon from "@mui/icons-material/Share";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { ExpandMore } from "@mui/icons-material";
 import React from "react";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -41,6 +33,7 @@ import { PromptIntegration } from "~/components/integration/prompt_integration";
 import PromptHeader from "~/components/marketplace/prompt_header";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
+import PublicUrl from "~/components/integration/public_url";
 
 const MarketplacePage: NextPage = () => {
   const router = useRouter();
@@ -73,7 +66,7 @@ const MarketplacePage: NextPage = () => {
       }}
     >
       <Container>
-        <Header></Header>
+        <Header headerName="Sugar Hub"></Header>
         <Box
           sx={{
             backgroundColor: "#454545",
@@ -91,7 +84,7 @@ const MarketplacePage: NextPage = () => {
 
 export default MarketplacePage;
 
-function Row({ pt }: { pt: ptt }) {
+function Row({ pt, pp }: { pt: ptt; pp: ppt }) {
   // const { row } = props;
   const [open, setOpen] = React.useState(false);
 
@@ -147,22 +140,22 @@ function Row({ pt }: { pt: ptt }) {
               </Typography>
 
               {pt?.releaseVersion && (
-                <Typography
-                  component="p"
-                  gutterBottom
-                  sx={{ color: "#FFFFFF" }}
-                >
+                <Typography component="p" gutterBottom>
+                  <PublicUrl
+                    title={"Release URL"}
+                    url={`/${pp?.User?.username}/${pp?.name}/${pt.name}/release`}
+                  />
                   Release ({pt?.releaseVersion?.version}):{" "}
                   {pt?.releaseVersion?.template}
                 </Typography>
               )}
 
               {pt?.previewVersion && (
-                <Typography
-                  component="p"
-                  gutterBottom
-                  sx={{ color: "#FFFFFF" }}
-                >
+                <Typography component="p" gutterBottom>
+                  <PublicUrl
+                    title={"Preview URL"}
+                    url={`/${pp?.User?.username}/${pp?.name}/${pt.name}/preview`}
+                  />
                   Preview ({pt?.previewVersion?.version}):{" "}
                   {pt?.previewVersion?.template}
                 </Typography>
@@ -218,8 +211,7 @@ export function CollapsibleTable({ pp }: { pp: ppt }) {
             pp.templates.map(
               (pt, index) =>
                 (pt.releaseVersion || pt.previewVersion) && (
-                  <Row key={index} pt={pt} />
-                  // <p style={{color:"#FFFFFF"}}>hello world</p>
+                  <Row key={index} pt={pt} pp={pp} />
                 ),
             )}
         </TableBody>

@@ -64,7 +64,6 @@ function Packages() {
 
     mutation.mutate(input, {
       onSuccess() {
-        console.log("hello my dear friend");
         toast.success("Package Updated Successfully");
         setPackages([...newArray]);
         setOpen(false);

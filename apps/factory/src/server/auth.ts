@@ -53,6 +53,7 @@ function getAuthOptions(): NextAuthOptions {
   let options: NextAuthOptions = {
     callbacks: {
       async signIn({ user, account, profile }: any) {
+        if (account.type === "credentials") return true;
         if (user) {
           if (user.username) {
             const existingUser = await prisma.user.findUnique({
@@ -90,8 +91,10 @@ function getAuthOptions(): NextAuthOptions {
         },
       }),
       redirect: ({ url, baseUrl }: { url: string; baseUrl: string }) => {
-        console.log(url, baseUrl);
-        return "/dashboard";
+        const extraRoute = url.substring(baseUrl.length);
+        console.log(url, baseUrl, extraRoute);
+
+        return extraRoute === "/" ? "/dashboard" : url;
       },
 
       jwt({ token, user, account, profile, session }: any) {
@@ -182,6 +185,7 @@ function getAuthOptions(): NextAuthOptions {
             id: env.DEMO_USER_ID as string,
             name: "Demo",
             email: "demo@demo.com",
+            username: "demo",
           };
 
           if (
@@ -236,7 +240,6 @@ function getAuthOptions(): NextAuthOptions {
 }
 
 export const authOptions: NextAuthOptions = getAuthOptions();
-console.log("authOptions:", authOptions);
 
 /**
  * Wrapper for `getServerSession` so that you don't need to import the `authOptions` in every file.
