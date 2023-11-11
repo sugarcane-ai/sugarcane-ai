@@ -12,7 +12,7 @@ import { useRouter } from "next/router";
 import Logo1 from "../../../public/navbar-logo.png";
 import Logo2 from "../../../public/favicon.ico";
 
-const Header = ({ headerName }) => {
+const Header = (props: any) => {
   const router = useRouter();
   const { data: sessionData } = useSession();
   const [open, setOpen] = useState<boolean>(false);
