@@ -165,6 +165,8 @@ const PackageShow: NextPageWithLayout = () => {
               onCreate={ptCreateMutation.mutate}
               status={status}
               customError={customError}
+              length={pts!.length}
+              ptId={ptId}
             ></CreateTemplate>
             {pt && <Box sx={{ flexGrow: 1 }}></Box>}
             {pt && (

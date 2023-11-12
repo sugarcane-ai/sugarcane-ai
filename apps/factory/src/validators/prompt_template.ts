@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
 import { RESERVED_NAMES } from "./reserved_names";
+import { xcode } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 const templateNameInput = z
   .string()
@@ -48,6 +49,7 @@ export type CreateTemplateInput = z.infer<typeof createTemplateInput>;
 
 export const updateTemplateInput = z
   .object({
+    id: z.string(),
     name: templateNameInput,
     description: z.string(),
   })
