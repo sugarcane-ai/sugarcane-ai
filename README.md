@@ -268,52 +268,26 @@ Contribute to Sugarcane AI with the following steps:
 
 Thanks to the following contributors for their efforts and support in adding value to the project.
 
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
 <table>
-  <tr>
-    <td align="center">
-      <a href="https://github.com/username1">
-        <img src="https://avatars.githubusercontent.com/u/1234567?v=4" width="80px;" alt="username1"/>
-      </a>
-      <br />
-      <a href="https://github.com/devilankur18">devilankur18</a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/username2">
-        <img src="https://avatars.githubusercontent.com/u/2345678?v=4" width="80px;" alt="username2"/>
-      </a>
-      <br />
-      <a href="https://github.com/pulkit21">Pulkit</a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/username2">
-        <img src="https://avatars.githubusercontent.com/u/2345678?v=4" width="80px;" alt="username2"/>
-      </a>
-      <br />
-      <a href="https://github.com/patil-vipul">Vipul</a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/username2">
-        <img src="https://avatars.githubusercontent.com/u/2345678?v=4" width="80px;" alt="username2"/>
-      </a>
-      <br />
-      <a href="https://github.com/yashmyeole">yashmyeole</a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/username2">
-        <img src="https://avatars.githubusercontent.com/u/2345678?v=4" width="80px;" alt="username2"/>
-      </a>
-      <br />
-      <a href="https://github.com/ravinderk1191">ravinderk1191</a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/username2">
-        <img src="https://avatars.githubusercontent.com/u/2345678?v=4" width="80px;" alt="username2"/>
-      </a>
-      <br />
-      <a href="https://github.com/jsaurav7">jsaurav7</a>
-    </td>
-  </tr>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://sugarcaneai.dev"><img src="https://avatars.githubusercontent.com/u/431165?v=4?s=100" width="100px;" alt="Ankur Agarwal"/><br /><sub><b>Ankur Agarwal</b></sub></a><br /><a href="#projectManagement-devilankur18" title="Project Management">📆</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ravinderk1191"><img src="https://avatars.githubusercontent.com/u/145797535?v=4?s=100" width="100px;" alt="ravinderk1191"/><br /><sub><b>ravinderk1191</b></sub></a><br /><a href="#maintenance-ravinderk1191" title="Maintenance">🚧</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://pulkitagarwal.com"><img src="https://avatars.githubusercontent.com/u/3229362?v=4?s=100" width="100px;" alt="Pulkit Agarwal"/><br /><sub><b>Pulkit Agarwal</b></sub></a><br /><a href="#code-pulkit21" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/patil-vipul"><img src="https://avatars.githubusercontent.com/u/65603015?v=4?s=100" width="100px;" alt="Vipul Patil"/><br /><sub><b>Vipul Patil</b></sub></a><br /><a href="#code-patil-vipul" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/jsaurav7"><img src="https://avatars.githubusercontent.com/u/89625052?v=4?s=100" width="100px;" alt="Saurav Jha"/><br /><sub><b>Saurav Jha</b></sub></a><br /><a href="#code-jsaurav7" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Rahul917-Kumar"><img src="https://avatars.githubusercontent.com/u/82316009?v=4?s=100" width="100px;" alt="Rahul Kumar"/><br /><sub><b>Rahul Kumar</b></sub></a><br /><a href="#code-Rahul917-Kumar" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/yashmyeole"><img src="https://avatars.githubusercontent.com/u/63413296?v=4?s=100" width="100px;" alt="yashmyeole"/><br /><sub><b>yashmyeole</b></sub></a><br /><a href="#design-yashmyeole" title="Design">🎨</a></td>
+    </tr>
+  </tbody>
 </table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ## 🌐 Connect with Us <a name="connect-with-us--"></a>
