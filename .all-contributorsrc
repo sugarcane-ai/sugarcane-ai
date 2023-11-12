@@ -1,4 +1,21 @@
 {
-    "projectName": "sugarcane-ai",
-    "projectOwner": "sugarcane-ai"
+  "projectName": "sugarcane-ai",
+  "projectOwner": "sugarcane-ai",
+  "files": [
+    "README.md"
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "ravinderk1191",
+      "name": "ravinderk1191",
+      "avatar_url": "https://avatars.githubusercontent.com/u/145797535?v=4",
+      "profile": "https://github.com/ravinderk1191",
+      "contributions": [
+        "maintenance"
+      ]
+    }
+  ]
 }
