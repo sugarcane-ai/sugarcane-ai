@@ -22,7 +22,10 @@ const Header = (props: any) => {
   }
 
   return (
-    <AppBar position="sticky" sx={{ backgroundColor: "#1c1c1c" }}>
+    <AppBar
+      position="sticky"
+      sx={{ backgroundColor: "var(--sugarhub-main-color)" }}
+    >
       <Toolbar>
         <Container maxWidth="lg">
           <Box
@@ -57,7 +60,7 @@ const Header = (props: any) => {
                     <Box
                       sx={{
                         position: "absolute",
-                        backgroundColor: "#686868",
+                        backgroundColor: "var(--sugarhub-ternary-bg-color)",
                         borderRadius: "0.5rem",
                         top: "2rem",
                       }}
@@ -98,7 +101,7 @@ const Header = (props: any) => {
                     <Box
                       sx={{
                         position: "absolute",
-                        backgroundColor: "#686868",
+                        backgroundColor: "var(--sugarhub-ternary-bg-color)",
                         borderRadius: "0.5rem",
                         top: "3.2rem",
                       }}

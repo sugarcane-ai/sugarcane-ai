@@ -17,7 +17,7 @@ const MarketplacePage: NextPage = () => {
     <>
       <Box
         sx={{
-          backgroundColor: "#1c1c1c",
+          backgroundColor: "var(--sugarhub-main-color)",
           height: "100vh",
           width: "100vw",
           overflowY: "scroll",

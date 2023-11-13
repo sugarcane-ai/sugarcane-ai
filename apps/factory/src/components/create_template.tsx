@@ -95,10 +95,6 @@ export function CreateTemplate({
     }
   };
 
-  const updateTemplate = () => {
-    console.log("hi");
-  };
-
   // disable variable to make Select Model type disable
   const disableValue = false;
 
@@ -144,7 +140,6 @@ export function CreateTemplate({
           <UpdateTemplate
             openEditTemplate={openEditTemplate}
             setOpenEditTemplate={setOpenEditTemplate}
-            updateTemplate={updateTemplate}
             ptId={ptId}
           />
         </>

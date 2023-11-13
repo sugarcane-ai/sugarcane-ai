@@ -52,7 +52,7 @@ const PromptHeader = ({ pp }: { pp: pp }) => {
                 {pp?.name}
               </Link>
             </Grid>
-            <Grid item>
+            {/* <Grid item>
               <Button
                 // variant=""
                 startIcon={<ContentCopyIcon />}
@@ -60,7 +60,7 @@ const PromptHeader = ({ pp }: { pp: pp }) => {
                 sx={{ textTransform: "none", mr: 1, borderColor: "gray.300" }}
                 title="Copy model name to clipboard"
               ></Button>
-            </Grid>
+            </Grid> */}
             <Grid item xs={12} sm={6} md={4}>
               {/* <LikeButton count={likes}></LikeButton> */}
             </Grid>

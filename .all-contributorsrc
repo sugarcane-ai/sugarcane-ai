@@ -1,0 +1,75 @@
+{
+  "projectName": "sugarcane-ai",
+  "projectOwner": "sugarcane-ai",
+  "files": [
+    "README.md"
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "devilankur18",
+      "name": "Ankur Agarwal",
+      "avatar_url": "https://avatars.githubusercontent.com/u/431165?v=4",
+      "profile": "https://sugarcaneai.dev",
+      "contributions": [
+        "projectManagement"
+      ]
+    },
+    {
+      "login": "ravinderk1191",
+      "name": "ravinderk1191",
+      "avatar_url": "https://avatars.githubusercontent.com/u/145797535?v=4",
+      "profile": "https://github.com/ravinderk1191",
+      "contributions": [
+        "maintenance"
+      ]
+    },
+    {
+      "login": "pulkit21",
+      "name": "Pulkit Agarwal",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3229362?v=4",
+      "profile": "http://pulkitagarwal.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "patil-vipul",
+      "name": "Vipul Patil",
+      "avatar_url": "https://avatars.githubusercontent.com/u/65603015?v=4",
+      "profile": "https://github.com/patil-vipul",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "jsaurav7",
+      "name": "Saurav Jha",
+      "avatar_url": "https://avatars.githubusercontent.com/u/89625052?v=4",
+      "profile": "https://github.com/jsaurav7",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Rahul917-Kumar",
+      "name": "Rahul Kumar",
+      "avatar_url": "https://avatars.githubusercontent.com/u/82316009?v=4",
+      "profile": "https://github.com/Rahul917-Kumar",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "yashmyeole",
+      "name": "yashmyeole",
+      "avatar_url": "https://avatars.githubusercontent.com/u/63413296?v=4",
+      "profile": "https://github.com/yashmyeole",
+      "contributions": [
+        "design"
+      ]
+    }
+  ]
+}

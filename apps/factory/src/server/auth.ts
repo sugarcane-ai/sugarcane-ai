@@ -51,6 +51,12 @@ function generateRandomUsername(username: string, length = 3) {
  */
 function getAuthOptions(): NextAuthOptions {
   let options: NextAuthOptions = {
+    theme: {
+      colorScheme: "dark", // "auto" | "dark" | "light"
+      // brandColor: "#26453E", // Hex color code
+      logo: env.NEXT_PUBLIC_APP_LOGO, // Absolute URL to image
+      // buttonText: "#FF2400", // Hex color code
+    },
     callbacks: {
       async signIn({ user, account, profile }: any) {
         if (account.type === "credentials") return true;

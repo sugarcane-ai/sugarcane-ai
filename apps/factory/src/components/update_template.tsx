@@ -26,7 +26,6 @@ import toast from "react-hot-toast";
 interface Props {
   openEditTemplate: boolean;
   setOpenEditTemplate: React.Dispatch<React.SetStateAction<boolean>>;
-  updateTemplate: () => void;
   ptId: string;
 }
 
@@ -53,7 +52,6 @@ const UpdateTemplate = (props: Props) => {
     },
     {
       onSuccess(items) {
-        console.log(items);
         reset({
           name: items?.name,
           description: items?.description,
@@ -73,7 +71,6 @@ const UpdateTemplate = (props: Props) => {
   };
 
   const updateTemplate = (data: CreateTemplateInput) => {
-    console.log(data);
     const input = {
       id: templateId!,
       name: data.name,
