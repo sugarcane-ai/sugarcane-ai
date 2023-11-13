@@ -29,7 +29,12 @@ function PublicPackages() {
       {packages && packages.length > 0 ? (
         packages.map((pkg, index) => (
           <Grid item key={index} xs={12} sm={6} md={12} lg={12}>
-            <Card sx={{ backgroundColor: "#454545", color: "#FFFFFF" }}>
+            <Card
+              sx={{
+                backgroundColor: "var(--sugarhub-card-color)",
+                color: "var(--sugarhub-text-color)",
+              }}
+            >
               <Grid
                 container
                 spacing={1}
@@ -53,7 +58,7 @@ function PublicPackages() {
                       <TimeAgo
                         title="Updated at"
                         date={pkg?.updatedAt}
-                        style={{ color: "#FFFFFF" }}
+                        style={{ color: "var(--sugarhub-text-color)" }}
                       />
                     </Box>
                   </Grid>
@@ -87,7 +92,7 @@ function PublicPackages() {
                   <span>
                     <IconButton
                       href={`/marketplace/packages/${pkg?.id}`}
-                      sx={{ color: "#FFFFFF" }}
+                      sx={{ color: "var(--sugarhub-text-color)" }}
                     >
                       <LaunchIcon />
                     </IconButton>
@@ -109,7 +114,9 @@ function PublicPackages() {
             alignItems: "center",
           }}
         >
-          <Typography sx={{ color: "#FFFFFF", fontSize: "1.4rem" }}>
+          <Typography
+            sx={{ color: "var(--sugarhub-text-color)", fontSize: "1.4rem" }}
+          >
             No cards created
           </Typography>
         </Box>

@@ -112,16 +112,30 @@ export const PromptIntegration = ({
           <TabList
             onChange={handleChange}
             aria-label="lab API tabs example"
-            TabIndicatorProps={{ style: { background: "white" } }}
+            TabIndicatorProps={{
+              style: { background: "var(--sugarhub-text-color)" },
+            }}
             sx={{
               ".Mui-selected": {
-                color: `#FFFFFF`,
+                color: "var(--sugarhub-text-color)",
               },
             }}
           >
-            <Tab label="Javascript" value="1" sx={{ color: "white" }} />
-            <Tab label="Python" value="2" sx={{ color: "white" }} />
-            <Tab label="Curl" value="3" sx={{ color: "white" }} />
+            <Tab
+              label="Javascript"
+              value="1"
+              sx={{ color: "var(--sugarhub-text-color)" }}
+            />
+            <Tab
+              label="Python"
+              value="2"
+              sx={{ color: "var(--sugarhub-text-color)" }}
+            />
+            <Tab
+              label="Curl"
+              value="3"
+              sx={{ color: "var(--sugarhub-text-color)" }}
+            />
           </TabList>
         </Box>
         <TabPanel value="1">

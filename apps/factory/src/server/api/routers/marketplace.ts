@@ -30,12 +30,12 @@ export const marketplaceRouter = createTRPCRouter({
 
       // sort according to date when packages were created
 
-      packages.sort((packageA, packageB) => {
-        return (
-          new Date(packageB.updatedAt).valueOf() -
-          new Date(packageA.updatedAt).valueOf()
-        );
-      });
+      // packages.sort((packageA, packageB) => {
+      //   return (
+      //     new Date(packageB.updatedAt).valueOf() -
+      //     new Date(packageA.updatedAt).valueOf()
+      //   );
+      // });
       return packages;
     }),
 
