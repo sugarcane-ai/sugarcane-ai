@@ -140,7 +140,11 @@ function Row({ pt, pp }: { pt: ptt; pp: ppt }) {
               </Typography>
 
               {pt?.releaseVersion && (
-                <Typography component="p" gutterBottom>
+                <Typography
+                  component="p"
+                  gutterBottom
+                  sx={{ color: "#FFFFFF" }}
+                >
                   <PublicUrl
                     title={"Release URL"}
                     url={`/${pp?.User?.username}/${pp?.name}/${pt.name}/release`}
@@ -152,6 +156,8 @@ function Row({ pt, pp }: { pt: ptt; pp: ppt }) {
 
               {pt?.previewVersion && (
                 <Typography component="p" gutterBottom>
+                  {" "}
+                  sx={{ color: "#FFFFFF" }}
                   <PublicUrl
                     title={"Preview URL"}
                     url={`/${pp?.User?.username}/${pp?.name}/${pt.name}/preview`}
