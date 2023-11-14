@@ -27,21 +27,30 @@ import type { CreateTemplateInput } from "~/validators/prompt_template";
 import { createTemplateInput } from "~/validators/prompt_template";
 import { FormTextInput } from "./form_components/formTextInput";
 import { FormDropDownInput } from "./form_components/formDropDownInput";
-
+import EditIcon from "@mui/icons-material/Edit";
+import UpdateTemplate from "./update_template";
 export function CreateTemplate({
   pp,
   onCreate,
   sx,
   status,
   customError,
+  length,
+  ptId,
 }: {
   pp: pp;
   onCreate: Function;
   sx?: any;
   status: string;
   customError: any;
+  length: number;
+  ptId: string;
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [openEditTemplate, setOpenEditTemplate] = useState<boolean>(false);
+  const [defaultModelType, setDefaultModelType] = useState<
+    "TEXT2TEXT" | "TEXT2IMAGE" | undefined
+  >("TEXT2TEXT");
   const {
     control,
     handleSubmit,
@@ -86,20 +95,57 @@ export function CreateTemplate({
     }
   };
 
+  // disable variable to make Select Model type disable
+  const disableValue = false;
+
   return (
     <Box component="span" sx={{}}>
       <Grid component="span">
-        <Tooltip title={"Create Template"} placement="top-start">
-          <IconButton
-            size="small"
-            aria-label="add template"
-            onClick={() => setIsOpen(true)}
-            color="primary"
-          >
-            <AddCircleIcon />
-          </IconButton>
-        </Tooltip>
+        <Grid container>
+          <Grid item xs={6} md={6} lg={6}>
+            <Tooltip title={"Create Template"} placement="top-start">
+              <IconButton
+                size="small"
+                aria-label="add template"
+                onClick={() => setIsOpen(true)}
+                color="primary"
+              >
+                <AddCircleIcon />
+              </IconButton>
+            </Tooltip>
+          </Grid>
+          {length > 0 ? (
+            <>
+              <Grid item xs={6} md={6} lg={6}>
+                <Tooltip title={"Edit Template"} placement="top-start">
+                  <IconButton
+                    size="small"
+                    aria-label="edit template"
+                    onClick={() => setOpenEditTemplate(!openEditTemplate)}
+                    color="primary"
+                  >
+                    <EditIcon />
+                  </IconButton>
+                </Tooltip>
+              </Grid>
+            </>
+          ) : (
+            <></>
+          )}
+        </Grid>
       </Grid>
+
+      {openEditTemplate === true ? (
+        <>
+          <UpdateTemplate
+            openEditTemplate={openEditTemplate}
+            setOpenEditTemplate={setOpenEditTemplate}
+            ptId={ptId}
+          />
+        </>
+      ) : (
+        <></>
+      )}
 
       <Dialog open={isOpen} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogTitle>
@@ -113,6 +159,8 @@ export function CreateTemplate({
               name="modelType"
               control={control}
               label="Model Type"
+              defaultValue={defaultModelType}
+              disable={disableValue}
             />
 
             <FormTextInput

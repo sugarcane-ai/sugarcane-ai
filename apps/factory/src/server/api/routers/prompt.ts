@@ -127,6 +127,29 @@ export const promptRouter = createTRPCRouter({
       }
     }),
 
+  updateTemplate: protectedProcedure
+    .input(updateTemplateInput)
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.jwt?.id as string;
+      try {
+        if (userId) {
+          await ctx.prisma.promptTemplate.update({
+            where: {
+              id: input.id,
+              userId: userId,
+            },
+            data: {
+              description: input.description,
+            },
+          });
+        } else {
+          throw new Error("user not signedIn");
+        }
+      } catch (error: any) {
+        throw new Error(error as string);
+      }
+    }),
+
   createTemplate: protectedProcedure
     .input(createTemplateInput)
     .output(templateOutput)
@@ -161,26 +184,6 @@ export const promptRouter = createTRPCRouter({
       }
     }),
 
-  // updateTemplate: protectedProcedure
-  // .input(updateTemplateInput)
-  // .output(TemplateOutput)
-  // .mutation(async ({ ctx, input }) => {
-
-  //   const userId = ctx.session?.user.id
-  //   console.log(`update template -------------- ${JSON.stringify(input)}`);
-
-  //   if (userId) {
-  //     pt = await ctx.prisma.promptPackage.update({
-  //       data: {
-  //         promptPackageId: input.promptPackageId,
-  //         name: input.name,
-  //         description: input.description,
-  //       }});
-  //   }
-
-  //     return pt;
-  // }),
-
   getTemplates: protectedProcedure
     .input(getTemplatesInput)
     .output(templateListOutput)
@@ -203,6 +206,24 @@ export const promptRouter = createTRPCRouter({
   // getSecretMessage: protectedProcedure.query(() => {
   //   return "you can now see this secret message!";
   // }),
+
+  // getTemplate
+
+  getTemplate: protectedProcedure
+    .input(getTemplateInput)
+    .output(templateOutput)
+    .query(async ({ ctx, input }) => {
+      const query = {
+        userId: ctx.jwt?.id as string,
+        id: input.id,
+      };
+      const template = ctx.prisma.promptTemplate.findFirst({
+        where: query,
+      });
+
+      console.log(`templates -------------- ${JSON.stringify(template)}`);
+      return template;
+    }),
 
   createVersion: protectedProcedure
     .input(createVersionInput)
