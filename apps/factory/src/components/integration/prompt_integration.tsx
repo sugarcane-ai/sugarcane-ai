@@ -32,7 +32,7 @@ export const PromptIntegration = ({
   //   getVariables(pv?.template as string),
   //   "key",
   // );
-  let variables = {
+  const variables = {
     variable1: "value1",
     variable2: "value2",
     variable3: "value3",

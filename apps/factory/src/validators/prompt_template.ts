@@ -48,6 +48,7 @@ export type CreateTemplateInput = z.infer<typeof createTemplateInput>;
 
 export const updateTemplateInput = z
   .object({
+    id: z.string(),
     name: templateNameInput,
     description: z.string(),
   })
