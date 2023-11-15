@@ -132,19 +132,15 @@ export const promptRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.jwt?.id as string;
       try {
-        if (userId) {
-          await ctx.prisma.promptTemplate.update({
-            where: {
-              id: input.id,
-              userId: userId,
-            },
-            data: {
-              description: input.description,
-            },
-          });
-        } else {
-          throw new Error("user not signedIn");
-        }
+        await ctx.prisma.promptTemplate.update({
+          where: {
+            id: input.id,
+            userId: userId,
+          },
+          data: {
+            description: input.description,
+          },
+        });
       } catch (error: any) {
         throw new Error(error as string);
       }

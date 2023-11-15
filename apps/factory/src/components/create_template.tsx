@@ -234,7 +234,7 @@ export function CreateTemplate({
             <FormTextInput
               name="description"
               control={control}
-              label="description"
+              label="Description"
               error={!!errors.description}
               helperText={errors.description?.message}
               readonly={false}
