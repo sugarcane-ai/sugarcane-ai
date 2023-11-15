@@ -11,6 +11,8 @@ import {
   Snackbar,
   Alert,
   Chip,
+  Button,
+  CardActionArea,
 } from "@mui/material";
 import { CreatePackage } from "~/components/create_package";
 import UpdatePackage from "~/components/update_package";
@@ -23,18 +25,15 @@ import toast from "react-hot-toast";
 import { getLayout } from "~/components/Layouts/DashboardLayout";
 import { useRouter } from "next/router";
 
-function Packages() {
-  const [packages, setPackages] = useState<pp[]>();
+function Packages({
+  packages,
+  setPackages,
+}: {
+  packages: Array<pp>;
+  setPackages: any;
+}) {
   const [open, setOpen] = useState(false);
   const [packageId, setPackageId] = useState("");
-  api.prompt.getPackages.useQuery(
-    {},
-    {
-      onSuccess(data: pp[]) {
-        setPackages([...data]);
-      },
-    },
-  );
 
   const mutation = api.prompt.updatePackage.useMutation();
 
@@ -77,40 +76,58 @@ function Packages() {
 
   return (
     <Grid container spacing={1}>
-      {packages && packages.length > 0 ? (
-        packages.map((pkg, index) => (
-          <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
-            <Card>
-              <CardHeader title={pkg?.name} />
+      {/* {packages && packages.length > 0 ? ( */}
+      {packages.map((pkg, index) => (
+        <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
+          <Card>
+            <CardActionArea href={`/dashboard/prompts/${pkg?.id}`}>
+              <CardHeader
+                title={pkg?.name}
+                action={
+                  <Chip
+                    sx={{ mr: 2 }}
+                    size="small"
+                    label={pkg?.visibility}
+                    // variant="conti"
+                  />
+                }
+              />
+
               <CardContent>
-                <Typography>{pkg?.description}</Typography>
-              </CardContent>
-              <CardActions>
-                <Chip
-                  sx={{ mr: 2 }}
-                  size="small"
-                  label={pkg?.visibility}
-                  // variant="conti"
-                />
-                <MUILink href={`/dashboard/prompts/${pkg?.id}`}>View</MUILink>
-                <MUILink href={`/dashboard/prompts/${pkg?.id}/logs`}>
-                  Logs
-                </MUILink>
-                <MUILink
-                  sx={{ cursor: "pointer" }}
-                  onClick={() => handleOpen(pkg!.id)}
+                <Typography
+                  sx={{
+                    height: "3em",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    display: "-webkit-box",
+                    WebkitLineClamp: "2",
+                    WebkitBoxOrient: "vertical",
+                  }}
                 >
-                  Edit
-                </MUILink>
-              </CardActions>
-            </Card>
-          </Grid>
-        ))
-      ) : (
-        <Grid item xs={12}>
-          <Typography>No cards created</Typography>
+                  {pkg?.description}
+                </Typography>
+              </CardContent>
+            </CardActionArea>
+            <CardActions>
+              <Button size="small" onClick={() => handleOpen(pkg!.id)}>
+                Edit
+              </Button>
+              <Button size="small" href={`/dashboard/prompts/${pkg?.id}/logs`}>
+                Logs
+              </Button>
+            </CardActions>
+          </Card>
         </Grid>
-      )}
+      ))}
+      {/* ) : (
+<Grid
+      container
+      justifyContent="center"
+      alignItems="center"
+      style={{ minHeight: '80vh' }}
+    >
+      </Grid>
+      )} */}
 
       {open === true ? (
         <>
@@ -130,6 +147,7 @@ function Packages() {
 
 const PackageHome = () => {
   const router = useRouter();
+
   const [status, setStatus] = useState("");
   const [customError, setCustomError] = useState({});
 
@@ -158,14 +176,54 @@ const PackageHome = () => {
   });
 
   // console.log("mutate", mutation);
+  const [packages, setPackages] = useState<pp[]>();
+  api.prompt.getPackages.useQuery(
+    {},
+    {
+      onSuccess(data: pp[]) {
+        setPackages([...data]);
+      },
+    },
+  );
+
   return (
     <>
-      <CreatePackage
-        onSubmit={mutation.mutate}
-        status={status}
-        customError={customError}
-      ></CreatePackage>
-      <Packages />
+      {packages && packages.length > 0 ? (
+        <>
+          <CreatePackage
+            onSubmit={mutation.mutate}
+            status={status}
+            customError={customError}
+            PackagesExits={true}
+          ></CreatePackage>
+          <Packages packages={packages || []} setPackages={setPackages} />
+        </>
+      ) : (
+        <Grid
+          container
+          justifyContent="center"
+          alignItems="center"
+          style={{ minHeight: "80vh" }}
+        >
+          <Grid item xs={12}>
+            <Typography
+              align="center"
+              variant="h5"
+              // fontSize={18}
+              padding={3}
+              // fontWeight={700}
+            >
+              Create your first Prompt Package
+            </Typography>
+            <CreatePackage
+              onSubmit={mutation.mutate}
+              status={status}
+              customError={customError}
+              PackagesExits={false}
+            ></CreatePackage>
+          </Grid>
+        </Grid>
+      )}
     </>
   );
 };
