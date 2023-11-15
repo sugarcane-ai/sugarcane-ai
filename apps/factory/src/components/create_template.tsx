@@ -20,7 +20,7 @@ import { TemplateOutput as pt } from "~/validators/prompt_template";
 // import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
-
+import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { CreateTemplateInput } from "~/validators/prompt_template";
@@ -28,29 +28,35 @@ import { createTemplateInput } from "~/validators/prompt_template";
 import { FormTextInput } from "./form_components/formTextInput";
 import { FormDropDownInput } from "./form_components/formDropDownInput";
 import EditIcon from "@mui/icons-material/Edit";
-import UpdateTemplate from "./update_template";
+import { api } from "~/utils/api";
+import toast from "react-hot-toast";
+
 export function CreateTemplate({
   pp,
   onCreate,
   sx,
   status,
   customError,
-  length,
   ptId,
+  packageId,
 }: {
   pp: pp;
   onCreate: Function;
   sx?: any;
   status: string;
   customError: any;
-  length: number;
   ptId: string;
+  packageId: string;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [openEditTemplate, setOpenEditTemplate] = useState<boolean>(false);
   const [defaultModelType, setDefaultModelType] = useState<
-    "TEXT2TEXT" | "TEXT2IMAGE" | undefined
+    ModelTypeType | undefined
   >("TEXT2TEXT");
+  const [datatoUpdate, setDataToUpdate] = useState<CreateTemplateInput>(
+    {} as CreateTemplateInput,
+  );
+
   const {
     control,
     handleSubmit,
@@ -83,20 +89,74 @@ export function CreateTemplate({
   }, [status]);
 
   const handleClose = () => {
-    reset();
     setIsOpen(false);
+    reset({
+      name: "",
+      description: "",
+      promptPackageId: packageId,
+      modelType: ModelTypeSchema.enum.TEXT2TEXT,
+    });
+    setOpenEditTemplate(false);
   };
 
   const onFormSubmit = (data: CreateTemplateInput) => {
     try {
       onCreate?.(data);
+      console.log(data);
+      handleClose();
     } catch (err) {
       console.log(err);
     }
   };
 
-  // disable variable to make Select Model type disable
-  const disableValue = false;
+  api.prompt.getTemplate.useQuery(
+    {
+      id: `${ptId}`,
+    },
+    {
+      onSuccess(items) {
+        setDataToUpdate(items!);
+        setDefaultModelType(items?.modelType);
+      },
+    },
+  );
+
+  const fetchTemplateData = () => {
+    setIsOpen(true);
+    reset({
+      name: datatoUpdate.name,
+      description: datatoUpdate.description,
+      promptPackageId: datatoUpdate.promptPackageId,
+      modelType: datatoUpdate.modelType,
+    });
+  };
+
+  // to update
+  const mutation = api.prompt.updateTemplate.useMutation();
+
+  const updateTemplate = (data: CreateTemplateInput) => {
+    const input = {
+      id: ptId,
+      name: data.name,
+      description: data.description,
+    };
+    mutation.mutate(input, {
+      onSuccess() {
+        handleClose();
+        toast.success("Template Updated Successfully");
+        const updatedInput = {
+          name: datatoUpdate.name,
+          description: data.description,
+          promptPackageId: datatoUpdate.promptPackageId,
+          modelType: datatoUpdate.modelType,
+        };
+        setDataToUpdate(updatedInput);
+      },
+      onError(error) {
+        console.log(error);
+      },
+    });
+  };
 
   return (
     <Box component="span" sx={{}}>
@@ -107,21 +167,27 @@ export function CreateTemplate({
               <IconButton
                 size="small"
                 aria-label="add template"
-                onClick={() => setIsOpen(true)}
+                onClick={() => {
+                  setIsOpen(true);
+                  setDefaultModelType("TEXT2TEXT");
+                }}
                 color="primary"
               >
                 <AddCircleIcon />
               </IconButton>
             </Tooltip>
           </Grid>
-          {length > 0 ? (
+          {ptId ? (
             <>
               <Grid item xs={6} md={6} lg={6}>
                 <Tooltip title={"Edit Template"} placement="top-start">
                   <IconButton
                     size="small"
                     aria-label="edit template"
-                    onClick={() => setOpenEditTemplate(!openEditTemplate)}
+                    onClick={() => {
+                      setOpenEditTemplate(!openEditTemplate);
+                      fetchTemplateData();
+                    }}
                     color="primary"
                   >
                     <EditIcon />
@@ -134,22 +200,15 @@ export function CreateTemplate({
           )}
         </Grid>
       </Grid>
-
-      {openEditTemplate === true ? (
-        <>
-          <UpdateTemplate
-            openEditTemplate={openEditTemplate}
-            setOpenEditTemplate={setOpenEditTemplate}
-            ptId={ptId}
-          />
-        </>
-      ) : (
-        <></>
-      )}
-
       <Dialog open={isOpen} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogTitle>
-          <Typography>New Prompt Template</Typography>
+          <Typography>
+            {openEditTemplate === true ? (
+              <>Update Template</>
+            ) : (
+              <>New Prompt Template</>
+            )}
+          </Typography>
         </DialogTitle>
         <DialogContent>
           <DialogContentText></DialogContentText>
@@ -160,7 +219,7 @@ export function CreateTemplate({
               control={control}
               label="Model Type"
               defaultValue={defaultModelType}
-              disable={disableValue}
+              readonly={openEditTemplate}
             />
 
             <FormTextInput
@@ -169,14 +228,16 @@ export function CreateTemplate({
               label="Name"
               error={!!errors.name}
               helperText={errors.name?.message}
+              readonly={openEditTemplate}
             />
 
             <FormTextInput
               name="description"
               control={control}
-              label="Description"
+              label="description"
               error={!!errors.description}
               helperText={errors.description?.message}
+              readonly={false}
             />
           </Stack>
         </DialogContent>
@@ -187,14 +248,29 @@ export function CreateTemplate({
           <Button size="small" onClick={handleClose} variant="outlined">
             Cancel
           </Button>
-          <Button
-            size="small"
-            onClick={handleSubmit(onFormSubmit)}
-            variant="outlined"
-            color="primary"
-          >
-            Confirm
-          </Button>
+          {openEditTemplate === true ? (
+            <>
+              <Button
+                size="small"
+                onClick={handleSubmit(updateTemplate)}
+                variant="outlined"
+                color="primary"
+              >
+                Confirm
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                size="small"
+                onClick={handleSubmit(onFormSubmit)}
+                variant="outlined"
+                color="primary"
+              >
+                Confirm
+              </Button>
+            </>
+          )}
         </DialogActions>
       </Dialog>
     </Box>

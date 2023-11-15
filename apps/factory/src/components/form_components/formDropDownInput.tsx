@@ -3,10 +3,11 @@ import { Controller } from "react-hook-form";
 import { FormControl, FormLabel, Select, MenuItem } from "@mui/material";
 import type { FormInputProps } from "./formInputProps";
 import { providerModels } from "~/validators/base";
+import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 
 interface Props extends FormInputProps {
-  defaultValue: "TEXT2TEXT" | "TEXT2IMAGE" | undefined;
-  disable: boolean;
+  defaultValue: ModelTypeType | undefined;
+  readonly: boolean;
 }
 
 export function FormDropDownInput({
@@ -14,7 +15,7 @@ export function FormDropDownInput({
   control,
   label,
   defaultValue,
-  disable,
+  readonly,
 }: Props) {
   return (
     <FormControl component="fieldset">
@@ -23,9 +24,14 @@ export function FormDropDownInput({
         name={name}
         control={control}
         defaultValue={defaultValue}
-        disabled={disable}
         render={({ field }) => (
-          <Select {...field} aria-label={name}>
+          <Select
+            {...field}
+            aria-label={name}
+            inputProps={{
+              readOnly: readonly,
+            }}
+          >
             {Object.entries(providerModels).map(([modelType, modelConfig]) => (
               <MenuItem
                 key={modelType}
