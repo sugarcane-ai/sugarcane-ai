@@ -1,5 +1,6 @@
 import BaseVendor from "~/services/vendors/base_vendor";
-import { fakeResponse } from "../llm_response/fake_response";
+import { fakeResponse } from "~/services/llm_response/fake_response";
+import KeyManager from "~/services/vendors/keys_manager";
 
 class DeepInfraVendor extends BaseVendor {
   private provider: string;
@@ -22,9 +23,13 @@ class DeepInfraVendor extends BaseVendor {
 
   protected createHeaders(): Headers {
     const myHeaders = new Headers();
+    const tokens: string[] = (process.env.DEEPINFRA_API_TOKEN as string).split(
+      ",",
+    );
+
     myHeaders.append(
       "Authorization",
-      `Bearer ${process.env.DEEPINFRA_API_TOKEN}`,
+      `Bearer ${new KeyManager(tokens).getCurrentApiKey()}`,
     );
     return myHeaders;
   }
