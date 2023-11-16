@@ -48,36 +48,5 @@ export async function run(
     dryRun,
   );
 
-  // const maxRetries = 3;
-  // const retryDelay = 1000;
-
-  // const startTime = new Date();
-  // let response;
-  // if (isDevelopment) {
-  //   response = fakeResponse.llama2FakeResponse;
-  // } else {
-  //   const apiUrl = `https://api.deepinfra.com/v1/inference/meta-llama/Llama-2-${llmModel}-chat-hf`;
-  //   const requestOptions: RequestInit = {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${process.env.DEEPINFRA_API_TOKEN}`,
-  //     },
-  //     body: JSON.stringify({ input: prompt }),
-  //   };
-
-  // response = await fetchWithRetry(
-  //   apiUrl,
-  //   requestOptions,
-  //   maxRetries,
-  //   retryDelay,
-  // );
-
-  // console.log(`llm response -------------- ${JSON.stringify(response)}`);
-  // }
-
-  // const endTime = new Date();
-  // const latency: number = Number(endTime) - Number(startTime);
-
   return generateOutput(response, llmModelType, latency);
 }
