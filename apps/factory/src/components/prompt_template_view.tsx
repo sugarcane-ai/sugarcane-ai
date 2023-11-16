@@ -22,6 +22,7 @@ import { useSession, signIn } from "next-auth/react";
 import Link from "@mui/material/Link";
 const isDev = process.env.NODE_ENV === "development";
 import { displayModes, DisplayModes } from "~/validators/base";
+import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -44,6 +45,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const [promptPerformance, setPromptPerformacne] = useState({});
   const [isOpen, setIsOpen] = useState(false);
   const handleOpen = () => setIsOpen(true);
+  const [isTextOpen, setIsTextOpen] = useState(false);
 
   const { data } = api.cube.getPrompt.useQuery({
     username: username,
@@ -120,16 +122,42 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
         <div className="dark:border-gray-70  w-full rounded-lg border p-4 shadow sm:p-6">
           {data || !versionOrEnvironment ? (
             <>
-              <h5 className="mb-3 text-base font-semibold text-gray-900 dark:text-white md:text-xl">
+              <h5 className="mb-3 text-base font-semibold text-gray-900 md:text-xl">
                 {data?.description}
               </h5>
               <Box sx={{ m: 1 }}>
                 {pvrs && (
-                  <PromptVariables
-                    vars={pvrs}
-                    onChange={handleVariablesChange}
-                    mode={displayModes.Enum.EDIT}
-                  />
+                  <>
+                    <PromptVariables
+                      vars={pvrs}
+                      onChange={handleVariablesChange}
+                      mode={displayModes.Enum.EDIT}
+                    />
+                    <div style={{ paddingLeft: 15, paddingRight: 15 }}>
+                      <Stack
+                        className="dark:border-gray-60 w-full rounded-lg border p-3 shadow"
+                        onClick={() => setIsTextOpen(!isTextOpen)}
+                        flexDirection={"row"}
+                        // style={{paddingLeft:20, paddingRight:20}}
+                      >
+                        <Box>
+                          {isTextOpen ? (
+                            <FaCaretDown
+                              size={20}
+                              style={{ paddingRight: 5 }}
+                            />
+                          ) : (
+                            <FaCaretUp size={20} style={{ paddingRight: 5 }} />
+                          )}
+                        </Box>
+                        <Typography className="text-gray-500">
+                          {isTextOpen
+                            ? data?.template
+                            : "Click to view prompt Template"}
+                        </Typography>
+                      </Stack>
+                    </div>
+                  </>
                 )}
               </Box>
               <Stack direction="row" spacing={1} sx={{ p: 1 }}>
