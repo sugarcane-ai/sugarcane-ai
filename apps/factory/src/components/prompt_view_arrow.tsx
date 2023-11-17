@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { Stack, Box, Typography } from "@mui/material";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 
-type Prompt_view_arrowProps = {
-  PromptTemplate: string;
+type PromptViewArrowProps = {
+  promptTemplate: string;
 };
 
-const Prompt_view_arrow: React.FC<Prompt_view_arrowProps> = ({
-  PromptTemplate,
+const PromptViewArrow: React.FC<PromptViewArrowProps> = ({
+  promptTemplate,
 }) => {
   const [isTextOpen, setIsTextOpen] = useState(false);
 
@@ -26,10 +26,11 @@ const Prompt_view_arrow: React.FC<Prompt_view_arrowProps> = ({
           )}
         </Box>
         <Typography className="text-gray-500">
-          {isTextOpen ? PromptTemplate : "Click to view prompt Template"}
+          {isTextOpen ? promptTemplate : "Click to view prompt Template"}
         </Typography>
       </Stack>
     </div>
   );
 };
-export default Prompt_view_arrow;
+
+export default PromptViewArrow;
