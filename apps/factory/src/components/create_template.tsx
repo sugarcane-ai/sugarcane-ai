@@ -20,28 +20,41 @@ import { TemplateOutput as pt } from "~/validators/prompt_template";
 // import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
-
+import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { CreateTemplateInput } from "~/validators/prompt_template";
 import { createTemplateInput } from "~/validators/prompt_template";
 import { FormTextInput } from "./form_components/formTextInput";
 import { FormDropDownInput } from "./form_components/formDropDownInput";
-
+import EditIcon from "@mui/icons-material/Edit";
+import { api } from "~/utils/api";
+import toast from "react-hot-toast";
+// import * as Sentry from "@sentry/nextjs";
 export function CreateTemplate({
   pp,
   onCreate,
   sx,
   status,
   customError,
+  ptId,
 }: {
   pp: pp;
   onCreate: Function;
   sx?: any;
   status: string;
   customError: any;
+  ptId: string;
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  // const [openEditTemplate, setOpenEditTemplate] = useState<boolean>(false);
+  const [defaultModelType, setDefaultModelType] = useState<
+    ModelTypeType | undefined
+  >(ModelTypeSchema.enum.TEXT2TEXT);
+  const [datatoUpdate, setDataToUpdate] = useState<CreateTemplateInput>(
+    {} as CreateTemplateInput,
+  );
+
   const {
     control,
     handleSubmit,
@@ -74,36 +87,120 @@ export function CreateTemplate({
   }, [status]);
 
   const handleClose = () => {
-    reset();
     setIsOpen(false);
+    reset({
+      name: "",
+      description: "",
+      promptPackageId: pp?.id,
+      modelType: ModelTypeSchema.enum.TEXT2TEXT,
+    });
+    // setOpenEditTemplate(false);
   };
 
   const onFormSubmit = (data: CreateTemplateInput) => {
     try {
       onCreate?.(data);
+      console.log(data);
+      handleClose();
     } catch (err) {
       console.log(err);
     }
   };
 
+  api.prompt.getTemplate.useQuery(
+    {
+      id: `${ptId}`,
+    },
+    {
+      onSuccess(items) {
+        setDataToUpdate(items!);
+        setDefaultModelType(items?.modelType);
+      },
+    },
+  );
+
+  const fetchTemplateData = () => {
+    setIsOpen(true);
+    reset({
+      name: datatoUpdate.name,
+      description: datatoUpdate.description,
+      promptPackageId: datatoUpdate.promptPackageId,
+      modelType: datatoUpdate.modelType,
+    });
+  };
+
+  // to update
+  const updateMutation = api.prompt.updateTemplate.useMutation();
+
+  const updateTemplate = (data: CreateTemplateInput) => {
+    const input = {
+      id: ptId,
+      description: data.description,
+    };
+    updateMutation.mutate(input, {
+      onSuccess() {
+        handleClose();
+        toast.success("Template Updated Successfully");
+        const updatedInput = {
+          name: datatoUpdate.name,
+          description: data.description,
+          promptPackageId: datatoUpdate.promptPackageId,
+          modelType: datatoUpdate.modelType,
+        };
+        setDataToUpdate(updatedInput);
+      },
+      onError(error) {
+        console.log(error);
+      },
+    });
+  };
+
   return (
     <Box component="span" sx={{}}>
-      <Grid component="span">
-        <Tooltip title={"Create Template"} placement="top-start">
-          <IconButton
-            size="small"
-            aria-label="add template"
-            onClick={() => setIsOpen(true)}
-            color="primary"
-          >
-            <AddCircleIcon />
-          </IconButton>
-        </Tooltip>
-      </Grid>
+      {!ptId ? (
+        <>
+          <Tooltip title={"Create Template"} placement="top-start">
+            <IconButton
+              size="small"
+              aria-label="add template"
+              onClick={() => {
+                setIsOpen(true);
+                setDefaultModelType("TEXT2TEXT");
+              }}
+              color="primary"
+            >
+              <AddCircleIcon />
+            </IconButton>
+          </Tooltip>
+        </>
+      ) : (
+        <>
+          {ptId ? (
+            <>
+              <Tooltip title={"Edit Template"} placement="top-start">
+                <IconButton
+                  size="small"
+                  aria-label="edit template"
+                  onClick={() => {
+                    fetchTemplateData();
+                  }}
+                  color="primary"
+                >
+                  <EditIcon />
+                </IconButton>
+              </Tooltip>
+            </>
+          ) : (
+            <></>
+          )}
+        </>
+      )}
 
       <Dialog open={isOpen} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogTitle>
-          <Typography>New Prompt Template</Typography>
+          <Typography>
+            {ptId ? <>Update Template</> : <>New Prompt Template</>}
+          </Typography>
         </DialogTitle>
         <DialogContent>
           <DialogContentText></DialogContentText>
@@ -113,6 +210,8 @@ export function CreateTemplate({
               name="modelType"
               control={control}
               label="Model Type"
+              defaultValue={defaultModelType}
+              readonly={!ptId ? false : true}
             />
 
             <FormTextInput
@@ -121,14 +220,16 @@ export function CreateTemplate({
               label="Name"
               error={!!errors.name}
               helperText={errors.name?.message}
+              readonly={!ptId ? false : true}
             />
 
             <FormTextInput
               name="description"
               control={control}
-              label="Description"
+              label="description"
               error={!!errors.description}
               helperText={errors.description?.message}
+              readonly={false}
             />
           </Stack>
         </DialogContent>
@@ -139,14 +240,29 @@ export function CreateTemplate({
           <Button size="small" onClick={handleClose} variant="outlined">
             Cancel
           </Button>
-          <Button
-            size="small"
-            onClick={handleSubmit(onFormSubmit)}
-            variant="outlined"
-            color="primary"
-          >
-            Confirm
-          </Button>
+          {ptId ? (
+            <>
+              <Button
+                size="small"
+                onClick={handleSubmit(updateTemplate)}
+                variant="outlined"
+                color="primary"
+              >
+                Confirm
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                size="small"
+                onClick={handleSubmit(onFormSubmit)}
+                variant="outlined"
+                color="primary"
+              >
+                Confirm
+              </Button>
+            </>
+          )}
         </DialogActions>
       </Dialog>
     </Box>
