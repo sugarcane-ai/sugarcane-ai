@@ -44,7 +44,7 @@ export function CreateTemplate({
   sx?: any;
   status: string;
   customError: any;
-  ptId: string;
+  ptId: string | boolean;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   // const [openEditTemplate, setOpenEditTemplate] = useState<boolean>(false);
@@ -100,7 +100,6 @@ export function CreateTemplate({
   const onFormSubmit = (data: CreateTemplateInput) => {
     try {
       onCreate?.(data);
-      console.log(data);
       handleClose();
     } catch (err) {
       console.log(err);
@@ -134,7 +133,7 @@ export function CreateTemplate({
 
   const updateTemplate = (data: CreateTemplateInput) => {
     const input = {
-      id: ptId,
+      id: ptId as string,
       description: data.description,
     };
     updateMutation.mutate(input, {
@@ -157,44 +156,25 @@ export function CreateTemplate({
 
   return (
     <Box component="span" sx={{}}>
-      {!ptId ? (
-        <>
-          <Tooltip title={"Create Template"} placement="top-start">
-            <IconButton
-              size="small"
-              aria-label="add template"
-              onClick={() => {
-                setIsOpen(true);
-                setDefaultModelType("TEXT2TEXT");
-              }}
-              color="primary"
-            >
-              <AddCircleIcon />
-            </IconButton>
-          </Tooltip>
-        </>
-      ) : (
-        <>
-          {ptId ? (
-            <>
-              <Tooltip title={"Edit Template"} placement="top-start">
-                <IconButton
-                  size="small"
-                  aria-label="edit template"
-                  onClick={() => {
-                    fetchTemplateData();
-                  }}
-                  color="primary"
-                >
-                  <EditIcon />
-                </IconButton>
-              </Tooltip>
-            </>
-          ) : (
-            <></>
-          )}
-        </>
-      )}
+      <Tooltip title={"Create Template"} placement="top-start">
+        <IconButton
+          size="small"
+          aria-label="add template"
+          onClick={
+            !ptId
+              ? () => {
+                  setIsOpen(true);
+                  setDefaultModelType("TEXT2TEXT");
+                }
+              : () => {
+                  fetchTemplateData();
+                }
+          }
+          color="primary"
+        >
+          {!ptId ? <AddCircleIcon /> : <EditIcon />}
+        </IconButton>
+      </Tooltip>
 
       <Dialog open={isOpen} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogTitle>
@@ -240,29 +220,16 @@ export function CreateTemplate({
           <Button size="small" onClick={handleClose} variant="outlined">
             Cancel
           </Button>
-          {ptId ? (
-            <>
-              <Button
-                size="small"
-                onClick={handleSubmit(updateTemplate)}
-                variant="outlined"
-                color="primary"
-              >
-                Confirm
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button
-                size="small"
-                onClick={handleSubmit(onFormSubmit)}
-                variant="outlined"
-                color="primary"
-              >
-                Confirm
-              </Button>
-            </>
-          )}
+          <Button
+            size="small"
+            onClick={
+              ptId ? handleSubmit(updateTemplate) : handleSubmit(onFormSubmit)
+            }
+            variant="outlined"
+            color="primary"
+          >
+            Confirm
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>

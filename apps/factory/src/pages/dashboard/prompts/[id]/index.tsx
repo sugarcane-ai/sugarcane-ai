@@ -169,17 +169,23 @@ const PackageShow: NextPageWithLayout = () => {
                     onCreate={ptCreateMutation.mutate}
                     status={status}
                     customError={customError}
-                    ptId={""}
+                    ptId={false}
                   ></CreateTemplate>
                 </Grid>
                 <Grid item xs={6} md={6} lg={6}>
-                  <CreateTemplate
-                    pp={pp as pp}
-                    onCreate={ptCreateMutation.mutate}
-                    status={status}
-                    customError={customError}
-                    ptId={ptId}
-                  ></CreateTemplate>
+                  {ptId ? (
+                    <>
+                      <CreateTemplate
+                        pp={pp as pp}
+                        onCreate={ptCreateMutation.mutate}
+                        status={status}
+                        customError={customError}
+                        ptId={ptId}
+                      ></CreateTemplate>
+                    </>
+                  ) : (
+                    <></>
+                  )}
                 </Grid>
               </Grid>
             </Grid>
