@@ -46,7 +46,11 @@ import {
 } from "~/generated/prisma-client-zod.ts";
 import PromotOutputLog from "./prompt_output_log";
 import { displayModes } from "~/validators/base";
+<<<<<<< HEAD
 import DownloadButtonImg from "./download_button_img";
+=======
+import PromptLogTable from "~/pages/dashboard/prompts/[id]/logs";
+>>>>>>> f6417f2 (Adding log history to prompt template page)
 
 function PromptVersion({
   ns,
@@ -397,6 +401,16 @@ function PromptVersion({
               )}
             </Stack>
           )}
+        </Box>
+
+        <Box sx={{ m: 1 }} padding={2}>
+          <Typography variant="h6">Log History</Typography>
+          <PromptLogTable
+            showSearchFilters={false}
+            templateIdProp={pt?.id}
+            versionIdProp={pv?.version}
+            itemsPerPage={5}
+          />
         </Box>
       </Box>
     </>

@@ -55,6 +55,13 @@ interface PromptLog {
   updatedAt: string;
 }
 
+interface PromptLogTableProps {
+  showSearchFilters: boolean;
+  templateIdProp: string | undefined;
+  versionIdProp: string | undefined;
+  itemsPerPage: number;
+}
+
 export interface FilterOptions {
   environment?: string | undefined;
   llmModel?: string | undefined;
@@ -65,9 +72,12 @@ export interface FilterOptions {
 // type LabelledState = "UNLABELLED" | "SELECTED" | "REJECTED" | "NOTSURE";
 type FinetunedState = "UNPROCESSED" | "PROCESSED";
 
-const itemsPerPage = 10;
-
-const PromptLogTable: NextPageWithLayout = () => {
+const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
+  showSearchFilters = true,
+  templateIdProp = undefined,
+  versionIdProp = undefined,
+  itemsPerPage = 10,
+}) => {
   const router = useRouter();
   const packageId = router.query.id as string;
 
@@ -78,13 +88,14 @@ const PromptLogTable: NextPageWithLayout = () => {
     environment: undefined,
     llmModel: undefined,
     llmProvider: undefined,
-    version: undefined,
+    version: versionIdProp,
   });
 
   const { data, hasNextPage, fetchNextPage, refetch } =
     api.log.getLogs.useInfiniteQuery(
       {
         promptPackageId: packageId,
+        promptTemplateId: templateIdProp,
         perPage: itemsPerPage,
         ...filterOptions,
       },
@@ -128,12 +139,14 @@ const PromptLogTable: NextPageWithLayout = () => {
         onChange={(e) => setSearchText(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && handleSearch()}
       /> */}
-      <LogSearchFiltering
-        filterOptions={filterOptions}
-        onFilterChange={(newFilterOptions) =>
-          setFilterOptions(newFilterOptions)
-        }
-      />
+      {showSearchFilters && (
+        <LogSearchFiltering
+          filterOptions={filterOptions}
+          onFilterChange={(newFilterOptions) =>
+            setFilterOptions(newFilterOptions)
+          }
+        />
+      )}
 
       <TableContainer component={Paper}>
         <Table>
