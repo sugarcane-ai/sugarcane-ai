@@ -46,6 +46,7 @@ import {
 } from "~/generated/prisma-client-zod.ts";
 import PromotOutputLog from "./prompt_output_log";
 import { displayModes } from "~/validators/base";
+import PromptLogTable from "~/pages/dashboard/prompts/[id]/logs";
 
 function PromptVersion({
   ns,
@@ -385,6 +386,16 @@ function PromptVersion({
               )}
             </Stack>
           )}
+        </Box>
+
+        <Box sx={{ m: 1 }} padding={2}>
+          <Typography variant="h6">Log History</Typography>
+          <PromptLogTable
+            showSearchFilters={false}
+            templateIdProp={pt?.id}
+            versionIdProp={pv?.version}
+            itemsPerPage={5}
+          />
         </Box>
       </Box>
     </>
