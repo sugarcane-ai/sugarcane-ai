@@ -46,6 +46,7 @@ import {
 } from "~/generated/prisma-client-zod.ts";
 import PromotOutputLog from "./prompt_output_log";
 import { displayModes } from "~/validators/base";
+<<<<<<< HEAD
 import DownloadButtonImg from "./download_button_img";
 import PromptLogTable from "~/pages/dashboard/prompts/[id]/logs";
 import Counter from "./counter_responsetime";
