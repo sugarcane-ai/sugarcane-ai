@@ -133,9 +133,8 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
       <Box
         sx={{
           backgroundColor: "var(--sugarhub-main-color)",
-          height: "100vh",
-          overflowY: "hidden",
-          paddingTop: "1rem",
+          padding: "1rem 0rem",
+          minHeight: "100vh",
         }}
       >
         <Container className="center">
@@ -240,7 +239,11 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                     <Stack direction="row" spacing={2} sx={{ p: 1 }}>
                       <Grid>
                         <Box padding={2}>
-                          <Typography variant="h6" className="mb-5">
+                          <Typography
+                            variant="h6"
+                            className="mb-5"
+                            sx={{ color: "var(--sugarhub-text-color)" }}
+                          >
                             Output
                           </Typography>
                           <PromptOutput
