@@ -23,7 +23,9 @@ import Link from "@mui/material/Link";
 const isDev = process.env.NODE_ENV === "development";
 import { displayModes, DisplayModes } from "~/validators/base";
 import PromptViewArrow from "./prompt_view_arrow";
-
+import { LoadingButton } from "@mui/lab";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import Counter from "./counter_responsetime";
 interface PromptTemplateViewProps {
   username: string;
   packageName: string;
@@ -45,7 +47,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const [promptPerformance, setPromptPerformacne] = useState({});
   const [isOpen, setIsOpen] = useState(false);
   const handleOpen = () => setIsOpen(true);
-
+  const [isLoading, setIsLoading] = useState(false);
   const { data } = api.cube.getPrompt.useQuery({
     username: username,
     package: packageName,
@@ -80,6 +82,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const generateMutation = api.service.generate.useMutation(); // Make sure to import 'api' and set up the service
 
   const handleRun = async (e: any) => {
+    setIsLoading(true);
     console.log(`running template version ${versionOrEnvironment}`);
 
     let data: { [key: string]: any } = {};
@@ -87,15 +90,25 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
       data[`${item.type}${item.key}`] = item.value;
     }
 
-    const pl = await generateMutation.mutateAsync({
-      username: username,
-      package: packageName || "",
-      template: template || "",
-      versionOrEnvironment: versionOrEnvironment?.toUpperCase() || "",
-      isDevelopment: checked,
+    const pl = await generateMutation.mutateAsync(
+      {
+        username: username,
+        package: packageName || "",
+        template: template || "",
+        versionOrEnvironment: versionOrEnvironment?.toUpperCase() || "",
+        isDevelopment: checked,
 
-      data: data,
-    } as GenerateInput);
+        data: data,
+      } as GenerateInput,
+      {
+        onSuccess() {
+          setIsLoading(false);
+        },
+        onError() {
+          setIsLoading(false);
+        },
+      },
+    );
 
     console.log(`pl >>>>>>>: ${JSON.stringify(pl)}`);
     if (pl) {
@@ -186,7 +199,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                       label="Dummy"
                     />
                   )}
-                  <Button
+                  <LoadingButton
                     color="success"
                     variant="outlined"
                     onClick={session ? handleRun : handleOpen}
@@ -196,10 +209,20 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                         borderColor: "var(--button-color-disable)",
                         color: "var(--button-color-disable)",
                       },
+                      width: "8rem",
                     }}
+                    loadingPosition="start"
+                    startIcon={<PlayArrowIcon />}
+                    loading={isLoading}
                   >
-                    Run
-                  </Button>
+                    {isLoading ? (
+                      <>
+                        <Counter />s
+                      </>
+                    ) : (
+                      <>Run</>
+                    )}
+                  </LoadingButton>
                   {!session && isOpen && (
                     <Box>
                       <Typography className="mt-2">
