@@ -116,84 +116,135 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
 
   return (
     <>
-      <Header headerName={"Sugar Cubes"} />
-      <Container className="center">
-        <div className="dark:border-gray-70  w-full rounded-lg border p-4 shadow sm:p-6">
-          {data || !versionOrEnvironment ? (
-            <>
-              <h5 className="mb-3 text-base font-semibold text-gray-900 md:text-xl">
-                {data?.description}
-              </h5>
-              <Box sx={{ m: 1 }}>
-                {pvrs && (
-                  <>
-                    {data && (
-                      <PromptViewArrow promptTemplate={data?.template} />
-                    )}
-                    <PromptVariables
-                      vars={pvrs}
-                      onChange={handleVariablesChange}
-                      mode={displayModes.Enum.EDIT}
-                    />
-                  </>
-                )}
-              </Box>
-              <Stack direction="row" spacing={1} sx={{ p: 1 }}>
-                {isDev && (
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={checked}
-                        onChange={handleChange}
-                        color="primary" // Change the color to your preference
-                      />
-                    }
-                    label="Dummy"
-                  />
-                )}
-                <Button
-                  color="success"
-                  variant="outlined"
-                  onClick={session ? handleRun : handleOpen}
-                  disabled={pvrs?.some((v) => v.value === "")}
+      <Header headerName={"Sugar Cube"} />
+      <Box
+        sx={{
+          backgroundColor: "var(--sugarhub-main-color)",
+          height: "100vh",
+          overflowY: "hidden",
+          paddingTop: "1rem",
+        }}
+      >
+        <Container className="center">
+          <div
+            className="dark:border-gray-70  w-full rounded-lg border p-4 shadow sm:p-6"
+            style={{ backgroundColor: "var(--sugarhub-tab-color)" }}
+          >
+            {data || !versionOrEnvironment ? (
+              <>
+                {/* add Template name and parse it show meaningfull name */}
+                <Typography
+                  variant="h3"
+                  component="h3"
+                  sx={{
+                    textAlign: "center",
+                    color: "var(--sugarhub-text-color)",
+                  }}
                 >
-                  Run
-                </Button>
-                {!session && isOpen && (
-                  <Box>
-                    <Typography className="mt-2">
-                      <Link href="#" onClick={() => void signIn()}>
-                        Signup
-                      </Link>{" "}
-                      to run the task!
-                    </Typography>
-                  </Box>
-                )}
-              </Stack>
-
-              <Box sx={{ m: 1 }}>
-                {promptOutput && (
-                  <Stack direction="row" spacing={2} sx={{ p: 1 }}>
-                    <Grid>
-                      <Box padding={2}>
-                        <Typography variant="h6" className="mb-5">
-                          Output
-                        </Typography>
-                        <PromptOutput
-                          output={promptOutput}
-                          modelType={data?.modelType as ModelTypeType}
+                  {template}
+                </Typography>
+                <Typography
+                  variant="h6"
+                  component="h6"
+                  sx={{
+                    textAlign: "center",
+                    color: "var(--sugarhub-text-color)",
+                  }}
+                >
+                  {data?.description}
+                </Typography>
+                <Box sx={{ m: 1 }}>
+                  {pvrs && (
+                    <>
+                      {data && (
+                        <PromptViewArrow promptTemplate={data?.template} />
+                      )}
+                      <PromptVariables
+                        vars={pvrs}
+                        onChange={handleVariablesChange}
+                        mode={displayModes.Enum.EDIT}
+                      />
+                    </>
+                  )}
+                </Box>
+                <Stack direction="row" spacing={1} sx={{ p: 1 }}>
+                  {isDev && (
+                    <FormControlLabel
+                      sx={{ color: "var(--sugarhub-text-color)" }}
+                      control={
+                        <Checkbox
+                          checked={checked}
+                          onChange={handleChange}
+                          sx={{
+                            color: "var(--button-color-disable)",
+                            "&.Mui-checked": {
+                              color: "var(--sugarcube-component-bg-color)",
+                            },
+                          }}
                         />
-                      </Box>
-                    </Grid>
-                  </Stack>
-                )}
-              </Box>
-            </>
-          ) : (
-            <> No template found</>
-          )}
-        </div>
-      </Container>
+                      }
+                      label="Dummy"
+                    />
+                  )}
+                  <Button
+                    color="success"
+                    variant="outlined"
+                    onClick={session ? handleRun : handleOpen}
+                    disabled={pvrs?.some((v) => v.value === "")}
+                    sx={{
+                      "&.Mui-disabled": {
+                        borderColor: "var(--button-color-disable)",
+                        color: "var(--button-color-disable)",
+                      },
+                    }}
+                  >
+                    Run
+                  </Button>
+                  {!session && isOpen && (
+                    <Box>
+                      <Typography className="mt-2">
+                        <Link href="#" onClick={() => void signIn()}>
+                          Signup
+                        </Link>{" "}
+                        to run the task!
+                      </Typography>
+                    </Box>
+                  )}
+                </Stack>
+
+                <Box sx={{ m: 1 }}>
+                  {promptOutput && (
+                    <Stack direction="row" spacing={2} sx={{ p: 1 }}>
+                      <Grid>
+                        <Box padding={2}>
+                          <Typography variant="h6" className="mb-5">
+                            Output
+                          </Typography>
+                          <PromptOutput
+                            output={promptOutput}
+                            modelType={data?.modelType as ModelTypeType}
+                          />
+                        </Box>
+                      </Grid>
+                    </Stack>
+                  )}
+                </Box>
+              </>
+            ) : (
+              <>
+                <Typography
+                  sx={{
+                    color: "var(--sugarhub-text-color)",
+                    textAlign: "center",
+                  }}
+                >
+                  No template found
+                </Typography>
+              </>
+            )}
+          </div>
+        </Container>
+      </Box>
     </>
   );
 };

@@ -97,10 +97,35 @@ export function PromptVariable({
       {
         <TextField
           id={"prompt-variable-input" + pv.key}
+          sx={{
+            input: { color: "var(--sugarhub-text-color)" },
+            "& .MuiOutlinedInput-root": {
+              "&.Mui-focused fieldset": {
+                borderColor: "var(--sugarhub-card-color)",
+              },
+              "& fieldset": {
+                borderColor: "var(--sugarhub-card-color)",
+              },
+            },
+            "&:hover": {
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "var(--sugarhub-card-color)",
+                },
+              },
+            },
+          }}
           InputProps={{
             startAdornment: (
-              <InputAdornment position="start">{pv.type}</InputAdornment>
+              <InputAdornment position="start">
+                <span style={{ color: "var(--sugarhub-text-color)" }}>
+                  {pv.type}
+                </span>
+              </InputAdornment>
             ),
+          }}
+          InputLabelProps={{
+            style: { color: "var(--sugarhub-text-color)" },
           }}
           label={TV_VALUES[TV_KEYS.indexOf(pv.type)] + " :   " + pv.key}
           variant="outlined"

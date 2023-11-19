@@ -26,7 +26,12 @@ function PromptVariables({
 
   return (
     <Box padding={2}>
-      <Typography variant="h6">Variables</Typography>
+      <Typography
+        variant="h6"
+        sx={{ color: "var(--sugarhub-text-color)", marginBottom: "1rem" }}
+      >
+        Variables
+      </Typography>
       <Stack spacing={2}>
         {vars &&
           vars.length > 0 &&
