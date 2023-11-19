@@ -373,10 +373,18 @@ function PromptVersion({
                       labelledState={pl?.labelledState}
                     />
                     |
-                    <PromotOutputLog pl={pl} />|
                     {pt?.modelType !== ModelTypeSchema.Enum.TEXT2TEXT && (
-                      <DownloadButtonImg output={promptOutput} />
+                      <div
+                        style={{
+                          justifyContent: "center",
+                          alignItems: "center",
+                          display: "flex",
+                        }}
+                      >
+                        <DownloadButtonImg output={promptOutput} />|
+                      </div>
                     )}
+                    <PromotOutputLog pl={pl} />
                   </Box>
                 )}
               </Grid>

@@ -1,4 +1,4 @@
-import { Tooltip } from "@mui/material";
+import { IconButton, Tooltip, Typography } from "@mui/material";
 import React from "react";
 import DownloadForOfflineIcon from "@mui/icons-material/DownloadForOffline";
 
@@ -17,11 +17,20 @@ const DownloadButtonImg: React.FC<DownloadButtonImgProps> = ({ output }) => {
   };
 
   return (
-    <div style={{ cursor: "pointer" }}>
-      <Tooltip title="Download Image" sx={{ ml: 1 }}>
-        <DownloadForOfflineIcon onClick={handleDownload} />
+    <IconButton
+      onClick={handleDownload}
+      sx={{
+        margin: 1,
+        borderRadius: 2,
+      }}
+    >
+      <Tooltip title="Download Image">
+        <div style={{ display: "flex", flexDirection: "row", paddingLeft: 5 }}>
+          <DownloadForOfflineIcon />
+          <Typography style={{ paddingLeft: 8 }}>Download</Typography>
+        </div>
       </Tooltip>
-    </div>
+    </IconButton>
   );
 };
 
