@@ -46,6 +46,7 @@ import {
 } from "~/generated/prisma-client-zod.ts";
 import PromotOutputLog from "./prompt_output_log";
 import { displayModes } from "~/validators/base";
+import DownloadButtonImg from "./download_button_img";
 
 function PromptVersion({
   ns,
@@ -372,7 +373,10 @@ function PromptVersion({
                       labelledState={pl?.labelledState}
                     />
                     |
-                    <PromotOutputLog pl={pl} />
+                    <PromotOutputLog pl={pl} />|
+                    {pt?.modelType !== ModelTypeSchema.Enum.TEXT2TEXT && (
+                      <DownloadButtonImg output={promptOutput} />
+                    )}
                   </Box>
                 )}
               </Grid>

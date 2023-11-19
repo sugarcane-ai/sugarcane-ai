@@ -75,7 +75,7 @@ const PromotOutputLog: React.FC<PromotOutputLogProps> = ({ pl }) => {
 
   return (
     <div>
-      <Tooltip title="Output Log" sx={{ ml: 1 }}>
+      <Tooltip title="Output Log" sx={{ ml: 1, mr: 1 }}>
         <InfoIcon onClick={handleOpen} />
       </Tooltip>
       {showLogs()}
