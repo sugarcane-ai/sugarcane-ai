@@ -9,6 +9,7 @@ import {
   Grid,
   Typography,
   Dialog,
+  IconButton,
 } from "@mui/material";
 import { api } from "~/utils/api";
 import { promptEnvironment } from "~/validators/base";
@@ -26,6 +27,9 @@ import PromptViewArrow from "./prompt_view_arrow";
 import { LoadingButton } from "@mui/lab";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import Counter from "./counter_responsetime";
+import { CreateTemplate } from "./create_template";
+import { PackageOutput as pp } from "~/validators/prompt_package";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 interface PromptTemplateViewProps {
   username: string;
   packageName: string;
@@ -46,14 +50,47 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const [promptOutput, setPromptOutput] = useState("");
   const [promptPerformance, setPromptPerformacne] = useState({});
   const [isOpen, setIsOpen] = useState(false);
+  const [packageData, setPackageData] = useState<pp>({} as pp);
+  const [templateId, setTemplateId] = useState<string>("");
   const handleOpen = () => setIsOpen(true);
   const [isLoading, setIsLoading] = useState(false);
-  const { data } = api.cube.getPrompt.useQuery({
-    username: username,
-    package: packageName,
-    template: template,
-    versionOrEnvironment: versionOrEnvironment?.toUpperCase(),
-  });
+  const [description, setDescription] = useState<string | undefined>("");
+  const { data } = api.cube.getPrompt.useQuery(
+    {
+      username: username,
+      package: packageName,
+      template: template,
+      versionOrEnvironment: versionOrEnvironment?.toUpperCase(),
+    },
+    {
+      onSuccess(item) {
+        setDescription(item?.description);
+      },
+    },
+  );
+
+  api.prompt.getPackageUsingName.useQuery(
+    {
+      name: packageName,
+    },
+    {
+      onSuccess(item) {
+        setPackageData(item);
+      },
+    },
+  );
+
+  api.prompt.getTemplateUsingName.useQuery(
+    {
+      templateName: template,
+      packageName: packageName,
+    },
+    {
+      onSuccess(item) {
+        setTemplateId(item!.id);
+      },
+    },
+  );
 
   useEffect(() => {
     const variables = getUniqueJsonArray(
@@ -144,27 +181,61 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
           >
             {data || !versionOrEnvironment ? (
               <>
-                {/* add Template name and parse it show meaningfull name */}
-                <Typography
-                  variant="h3"
-                  component="h3"
-                  sx={{
-                    textAlign: "center",
-                    color: "var(--sugarhub-text-color)",
-                  }}
-                >
-                  {template}
-                </Typography>
-                <Typography
-                  variant="h6"
-                  component="h6"
-                  sx={{
-                    textAlign: "center",
-                    color: "var(--sugarhub-text-color)",
-                  }}
-                >
-                  {data?.description}
-                </Typography>
+                <Box sx={{ flexGrow: 1 }}>
+                  <Grid container columnSpacing={2}>
+                    <Grid item xs={1.3} sm={1} md={1} lg={1}></Grid>
+                    <Grid item xs={9.4} sm={10} md={10} lg={10}>
+                      <Typography
+                        variant="h3"
+                        component="h3"
+                        sx={{
+                          textAlign: "center",
+                          color: "var(--sugarhub-text-color)",
+                        }}
+                      >
+                        {template}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={1.3} sm={1} md={1} lg={1}>
+                      <IconButton>
+                        <WhatsAppIcon
+                          sx={{
+                            color: "var(--sugarhub-text-color)",
+                            fontSize: "2rem",
+                          }}
+                        />
+                      </IconButton>
+                    </Grid>
+                  </Grid>
+                </Box>
+                <Box sx={{ flexGrow: 1 }}>
+                  <Grid container wrap="nowrap" columnSpacing={2}>
+                    <Grid item xs={1.3} sm={1} md={1} lg={1}></Grid>
+                    <Grid item xs={9.4} sm={10} md={10} lg={10}>
+                      <Typography
+                        variant="h6"
+                        component="h6"
+                        sx={{
+                          textAlign: "center",
+                          color: "var(--sugarhub-text-color)",
+                          wordBreak: "break-word",
+                        }}
+                      >
+                        {description}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={1.3} sm={1} md={1} lg={1}>
+                      <CreateTemplate
+                        pp={packageData}
+                        onCreate={() => void undefined}
+                        status={""}
+                        customError={{}}
+                        ptId={templateId}
+                        setDescription={setDescription}
+                      />
+                    </Grid>
+                  </Grid>
+                </Box>
                 <Box sx={{ m: 1 }}>
                   {pvrs && (
                     <>

@@ -38,6 +38,7 @@ export function CreateTemplate({
   status,
   customError,
   ptId,
+  setDescription,
 }: {
   pp: pp;
   onCreate: Function;
@@ -45,6 +46,7 @@ export function CreateTemplate({
   status: string;
   customError: any;
   ptId: string | boolean;
+  setDescription?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   // const [openEditTemplate, setOpenEditTemplate] = useState<boolean>(false);
@@ -147,6 +149,7 @@ export function CreateTemplate({
           modelType: datatoUpdate.modelType,
         };
         setDataToUpdate(updatedInput);
+        setDescription?.(data.description);
       },
       onError(error) {
         console.log(error);
@@ -155,8 +158,11 @@ export function CreateTemplate({
   };
 
   return (
-    <Box component="span" sx={{}}>
-      <Tooltip title={"Create Template"} placement="top-start">
+    <Box component="span">
+      <Tooltip
+        title={!ptId ? "Create Template" : "Edit Template"}
+        placement="top-start"
+      >
         <IconButton
           size="small"
           aria-label="add template"
