@@ -381,7 +381,7 @@ function PromptVersion({
                           display: "flex",
                         }}
                       >
-                        <DownloadButtonImg output={promptOutput} />|
+                        <DownloadButtonImg base64image={promptOutput} />|
                       </div>
                     )}
                     <PromotOutputLog pl={pl} />

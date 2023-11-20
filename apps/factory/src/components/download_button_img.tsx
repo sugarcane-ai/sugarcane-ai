@@ -1,15 +1,17 @@
-import { IconButton, Tooltip, Typography } from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
 import React from "react";
 import DownloadForOfflineIcon from "@mui/icons-material/DownloadForOffline";
 
 type DownloadButtonImgProps = {
-  output: string;
+  base64image: string;
 };
 
-const DownloadButtonImg: React.FC<DownloadButtonImgProps> = ({ output }) => {
+const DownloadButtonImg: React.FC<DownloadButtonImgProps> = ({
+  base64image,
+}) => {
   const handleDownload = () => {
     const link = document.createElement("a");
-    link.href = output;
+    link.href = base64image;
     link.download = "image.jpg";
     document.body.appendChild(link);
     link.click();
@@ -25,10 +27,7 @@ const DownloadButtonImg: React.FC<DownloadButtonImgProps> = ({ output }) => {
       }}
     >
       <Tooltip title="Download Image">
-        <div style={{ display: "flex", flexDirection: "row", paddingLeft: 5 }}>
-          <DownloadForOfflineIcon />
-          <Typography style={{ paddingLeft: 8 }}>Download</Typography>
-        </div>
+        <DownloadForOfflineIcon />
       </Tooltip>
     </IconButton>
   );

@@ -197,7 +197,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                           />
                           {data?.modelType !==
                             ModelTypeSchema.Enum.TEXT2TEXT && (
-                            <DownloadButtonImg output={promptOutput} />
+                            <DownloadButtonImg base64image={promptOutput} />
                           )}
                         </div>
                       </Box>
