@@ -90,7 +90,10 @@ const LogShow: NextPageWithLayout = () => {
                     {data.llmModelType !== ModelTypeSchema.Enum.TEXT2TEXT ? (
                       <DownloadButtonImg base64image={data?.completion} />
                     ) : (
-                      <CopyToClipboardButton textToCopy={data?.completion} />
+                      <CopyToClipboardButton
+                        textToCopy={data?.completion}
+                        textToDisplay={"Copy"}
+                      />
                     )}
                   </Box>
                 </TableCell>
@@ -100,6 +103,7 @@ const LogShow: NextPageWithLayout = () => {
                     output={data?.completion}
                     tokens={data?.completion_tokens}
                     imgClassName={"h-48 w-96 object-contain"}
+                    textAnimation={false}
                   />
                 </TableCell>
               </TableRow>

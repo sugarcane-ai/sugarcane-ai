@@ -399,7 +399,11 @@ function PromptVersion({
                           display: "flex",
                         }}
                       >
-                        <CopyToClipboardButton textToCopy={promptOutput} />|
+                        <CopyToClipboardButton
+                          textToCopy={promptOutput}
+                          textToDisplay={"Copy"}
+                        />
+                        |
                       </div>
                     )}
                     <PromotOutputLog pl={pl} />

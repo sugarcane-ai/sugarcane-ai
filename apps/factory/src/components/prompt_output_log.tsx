@@ -9,6 +9,7 @@ import CodeHighlight from "./integration/code_highlight";
 import { GenerateOutput } from "~/validators/service";
 import { Button } from "@mui/material";
 import toast from "react-hot-toast";
+import CopyToClipboardButton from "./copy_button";
 
 interface PromotOutputLogProps {
   pl: GenerateOutput;
@@ -43,10 +44,6 @@ const PromotOutputLog: React.FC<PromotOutputLogProps> = ({ pl }) => {
       setPromptLogUrl(completePath);
     }
   }, [pl]);
-  function copyPromptLogUrlToClipboard() {
-    navigator.clipboard.writeText(promptLogUrl);
-    toast.success("Copied");
-  }
 
   const showLogs = () => {
     return (
@@ -59,14 +56,10 @@ const PromotOutputLog: React.FC<PromotOutputLogProps> = ({ pl }) => {
           >
             Output Log
           </Typography>
-          <Button
-            id="copy-to-clipboard"
-            style={{ cursor: "pointer" }}
-            startIcon={<CopyIcon />}
-            onClick={copyPromptLogUrlToClipboard}
-          >
-            Copy URL
-          </Button>
+          <CopyToClipboardButton
+            textToCopy={promptLogUrl}
+            textToDisplay={"COPY URL"}
+          />
         </Box>
         <Typography p={2}>
           <CodeHighlight code={code} language="json" />

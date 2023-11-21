@@ -198,11 +198,15 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                       output={log.completion}
                       tokens={log.completion_tokens}
                       imgClassName={"h-42 w-96 object-contain"}
+                      textAnimation={false}
                     />
                     {log.llmModelType !== ModelTypeSchema.Enum.TEXT2TEXT ? (
                       <DownloadButtonImg base64image={log.completion} />
                     ) : (
-                      <CopyToClipboardButton textToCopy={log.completion} />
+                      <CopyToClipboardButton
+                        textToCopy={log.completion}
+                        textToDisplay={"Copy"}
+                      />
                     )}
                   </div>
                 </TableCell>

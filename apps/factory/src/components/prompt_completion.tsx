@@ -12,6 +12,7 @@ interface PromptCompletionProps {
   output: string;
   tokens?: number;
   imgClassName?: string;
+  textAnimation: boolean;
 }
 
 const PromptCompletion: React.FC<PromptCompletionProps> = ({
@@ -19,11 +20,12 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
   output,
   tokens,
   imgClassName,
+  textAnimation,
 }) => {
   if (modelType === ModelTypeSchema.Enum.TEXT2TEXT) {
     return (
       <>
-        {window.location.href.includes("/logs") ? (
+        {textAnimation === false ? (
           <Box
             sx={{
               "&::-webkit-scrollbar-thumb": {
