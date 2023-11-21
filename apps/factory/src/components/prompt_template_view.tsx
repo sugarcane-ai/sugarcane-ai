@@ -190,14 +190,16 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                       </Typography>
                     </Grid>
                     <Grid item xs={1.5} sm={1} md={1} lg={1}>
-                      <IconButton>
-                        <WhatsAppIcon
-                          sx={{
-                            color: "var(--sugarhub-text-color)",
-                            fontSize: "2rem",
-                          }}
-                        />
-                      </IconButton>
+                      {false && (
+                        <IconButton>
+                          <WhatsAppIcon
+                            sx={{
+                              color: "var(--sugarhub-text-color)",
+                              fontSize: "2rem",
+                            }}
+                          />
+                        </IconButton>
+                      )}
                     </Grid>
                   </Grid>
                 </Box>
@@ -219,13 +221,15 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                     </Grid>
                     <Grid item xs={1.3} sm={1} md={1} lg={1}>
                       <IconButton color="primary">
-                        <EditIcon
-                          onClick={() =>
-                            router.push(
-                              `/dashboard/prompts/${data?.promptPackageId}?ptid=${data?.templateId}&edit=${true}`,
-                            )
-                          }
-                        ></EditIcon>
+                        {session?.user.username == username && (
+                          <EditIcon
+                            onClick={() =>
+                              router.push(
+                                `/dashboard/prompts/${data?.promptPackageId}?ptid=${data?.templateId}&edit=${true}`,
+                              )
+                            }
+                          ></EditIcon>
+                        )}
                       </IconButton>
                     </Grid>
                   </Grid>
