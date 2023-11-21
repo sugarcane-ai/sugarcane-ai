@@ -46,7 +46,7 @@ export function CreateTemplate({
   sx?: any;
   status: string;
   customError: any;
-  ptId: string | boolean;
+  ptId: string | boolean | undefined;
   cube?: boolean;
   edit?: string | string[];
 }) {

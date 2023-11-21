@@ -394,45 +394,4 @@ export const promptRouter = createTRPCRouter({
       // console.log(`versions output -------------- ${JSON.stringify(versions)}`);
       return versions;
     }),
-
-  getPackageUsingName: protectedProcedure
-    .input(getPackageInputName)
-    .output(packageOutput)
-    .query(async ({ ctx, input }) => {
-      const query = {
-        userId: ctx.jwt?.id as string,
-        name: input.name,
-      };
-
-      const pkg = await ctx.prisma.promptPackage.findFirst({
-        where: query,
-      });
-      console.log(`package -------------- ${JSON.stringify(pkg)}`);
-      // console.log(pkg);
-      return pkg;
-    }),
-
-  getTemplateUsingName: protectedProcedure
-    .input(getTemplateInputName)
-    .output(templateOutput)
-    .query(async ({ ctx, input }) => {
-      const packageData = await ctx.prisma.promptPackage.findFirst({
-        where: {
-          userId: ctx.jwt?.id as string,
-          name: input.packageName,
-        },
-      });
-
-      const query = {
-        userId: ctx.jwt?.id as string,
-        name: input.templateName,
-        promptPackageId: packageData?.id,
-      };
-      const template = ctx.prisma.promptTemplate.findFirst({
-        where: query,
-      });
-
-      console.log(`templates -------------- ${JSON.stringify(template)}`);
-      return template;
-    }),
 });

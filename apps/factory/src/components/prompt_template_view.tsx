@@ -67,25 +67,13 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     versionOrEnvironment: versionOrEnvironment?.toUpperCase(),
   });
 
-  api.prompt.getPackageUsingName.useQuery(
+  api.prompt.getPackage.useQuery(
     {
-      name: packageName,
+      id: data?.promptPackageId as string,
     },
     {
       onSuccess(item) {
         setPackageData(item);
-      },
-    },
-  );
-
-  api.prompt.getTemplateUsingName.useQuery(
-    {
-      templateName: template,
-      packageName: packageName,
-    },
-    {
-      onSuccess(item) {
-        setTemplateId(item!.id);
       },
     },
   );
@@ -232,7 +220,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                         onCreate={() => void undefined}
                         status={""}
                         customError={{}}
-                        ptId={templateId}
+                        ptId={data?.templateId}
                         cube={true}
                       />
                     </Grid>
