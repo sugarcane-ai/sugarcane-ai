@@ -25,12 +25,10 @@ import {
   ModelTypeSchema,
 } from "~/generated/prisma-client-zod.ts";
 import PromptCompletion from "~/components/prompt_completion";
-<<<<<<< HEAD
 import DownloadButtonImg from "~/components/download_button_img";
-=======
 import { GenerateOutput } from "~/validators/service";
 import PromotOutputLog from "~/components/prompt_output_log";
->>>>>>> 45f3c71 (Automatic population of logs for prompt templates)
+
 
 interface PromptLog {
   id: string;
