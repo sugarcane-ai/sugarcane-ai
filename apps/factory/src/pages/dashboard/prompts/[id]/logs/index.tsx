@@ -25,7 +25,12 @@ import {
   ModelTypeSchema,
 } from "~/generated/prisma-client-zod.ts";
 import PromptCompletion from "~/components/prompt_completion";
+<<<<<<< HEAD
 import DownloadButtonImg from "~/components/download_button_img";
+=======
+import { GenerateOutput } from "~/validators/service";
+import PromotOutputLog from "~/components/prompt_output_log";
+>>>>>>> 45f3c71 (Automatic population of logs for prompt templates)
 
 interface PromptLog {
   id: string;
@@ -56,10 +61,11 @@ interface PromptLog {
 }
 
 interface PromptLogTableProps {
-  showSearchFilters: boolean;
-  templateIdProp: string | undefined;
-  versionIdProp: string | undefined;
+  logModeMax: boolean;
+  promptTemplateId: string | undefined;
+  promptVersionId: string | undefined;
   itemsPerPage: number;
+  outputLog: GenerateOutput | undefined;
 }
 
 export interface FilterOptions {
@@ -73,10 +79,11 @@ export interface FilterOptions {
 type FinetunedState = "UNPROCESSED" | "PROCESSED";
 
 const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
-  showSearchFilters = true,
-  templateIdProp = undefined,
-  versionIdProp = undefined,
+  logModeMax = true,
+  promptTemplateId = undefined,
+  promptVersionId = undefined,
   itemsPerPage = 10,
+  outputLog = undefined,
 }) => {
   const router = useRouter();
   const packageId = router.query.id as string;
@@ -88,14 +95,14 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
     environment: undefined,
     llmModel: undefined,
     llmProvider: undefined,
-    version: versionIdProp,
+    version: promptVersionId,
   });
 
   const { data, hasNextPage, fetchNextPage, refetch } =
     api.log.getLogs.useInfiniteQuery(
       {
         promptPackageId: packageId,
-        promptTemplateId: templateIdProp,
+        promptTemplateId: promptTemplateId,
         perPage: itemsPerPage,
         ...filterOptions,
       },
@@ -118,6 +125,25 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
     refetch();
   }, [searchText, filterOptions]);
 
+  useEffect(() => {
+    if (outputLog) {
+      const logId = outputLog.id;
+      if (!promptLogs.some((log) => log.id === logId)) {
+        setPromptLogs((prevLogs) => {
+          const newLog = {
+            ...outputLog,
+            llmConfig: {},
+            extras: {},
+            finetunedState: "",
+            promptPackageId: "",
+            promptPackageVersion: "",
+          } as unknown as PromptLog;
+          return [newLog, ...prevLogs];
+        });
+      }
+    }
+  }, [outputLog]);
+
   const handleSearch = () => {
     const filteredLogs = promptLogs.filter((log) =>
       log.prompt.toLowerCase().includes(searchText.toLowerCase()),
@@ -139,7 +165,7 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
         onChange={(e) => setSearchText(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && handleSearch()}
       /> */}
-      {showSearchFilters && (
+      {logModeMax && (
         <LogSearchFiltering
           filterOptions={filterOptions}
           onFilterChange={(newFilterOptions) =>
@@ -152,36 +178,41 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
+              {logModeMax && <TableCell>ID</TableCell>}
               <TableCell>Prompt</TableCell>
               <TableCell>Completion</TableCell>
-              <TableCell>Version</TableCell>
+              {logModeMax && <TableCell>Version</TableCell>}
               <TableCell>LLM Provider</TableCell>
               <TableCell>LLM Model</TableCell>
               <TableCell>Total Tokens</TableCell>
-              <TableCell>Environment</TableCell>
+              {logModeMax && <TableCell>Environment</TableCell>}
               <TableCell>Latency(in ms)</TableCell>
               <TableCell>Labelled State</TableCell>
               <TableCell>Finetuned State</TableCell>
-              <TableCell>Created At</TableCell>
+              {logModeMax && <TableCell>Created At</TableCell>}
               <TableCell>Updated At</TableCell>
+              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {promptLogs.map((log) => (
               <TableRow key={log.id}>
-                <TableCell>{log.id}</TableCell>
+                {logModeMax && <TableCell>{log.id}</TableCell>}
                 <TableCell>
                   {log.prompt}
                   <p>tokens: {log.prompt_tokens}</p>
                 </TableCell>
                 <TableCell
-                  style={{
-                    maxWidth: 150,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
+                  style={
+                    logModeMax
+                      ? {
+                          maxWidth: 150,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }
+                      : { whiteSpace: "normal" }
+                  }
                 >
                   <div
                     style={{
@@ -202,11 +233,11 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                     )}
                   </div>
                 </TableCell>
-                <TableCell>{log.version}</TableCell>
+                {logModeMax && <TableCell>{log.version}</TableCell>}
                 <TableCell>{log.llmProvider}</TableCell>
                 <TableCell>{log.llmModel}</TableCell>
                 <TableCell>{log.total_tokens}</TableCell>
-                <TableCell>{log.environment}</TableCell>
+                {logModeMax && <TableCell>{log.environment}</TableCell>}
                 <TableCell>{log.latency}</TableCell>
                 <TableCell>
                   <LabelIcons
@@ -215,11 +246,16 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                   />
                 </TableCell>
                 <TableCell>{log.finetunedState}</TableCell>
-                <TableCell>
-                  <TimeAgo date={log.createdAt} />
-                </TableCell>
+                {logModeMax && (
+                  <TableCell>
+                    <TimeAgo date={log.createdAt} />
+                  </TableCell>
+                )}
                 <TableCell>
                   <TimeAgo date={log.updatedAt} />
+                </TableCell>
+                <TableCell>
+                  <PromotOutputLog pl={log} />
                 </TableCell>
               </TableRow>
             ))}
