@@ -31,6 +31,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { api } from "~/utils/api";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
+
 export function CreateTemplate({
   pp,
   onCreate,
@@ -38,8 +39,6 @@ export function CreateTemplate({
   status,
   customError,
   ptId,
-  cube,
-  edit,
 }: {
   pp: pp;
   onCreate: Function;
@@ -47,11 +46,10 @@ export function CreateTemplate({
   status: string;
   customError: any;
   ptId: string | boolean | undefined;
-  cube?: boolean;
-  edit?: string | string[];
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const edit = router.query.edit;
   const [defaultModelType, setDefaultModelType] = useState<
     ModelTypeType | undefined
   >(ModelTypeSchema.enum.TEXT2TEXT);
@@ -117,7 +115,7 @@ export function CreateTemplate({
       onSuccess(items) {
         setDataToUpdate(items!);
         setDefaultModelType(items?.modelType);
-        if (edit) {
+        if (edit === "true" && ptId) {
           reset({
             name: items?.name,
             description: items?.description,
@@ -131,18 +129,13 @@ export function CreateTemplate({
   );
 
   const fetchTemplateData = () => {
-    // if cube is true route it to dashboard/prompts/packageId?templateId
-    if (cube) {
-      router.push(`/dashboard/prompts/${pp?.id}?ptid=${ptId}&edit=${true}`);
-    } else {
-      reset({
-        name: datatoUpdate.name,
-        description: datatoUpdate.description,
-        promptPackageId: datatoUpdate.promptPackageId,
-        modelType: datatoUpdate.modelType,
-      });
-      setIsOpen(true);
-    }
+    reset({
+      name: datatoUpdate.name,
+      description: datatoUpdate.description,
+      promptPackageId: datatoUpdate.promptPackageId,
+      modelType: datatoUpdate.modelType,
+    });
+    setIsOpen(true);
   };
 
   // to update

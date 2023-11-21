@@ -35,6 +35,8 @@ import { PackageOutput as pp } from "~/validators/prompt_package";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import Footer from "./footer";
 import DownloadButtonImg from "./download_button_img";
+import EditIcon from "@mui/icons-material/Edit";
+import { useRouter } from "next/router";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -60,6 +62,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const [templateId, setTemplateId] = useState<string>("");
   const handleOpen = () => setIsOpen(true);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   const { data } = api.cube.getPrompt.useQuery({
     username: username,
     package: packageName,
@@ -215,14 +218,15 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                       </Typography>
                     </Grid>
                     <Grid item xs={1.3} sm={1} md={1} lg={1}>
-                      <CreateTemplate
-                        pp={packageData}
-                        onCreate={() => void undefined}
-                        status={""}
-                        customError={{}}
-                        ptId={data?.templateId}
-                        cube={true}
-                      />
+                      <IconButton color="primary">
+                        <EditIcon
+                          onClick={() =>
+                            router.push(
+                              `/dashboard/prompts/${data?.promptPackageId}?ptid=${data?.templateId}&edit=${true}`,
+                            )
+                          }
+                        ></EditIcon>
+                      </IconButton>
                     </Grid>
                   </Grid>
                 </Box>
