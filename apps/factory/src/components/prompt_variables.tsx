@@ -14,10 +14,12 @@ function PromptVariables({
   vars,
   onChange,
   mode,
+  cube,
 }: {
   vars: Array<PromptVariableProps>;
   onChange: (key: string, value: string) => void;
   mode: DisplayModes;
+  cube?: boolean;
 }) {
   // console.log(`variables : ${JSON.stringify(vars)}`);
   const handleValueChange = (key: string, value: string) => {
@@ -30,7 +32,7 @@ function PromptVariables({
         variant="h6"
         sx={{ color: "var(--sugarhub-text-color)", marginBottom: "1rem" }}
       >
-        Variables
+        {cube ? "Enter Name" : "Variables"}
       </Typography>
       <Stack spacing={2}>
         {vars &&
@@ -41,6 +43,7 @@ function PromptVariables({
               pv={v}
               onChange={handleValueChange}
               mode={mode}
+              cube={cube}
             />
           ))}
       </Stack>

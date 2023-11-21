@@ -30,7 +30,7 @@ import { FormDropDownInput } from "./form_components/formDropDownInput";
 import EditIcon from "@mui/icons-material/Edit";
 import { api } from "~/utils/api";
 import toast from "react-hot-toast";
-// import * as Sentry from "@sentry/nextjs";
+import { useRouter } from "next/router";
 export function CreateTemplate({
   pp,
   onCreate,
@@ -38,7 +38,8 @@ export function CreateTemplate({
   status,
   customError,
   ptId,
-  setDescription,
+  cube,
+  edit,
 }: {
   pp: pp;
   onCreate: Function;
@@ -46,10 +47,11 @@ export function CreateTemplate({
   status: string;
   customError: any;
   ptId: string | boolean;
-  setDescription?: React.Dispatch<React.SetStateAction<string | undefined>>;
+  cube?: boolean;
+  edit?: string | string[];
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  // const [openEditTemplate, setOpenEditTemplate] = useState<boolean>(false);
+  const router = useRouter();
   const [defaultModelType, setDefaultModelType] = useState<
     ModelTypeType | undefined
   >(ModelTypeSchema.enum.TEXT2TEXT);
@@ -96,7 +98,6 @@ export function CreateTemplate({
       promptPackageId: pp?.id,
       modelType: ModelTypeSchema.enum.TEXT2TEXT,
     });
-    // setOpenEditTemplate(false);
   };
 
   const onFormSubmit = (data: CreateTemplateInput) => {
@@ -116,18 +117,32 @@ export function CreateTemplate({
       onSuccess(items) {
         setDataToUpdate(items!);
         setDefaultModelType(items?.modelType);
+        if (edit) {
+          reset({
+            name: items?.name,
+            description: items?.description,
+            promptPackageId: items?.promptPackageId,
+            modelType: items?.modelType,
+          });
+          setIsOpen(true);
+        }
       },
     },
   );
 
   const fetchTemplateData = () => {
-    setIsOpen(true);
-    reset({
-      name: datatoUpdate.name,
-      description: datatoUpdate.description,
-      promptPackageId: datatoUpdate.promptPackageId,
-      modelType: datatoUpdate.modelType,
-    });
+    // if cube is true route it to dashboard/prompts/packageId?templateId
+    if (cube) {
+      router.push(`/dashboard/prompts/${pp?.id}?ptid=${ptId}&edit=${true}`);
+    } else {
+      reset({
+        name: datatoUpdate.name,
+        description: datatoUpdate.description,
+        promptPackageId: datatoUpdate.promptPackageId,
+        modelType: datatoUpdate.modelType,
+      });
+      setIsOpen(true);
+    }
   };
 
   // to update
@@ -149,7 +164,6 @@ export function CreateTemplate({
           modelType: datatoUpdate.modelType,
         };
         setDataToUpdate(updatedInput);
-        setDescription?.(data.description);
       },
       onError(error) {
         console.log(error);

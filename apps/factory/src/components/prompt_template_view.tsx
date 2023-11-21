@@ -30,6 +30,8 @@ import Counter from "./counter_responsetime";
 import { CreateTemplate } from "./create_template";
 import { PackageOutput as pp } from "~/validators/prompt_package";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import Footer from "./footer";
+
 interface PromptTemplateViewProps {
   username: string;
   packageName: string;
@@ -54,20 +56,12 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const [templateId, setTemplateId] = useState<string>("");
   const handleOpen = () => setIsOpen(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [description, setDescription] = useState<string | undefined>("");
-  const { data } = api.cube.getPrompt.useQuery(
-    {
-      username: username,
-      package: packageName,
-      template: template,
-      versionOrEnvironment: versionOrEnvironment?.toUpperCase(),
-    },
-    {
-      onSuccess(item) {
-        setDescription(item?.description);
-      },
-    },
-  );
+  const { data } = api.cube.getPrompt.useQuery({
+    username: username,
+    package: packageName,
+    template: template,
+    versionOrEnvironment: versionOrEnvironment?.toUpperCase(),
+  });
 
   api.prompt.getPackageUsingName.useQuery(
     {
@@ -165,13 +159,18 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   };
 
   return (
-    <>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+        backgroundColor: "var(--sugarhub-main-color)",
+      }}
+    >
       <Header headerName={"Sugar Cube"} />
       <Box
         sx={{
-          backgroundColor: "var(--sugarhub-main-color)",
           padding: "1rem 0rem",
-          minHeight: "100vh",
         }}
       >
         <Container className="center">
@@ -183,20 +182,19 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
               <>
                 <Box sx={{ flexGrow: 1 }}>
                   <Grid container columnSpacing={2}>
-                    <Grid item xs={1.3} sm={1} md={1} lg={1}></Grid>
-                    <Grid item xs={9.4} sm={10} md={10} lg={10}>
+                    <Grid item xs={1.5} sm={1} md={1} lg={1}></Grid>
+                    <Grid item xs={9} sm={10} md={10} lg={10}>
                       <Typography
-                        variant="h3"
-                        component="h3"
                         sx={{
                           textAlign: "center",
                           color: "var(--sugarhub-text-color)",
+                          fontSize: { xs: "2rem", sm: "3rem", lg: "3rem" },
                         }}
                       >
-                        {template}
+                        {!template ? "" : template.replaceAll("-", " ")}
                       </Typography>
                     </Grid>
-                    <Grid item xs={1.3} sm={1} md={1} lg={1}>
+                    <Grid item xs={1.5} sm={1} md={1} lg={1}>
                       <IconButton>
                         <WhatsAppIcon
                           sx={{
@@ -221,7 +219,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                           wordBreak: "break-word",
                         }}
                       >
-                        {description}
+                        {data?.description}
                       </Typography>
                     </Grid>
                     <Grid item xs={1.3} sm={1} md={1} lg={1}>
@@ -231,7 +229,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                         status={""}
                         customError={{}}
                         ptId={templateId}
-                        setDescription={setDescription}
+                        cube={true}
                       />
                     </Grid>
                   </Grid>
@@ -246,6 +244,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                         vars={pvrs}
                         onChange={handleVariablesChange}
                         mode={displayModes.Enum.EDIT}
+                        cube={true}
                       />
                     </>
                   )}
@@ -342,7 +341,8 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
           </div>
         </Container>
       </Box>
-    </>
+      <Footer />
+    </Box>
   );
 };
 

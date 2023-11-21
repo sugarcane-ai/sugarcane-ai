@@ -21,10 +21,12 @@ export function PromptVariable({
   pv,
   onChange,
   mode,
+  cube = false,
 }: {
   pv: PromptVariableProps;
   onChange: (key: string, value: string) => void;
   mode: DisplayModes;
+  cube?: boolean;
 }) {
   let [val, setValue] = useState(pv.value);
 
@@ -127,7 +129,10 @@ export function PromptVariable({
           InputLabelProps={{
             style: { color: "var(--sugarhub-text-color)" },
           }}
-          label={TV_VALUES[TV_KEYS.indexOf(pv.type)] + " :   " + pv.key}
+          label={
+            (!cube ? TV_VALUES[TV_KEYS.indexOf(pv.type)] + " :   " : "") +
+            pv.key
+          }
           variant="outlined"
           value={val}
           // defaultValue={pv.value}

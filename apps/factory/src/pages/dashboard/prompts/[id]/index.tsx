@@ -40,6 +40,7 @@ const PackageShow: NextPageWithLayout = () => {
   const router = useRouter();
   const { pathname, query } = router;
   const packageId = query.id as string;
+  const edit = query.edit;
 
   // to handle the status of mutation
   const [status, setStatus] = useState("");
@@ -181,6 +182,7 @@ const PackageShow: NextPageWithLayout = () => {
                         status={status}
                         customError={customError}
                         ptId={ptId}
+                        edit={edit}
                       ></CreateTemplate>
                     </>
                   ) : (

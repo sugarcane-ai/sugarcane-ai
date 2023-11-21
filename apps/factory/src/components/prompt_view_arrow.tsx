@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Stack, Box, Typography } from "@mui/material";
-import { FaCaretDown, FaCaretUp } from "react-icons/fa";
+import { FaCaretDown, FaCaretRight } from "react-icons/fa";
 
 type PromptViewArrowProps = {
   promptTemplate: string;
@@ -26,7 +26,7 @@ const PromptViewArrow: React.FC<PromptViewArrowProps> = ({
               style={{ paddingRight: 5, color: "var(--sugarhub-text-color)" }}
             />
           ) : (
-            <FaCaretUp
+            <FaCaretRight
               size={20}
               style={{ paddingRight: 5, color: "var(--sugarhub-text-color)" }}
             />
