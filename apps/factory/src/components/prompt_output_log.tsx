@@ -37,10 +37,12 @@ const PromotOutputLog: React.FC<PromotOutputLogProps> = ({ pl }) => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const completePath = `${window.location.href}/logs/${pl?.id}`;
+      const completePath = `${
+        window.location.href.split("?")[0]
+      }/logs/${pl?.id}`;
       setPromptLogUrl(completePath);
     }
-  }, []);
+  }, [pl]);
   function copyPromptLogUrlToClipboard() {
     navigator.clipboard.writeText(promptLogUrl);
     toast.success("Copied");
