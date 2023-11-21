@@ -46,6 +46,7 @@ import {
 } from "~/generated/prisma-client-zod.ts";
 import PromotOutputLog from "./prompt_output_log";
 import { displayModes } from "~/validators/base";
+import DownloadButtonImg from "./download_button_img";
 import PromptLogTable from "~/pages/dashboard/prompts/[id]/logs";
 
 function PromptVersion({
@@ -86,6 +87,7 @@ function PromptVersion({
   );
   const [isDirty, setIsDirty] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [outputLog, setOutputLog] = useState<GenerateOutput>(null);
   const pvUpdateMutation = api.prompt.updateVersion.useMutation({
     onSuccess: (v) => {
       if (v !== null) {
@@ -172,6 +174,7 @@ function PromptVersion({
         completion_tokens: pl.completion_tokens,
         total_tokens: pl.total_tokens,
       });
+      setOutputLog(pl);
     }
   };
 
@@ -373,6 +376,17 @@ function PromptVersion({
                       labelledState={pl?.labelledState}
                     />
                     |
+                    {pt?.modelType !== ModelTypeSchema.Enum.TEXT2TEXT && (
+                      <div
+                        style={{
+                          justifyContent: "center",
+                          alignItems: "center",
+                          display: "flex",
+                        }}
+                      >
+                        <DownloadButtonImg base64image={promptOutput} />|
+                      </div>
+                    )}
                     <PromotOutputLog pl={pl} />
                   </Box>
                 )}
@@ -391,10 +405,11 @@ function PromptVersion({
         <Box sx={{ m: 1 }} padding={2}>
           <Typography variant="h6">Log History</Typography>
           <PromptLogTable
-            showSearchFilters={false}
-            templateIdProp={pt?.id}
-            versionIdProp={pv?.version}
+            logModeMax={false}
+            promptTemplateId={pt?.id}
+            promptVersionId={pv?.version}
             itemsPerPage={5}
+            outputLog={outputLog}
           />
         </Box>
       </Box>
