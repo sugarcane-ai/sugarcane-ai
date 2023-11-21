@@ -26,44 +26,43 @@ import {
 } from "~/generated/prisma-client-zod.ts";
 import PromptCompletion from "~/components/prompt_completion";
 import DownloadButtonImg from "~/components/download_button_img";
-import { GenerateOutput } from "~/validators/service";
+import { LogSchema, GenerateOutput } from "~/validators/service";
 import PromotOutputLog from "~/components/prompt_output_log";
 
-
-interface PromptLog {
-  id: string;
-  inputId?: string;
-  prompt: string;
-  version: string;
-  completion: string;
-  llmProvider: string;
-  llmModel: string;
-  llmConfig: {
-    max_tokens: number;
-    temperature: number;
-  };
-  llmModelType: ModelTypeType;
-  latency: number;
-  prompt_tokens: number;
-  environment: string;
-  completion_tokens: number;
-  total_tokens: number;
-  extras: Record<string, any>;
-  labelledState: LabelledStateType;
-  finetunedState: FinetunedState;
-  promptPackageId: string;
-  promptTemplateId: string;
-  promptVersionId: string;
-  createdAt: string;
-  updatedAt: string;
-}
+// interface PromptLog {
+//   id: string;
+//   inputId?: string;
+//   prompt: string;
+//   version: string;
+//   completion: string;
+//   llmProvider: string;
+//   llmModel: string;
+//   llmConfig: {
+//     max_tokens: number;
+//     temperature: number;
+//   };
+//   llmModelType: ModelTypeType;
+//   latency: number;
+//   prompt_tokens: number;
+//   environment: string;
+//   completion_tokens: number;
+//   total_tokens: number;
+//   extras: Record<string, any>;
+//   labelledState: LabelledStateType;
+//   finetunedState: FinetunedState;
+//   promptPackageId: string;
+//   promptTemplateId: string;
+//   promptVersionId: string;
+//   createdAt: string;
+//   updatedAt: string;
+// }
 
 interface PromptLogTableProps {
   logModeMax: boolean;
   promptTemplateId: string | undefined;
   promptVersionId: string | undefined;
   itemsPerPage: number;
-  outputLog: GenerateOutput | undefined;
+  outputLog: LogSchema | null;
 }
 
 export interface FilterOptions {
@@ -86,7 +85,7 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
   const router = useRouter();
   const packageId = router.query.id as string;
 
-  const [promptLogs, setPromptLogs] = useState<PromptLog[]>([]);
+  const [promptLogs, setPromptLogs] = useState<LogSchema[]>([]);
   const [searchText, setSearchText] = useState<string>("");
 
   const [filterOptions, setFilterOptions] = useState<FilterOptions>({
@@ -135,7 +134,7 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
             finetunedState: "",
             promptPackageId: "",
             promptPackageVersion: "",
-          } as unknown as PromptLog;
+          } as unknown as LogSchema;
           return [newLog, ...prevLogs];
         });
       }
@@ -186,7 +185,7 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
               {logModeMax && <TableCell>Environment</TableCell>}
               <TableCell>Latency(in ms)</TableCell>
               <TableCell>Labelled State</TableCell>
-              <TableCell>Finetuned State</TableCell>
+              {/* <TableCell>Finetuned State</TableCell> */}
               {logModeMax && <TableCell>Created At</TableCell>}
               <TableCell>Updated At</TableCell>
               <TableCell></TableCell>
@@ -243,7 +242,7 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                     labelledState={log.labelledState}
                   />
                 </TableCell>
-                <TableCell>{log.finetunedState}</TableCell>
+                {/* <TableCell>{log.finetunedState}</TableCell> */}
                 {logModeMax && (
                   <TableCell>
                     <TimeAgo date={log.createdAt} />
