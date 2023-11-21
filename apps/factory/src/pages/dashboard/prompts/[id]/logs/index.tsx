@@ -25,6 +25,7 @@ import {
   ModelTypeSchema,
 } from "~/generated/prisma-client-zod.ts";
 import PromptCompletion from "~/components/prompt_completion";
+<<<<<<< HEAD
 import DownloadButtonImg from "~/components/download_button_img";
 import CopyToClipboardButton from "~/components/copy_button";
 import { LogSchema, GenerateOutput } from "~/validators/service";
