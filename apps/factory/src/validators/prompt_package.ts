@@ -80,14 +80,6 @@ export type updatePackageInput = z.infer<typeof updatePackageInput>;
 
 // export type UpdateVersionInput = z.infer<typeof UpdateVersionInput>;
 
-export const getPackageInputName = z
-  .object({
-    name: z.string(),
-  })
-  .strict()
-  .required();
-export type GetPackageInputName = z.infer<typeof getPackageInputName>;
-
 export const packageOutput = packageSchema.or(z.null());
 export type PackageOutput = z.infer<typeof packageOutput>;
 

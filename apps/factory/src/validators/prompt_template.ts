@@ -102,12 +102,3 @@ export type TemplateOutput = z.infer<typeof templateOutput>;
 
 export const templateListOutput = z.array(templateSchema);
 export type TemplateListOutput = z.infer<typeof templateListOutput>;
-
-export const getTemplateInputName = z
-  .object({
-    templateName: z.string(),
-    packageName: z.string(),
-  })
-  .strict()
-  .required();
-export type GetTemplateInputName = z.infer<typeof getTemplateInputName>;

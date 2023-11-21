@@ -8,7 +8,6 @@ import {
   packageOutput,
   packageListOutput,
   updatePackageInput,
-  getPackageInputName,
 } from "~/validators/prompt_package";
 import {
   getTemplatesInput,
@@ -19,7 +18,6 @@ import {
   templateOutput,
   templateListOutput,
   deployTemplateInput,
-  getTemplateInputName,
 } from "~/validators/prompt_template";
 import {
   getVersionsInput,
