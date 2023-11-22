@@ -332,6 +332,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                           cursor: "not-allowed",
                           width: "8rem",
                         },
+                        width: "8rem",
                       }}
                       loadingPosition="start"
                       startIcon={<PlayArrowIcon />}
