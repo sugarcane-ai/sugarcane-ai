@@ -10,6 +10,7 @@ import {
   Typography,
   Dialog,
   IconButton,
+  Tooltip,
   CircularProgress,
 } from "@mui/material";
 import { api } from "~/utils/api";
@@ -38,6 +39,9 @@ import Footer from "./footer";
 import DownloadButtonImg from "./download_button_img";
 import EditIcon from "@mui/icons-material/Edit";
 import { useRouter } from "next/router";
+import ShareIcon from "@mui/icons-material/Share";
+import ShareCube from "./share_cube";
+import { NextSeo } from "next-seo";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -63,6 +67,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const [templateId, setTemplateId] = useState<string>("");
   const handleOpen = () => setIsOpen(true);
   const [isLoadingState, setIsLoading] = useState(false);
+  const [openShareModal, setOpenShareModal] = useState<boolean>(false);
   const router = useRouter();
   const { data, isLoading } = api.cube.getPrompt.useQuery({
     username: username,
@@ -153,9 +158,28 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const handleChange = () => {
     setChecked((prevChecked) => !prevChecked);
   };
-
+  const shareUrl = "";
   return (
     <>
+      <NextSeo
+        title={template}
+        description={data?.description}
+        canonical={shareUrl}
+        openGraph={{
+          url: `${shareUrl}`,
+          title: `${template}`,
+          description: `${data?.description}`,
+          type: "website",
+          images: [
+            {
+              url: "https://sugarcaneai.dev/images/sugar/logo-transparent.png",
+              width: 800,
+              height: 600,
+              type: "image/png",
+            },
+          ],
+        }}
+      />
       <Box
         sx={{
           display: "flex",
@@ -202,16 +226,26 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                         </Typography>
                       </Grid>
                       <Grid item xs={1.5} sm={1} md={1} lg={1}>
-                        {false && (
-                          <IconButton>
-                            <WhatsAppIcon
-                              sx={{
-                                color: "var(--sugarhub-text-color)",
-                                fontSize: "2rem",
-                              }}
-                            />
+                        <Tooltip title="share cube" placement="top">
+                          <IconButton
+                            onClick={() => setOpenShareModal(!openShareModal)}
+                          >
+                            {session?.user.username == username && (
+                              <ShareIcon
+                                sx={{
+                                  color: "var(--sugarhub-text-color)",
+                                  fontSize: "2rem",
+                                }}
+                              />
+                            )}
                           </IconButton>
-                        )}
+                        </Tooltip>
+                        {/* modal to show sharing option */}
+                        <ShareCube
+                          setOpenShareModal={setOpenShareModal}
+                          open={openShareModal}
+                          shareUrl={shareUrl}
+                        />
                       </Grid>
                     </Grid>
                   </Box>
@@ -232,17 +266,19 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                         </Typography>
                       </Grid>
                       <Grid item xs={1.3} sm={1} md={1} lg={1}>
-                        <IconButton color="primary">
-                          {session?.user.username == username && (
-                            <EditIcon
-                              onClick={() =>
-                                router.push(
-                                  `/dashboard/prompts/${data?.promptPackageId}?ptid=${data?.templateId}&edit=${true}`,
-                                )
-                              }
-                            ></EditIcon>
-                          )}
-                        </IconButton>
+                        <Tooltip title="edti template" placement="top">
+                          <IconButton color="primary">
+                            {session?.user.username == username && (
+                              <EditIcon
+                                onClick={() =>
+                                  router.push(
+                                    `/dashboard/prompts/${data?.promptPackageId}?ptid=${data?.templateId}&edit=${true}`,
+                                  )
+                                }
+                              ></EditIcon>
+                            )}
+                          </IconButton>
+                        </Tooltip>
                       </Grid>
                     </Grid>
                   </Box>
