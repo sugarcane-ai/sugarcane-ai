@@ -14,7 +14,6 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { api } from "~/utils/api";
-import { promptEnvironment } from "~/validators/base";
 import PromptVariables, { PromptVariableProps } from "./prompt_variables";
 import { getUniqueJsonArray, getVariables } from "~/utils/template";
 import { GenerateInput, GenerateOutput } from "~/validators/service";
@@ -32,16 +31,14 @@ import PromptViewArrow from "./prompt_view_arrow";
 import { LoadingButton } from "@mui/lab";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import Counter from "./counter_responsetime";
-import { CreateTemplate } from "./create_template";
 import { PackageOutput as pp } from "~/validators/prompt_package";
-import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import Footer from "./footer";
-import DownloadButtonImg from "./download_button_img";
 import EditIcon from "@mui/icons-material/Edit";
 import { useRouter } from "next/router";
 import ShareIcon from "@mui/icons-material/Share";
-import ShareCube from "./share_cube";
+import ShareCube from "./cubes/share_cube";
 import { NextSeo } from "next-seo";
+import DownloadButtonImg from "./download_button_img";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -64,7 +61,6 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const [promptPerformance, setPromptPerformacne] = useState({});
   const [isOpen, setIsOpen] = useState(false);
   const [packageData, setPackageData] = useState<pp>({} as pp);
-  const [templateId, setTemplateId] = useState<string>("");
   const handleOpen = () => setIsOpen(true);
   const [isLoadingState, setIsLoading] = useState(false);
   const [openShareModal, setOpenShareModal] = useState<boolean>(false);
@@ -158,7 +154,9 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const handleChange = () => {
     setChecked((prevChecked) => !prevChecked);
   };
-  const shareUrl = "";
+
+  const shareUrl = `https://play.sugarcaneai.dev//${username}/${packageName}/${template}/${versionOrEnvironment}`;
+  const imageUrl = `${process.env.NEXT_PUBLIC_APP_LOGO}`;
   return (
     <>
       <NextSeo
@@ -172,12 +170,15 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
           type: "website",
           images: [
             {
-              url: "https://sugarcaneai.dev/images/sugar/logo-transparent.png",
-              width: 800,
-              height: 600,
+              url: `${imageUrl}`,
+              width: 1200,
+              height: 630,
               type: "image/png",
             },
           ],
+        }}
+        twitter={{
+          cardType: "summary_large_image",
         }}
       />
       <Box
