@@ -39,6 +39,8 @@ import ShareIcon from "@mui/icons-material/Share";
 import ShareCube from "./cubes/share_cube";
 import { NextSeo } from "next-seo";
 import DownloadButtonImg from "./download_button_img";
+import { prisma } from "~/server/db";
+import { env } from "~/env.mjs";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -155,14 +157,15 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     setChecked((prevChecked) => !prevChecked);
   };
 
-  const shareUrl = `https://play.sugarcaneai.dev//${username}/${packageName}/${template}/${versionOrEnvironment}`;
+  const shareUrl = `${env.NEXTAUTH_URL}/${username}/${packageName}/${template}/${versionOrEnvironment}`;
   const imageUrl = `${process.env.NEXT_PUBLIC_APP_LOGO}`;
+
   return (
     <>
       <NextSeo
         title={template}
         description={data?.description}
-        canonical={shareUrl}
+        // canonical={shareUrl}
         openGraph={{
           url: `${shareUrl}`,
           title: `${template}`,
