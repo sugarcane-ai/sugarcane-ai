@@ -44,3 +44,9 @@ yarn-error.log*
 *.tsbuildinfo
 # Sentry Config File
 .sentryclirc
+
+# sst
+.sst
+
+# open-next
+.open-next

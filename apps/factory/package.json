@@ -9,7 +9,7 @@
   "keywords": [],
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
+    "dev": "sst bind next dev",
     "postinstall": "npx prisma generate",
     "lint": "next lint",
     "start": "next start",
@@ -42,6 +42,7 @@
     "lodash.debounce": "^4.0.8",
     "memoizee": "^0.4.15",
     "nanoid": "^5.0.1",
+    "next": "13.4.13",
     "next-auth": "^4.24.5",
     "nextjs-cors": "^2.1.2",
     "openai": "^4.6.0",
@@ -93,14 +94,16 @@
     "eslint-plugin-storybook": "^0.6.13",
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
-    "next": "13.4.13",
     "postcss": "^8.4.27",
     "prettier": "^3.0.3",
     "prettier-plugin-tailwindcss": "^0.5.1",
     "prisma": "^5.3.1",
     "storybook": "^7.4.0",
     "tailwindcss": "^3.3.3",
-    "typescript": "^5.1.6"
+    "typescript": "^5.1.6",
+    "sst": "^2.36.7",
+    "aws-cdk-lib": "2.110.1",
+    "constructs": "10.3.0"
   },
   "ct3aMetadata": {
     "initVersion": "7.19.0"

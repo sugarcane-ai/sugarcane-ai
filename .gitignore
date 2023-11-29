@@ -8,3 +8,5 @@ build
 next-env.d.ts
 .nvmrc
 .sentryclirc
+.vercel
+.env*.local
