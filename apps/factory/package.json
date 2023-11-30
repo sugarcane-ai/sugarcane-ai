@@ -16,7 +16,8 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "pre-commit": "lint-staged",
-    "db": "npx prisma studio"
+    "db": "npx prisma studio",
+    "postbuild": "pnpm next-sitemap --config next-sitemap.config.mjs"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
@@ -43,6 +44,7 @@
     "memoizee": "^0.4.15",
     "nanoid": "^5.0.1",
     "next-auth": "^4.24.5",
+    "next-sitemap": "^4.2.3",
     "nextjs-cors": "^2.1.2",
     "openai": "^4.6.0",
     "react": "18.2.0",
