@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  ide:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ide
+    ports:
+      - '3003:3000'
