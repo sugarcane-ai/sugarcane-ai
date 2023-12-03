@@ -31,8 +31,3 @@ jobs:
         build-args: PROJECT_NAME=factory
         tags: factory:1
         push: true
-        
-
-    - name: Push Docker image to Docker Hub
-      run: |
-        docker push factory:1
