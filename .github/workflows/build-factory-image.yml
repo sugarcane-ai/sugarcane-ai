@@ -1,0 +1,34 @@
+name: Build Factory Image
+
+on:
+  push:
+    branches:
+      - docker
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Docker
+      uses: docker/setup-docker@v2
+      with:
+        dockerfile: Dockerfile
+
+    - name: Build Docker image
+      run: |
+        # docker build -t ${{ secrets.DOCKER_IMAGE_NAME }}:$GITHUB_SHA .
+        bin/build $GITHUB_SHA
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+    - name: Push Docker image to Docker Hub
+      run: |
+        docker push ${{ secrets.DOCKER_IMAGE_NAME }}:$GITHUB_SHA
