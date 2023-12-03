@@ -1,5 +1,5 @@
 # Builder image
-FROM node:18-alpine AS build
+FROM --platform=linux/amd64 node:18-alpine AS build
 
 RUN apk add --no-cache curl bash git
 
@@ -17,6 +17,7 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 # home location environment variable to a location already in $PATH
 # https://github.com/pnpm/pnpm/issues/784#issuecomment-1518582235
 ENV PNPM_HOME=/usr/local/bin
+ENV NEXT_TELEMETRY_DISABLED 1
 
 COPY pnpm-lock.yaml .npmrc* ./
 RUN pnpm fetch
@@ -47,9 +48,16 @@ WORKDIR /app
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
+# You only need to copy next.config.js if you are NOT using the default configuration
+COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/next.config.mjs ./
+COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/public* ./public
+COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/package.json ./package.json
+
+# COPY --from=builder --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/node_modules ./node_modules
 COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/.next/standalone/ ./
 COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/.next/static* ./.next/static
-COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/public* ./public
+
+
 
 # WORKAROUND FOR: https://github.com/vercel/next.js/discussions/39432
 # RUN rm -rf ./node_modules
@@ -64,4 +72,5 @@ ENV PORT 3000
 ENV HOSTNAME localhost
 ENV NEXT_TELEMETRY_DISABLED 1
 
+ENTRYPOINT ["node", "/app/apps/factory/server.js"]
 CMD ["node", "/app/apps/factory/server.js"]

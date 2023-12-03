@@ -1,6 +1,7 @@
 *
 !.env.production
 !.eslintrc.cjs
+!next-env.d.ts
 !.next
 !.sentryclirc
 !next.config.mjs
