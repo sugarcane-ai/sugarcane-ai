@@ -27,7 +27,7 @@ COPY . .
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --offline --workspace-root --filter ${PROJECT_NAME}
 # RUN pnpm run build --filter=${PROJECT_NAME}...
 RUN pnpm --filter ${PROJECT_NAME} postinstall
-RUN pnpm --filter ${PROJECT_NAME} build
+RUN pnpm --filter ${PROJECT_NAME} cibuild
 
 # # WORKAROUND FOR: https://github.com/vercel/next.js/discussions/39432
 # RUN pnpm install --prod --frozen-lockfile --offline --shamefully-hoist --ignore-scripts --workspace-root --filter ${PROJECT_NAME} && \
