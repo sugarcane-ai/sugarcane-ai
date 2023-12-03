@@ -22,9 +22,7 @@ jobs:
       uses: docker/build-push-action@v5.1.0
       with:
         dockerfile: Dockerfile
-        build-args: 
-          - PROJECT_NAME=factory
-          - GIT_HASH=$GITHUB_SHA
+        build-args: PROJECT_NAME=factory GIT_HASH=$GITHUB_SHA
         tags: factory:$GITHUB_SHA
         
 
