@@ -29,5 +29,5 @@ jobs:
       with:
         dockerfile: Dockerfile
         build-args: PROJECT_NAME=factory
-        tags: factory:1
+        tags: sugarcaneai/factory:1
         push: true
