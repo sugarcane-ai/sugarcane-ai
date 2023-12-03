@@ -1,7 +1,7 @@
 # Builder image
 FROM --platform=linux/amd64 node:18-alpine AS build
 
-RUN apk add --update --no-cache curl bash git python3
+RUN apk add --update --no-cache curl bash git python3 make
 
 ARG PROJECT_NAME
 
@@ -24,7 +24,7 @@ RUN pnpm fetch
 
 # Build
 COPY . .
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --offline --ignore-scripts --workspace-root --filter ${PROJECT_NAME}
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --offline --workspace-root --filter ${PROJECT_NAME}
 # RUN pnpm run build --filter=${PROJECT_NAME}...
 RUN pnpm --filter ${PROJECT_NAME} postinstall
 RUN pnpm --filter ${PROJECT_NAME} build
