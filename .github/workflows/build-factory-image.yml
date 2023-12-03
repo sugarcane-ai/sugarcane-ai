@@ -1,9 +1,14 @@
 name: Build Factory Image
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - docker
+      - develop
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
