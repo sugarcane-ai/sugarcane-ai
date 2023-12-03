@@ -1,7 +1,7 @@
 # Builder image
 FROM --platform=linux/amd64 node:18-alpine AS build
 
-RUN apk add --no-cache curl bash git
+RUN apk add --update --no-cache curl bash git python3
 
 ARG PROJECT_NAME
 
