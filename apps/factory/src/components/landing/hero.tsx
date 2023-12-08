@@ -4,9 +4,10 @@ import Image from "next/image";
 import Head from "next/head";
 import Link from "next/link";
 import { env } from "~/env.mjs";
+import { CircularProgress } from "@mui/material";
 
 const Hero = () => {
-  const { data: sessionData } = useSession();
+  const { data: sessionData, status } = useSession();
 
   return (
     <div className="w-full">
@@ -29,49 +30,54 @@ const Hero = () => {
             height={600}
             alt="Logo"
           />
-
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-            <Link
-              href={sessionData ? "/dashboard/prompts" : "/api/auth/signin"}
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-            >
-              <h3 className="text-2xl font-bold">Sugar Factory →</h3>
-              <div className="text-lg">
-                Build, Version, Train and Ship Prompt Packages over APIs.
-              </div>
-            </Link>
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-              href="/marketplace/packages"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">Sugar Hub →</h3>
-              <div className="text-lg">
-                Discover and Integrate Prompt Packages built by the community.
-              </div>
-            </Link>
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-              href="https://sugarcaneai.dev/docs"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">Documentation →</h3>
-              {/* <div className="text-lg">
+          {status === "loading" ? (
+            <div className="flex items-center justify-center">
+              <CircularProgress />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
+              <Link
+                href={sessionData ? "/dashboard/prompts" : "/api/auth/signin"}
+                className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
+              >
+                <h3 className="text-2xl font-bold">Sugar Factory →</h3>
+                <div className="text-lg">
+                  Build, Version, Train and Ship Prompt Packages over APIs.
+                </div>
+              </Link>
+              <Link
+                className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
+                href="/marketplace/packages"
+                target="_blank"
+              >
+                <h3 className="text-2xl font-bold">Sugar Hub →</h3>
+                <div className="text-lg">
+                  Discover and Integrate Prompt Packages built by the community.
+                </div>
+              </Link>
+              <Link
+                className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
+                href="https://sugarcaneai.dev/docs"
+                target="_blank"
+              >
+                <h3 className="text-2xl font-bold">Documentation →</h3>
+                {/* <div className="text-lg">
                 Learn more about Sugarcane AI, architecture, problem it solves,
                 and how to deploy it.
               </div> */}
-            </Link>
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-              href="https://github.com/sugarcane-ai"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">Contribute →</h3>
-              {/* <div className="text-lg">
+              </Link>
+              <Link
+                className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
+                href="https://github.com/sugarcane-ai"
+                target="_blank"
+              >
+                <h3 className="text-2xl font-bold">Contribute →</h3>
+                {/* <div className="text-lg">
                 Checkout the code and make your first contribution.
               </div> */}
-            </Link>
-          </div>
+              </Link>
+            </div>
+          )}
 
           <div className="flex flex-col items-center gap-2">
             <AuthShowcase />
