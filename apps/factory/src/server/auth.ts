@@ -68,6 +68,7 @@ function getAuthOptions(): NextAuthOptions {
             if (existingUser) {
               user.username = generateRandomUsername(user.username);
             }
+            return true;
           } else {
             let username =
               profile.username ||
@@ -86,8 +87,9 @@ function getAuthOptions(): NextAuthOptions {
               },
             });
           }
+          return true;
         }
-        return true;
+        return false;
       },
       session: ({ session, user, token }) => ({
         ...session,
