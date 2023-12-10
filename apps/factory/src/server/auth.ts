@@ -102,7 +102,7 @@ function getAuthOptions(): NextAuthOptions {
         const extraRoute = url.substring(baseUrl.length);
         console.log(url, baseUrl, extraRoute);
 
-        return extraRoute === "/" ? "/api/auth/signin" : url;
+        return extraRoute === "/" ? "/dashboard" : url;
       },
 
       jwt({ token, user, account, profile, session }: any) {
