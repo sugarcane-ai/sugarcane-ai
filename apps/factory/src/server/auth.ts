@@ -59,6 +59,7 @@ function getAuthOptions(): NextAuthOptions {
     },
     callbacks: {
       async signIn({ user, account, profile }: any) {
+        window.location.reload();
         if (account.type === "credentials") return true;
         if (user) {
           if (user.username) {
