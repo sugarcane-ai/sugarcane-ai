@@ -14,7 +14,7 @@ const SugarCubeEmbed = () => {
   const handleClose = () => setIsOpen(false);
   const handleOpen = () => setIsOpen(true);
   const [embedCode, setEmbedCode] = useState("");
-  const script = `<script src="https://cdn.jsdelivr.net/npm/sugarcane-ai@latest/dist/sugarcane.js" async></script>`;
+  const script = `<script src="https://sugarcaneai.dev/cube-embed.js" type="text/javascript" async></script>`;
 
   useEffect(() => {
     if (typeof window !== "undefined") {

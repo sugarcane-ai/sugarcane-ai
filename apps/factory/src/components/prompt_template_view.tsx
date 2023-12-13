@@ -27,7 +27,6 @@ import { useSession, signIn } from "next-auth/react";
 import Link from "@mui/material/Link";
 const isDev = process.env.NODE_ENV === "development";
 import { displayModes, DisplayModes } from "~/validators/base";
-import PromptViewArrow from "./prompt_view_arrow";
 import { LoadingButton } from "@mui/lab";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import Counter from "./counter_responsetime";
@@ -35,7 +34,6 @@ import { CreateTemplate } from "./create_template";
 import { PackageOutput as pp } from "~/validators/prompt_package";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import Footer from "./footer";
-import DownloadButtonImg from "./download_button_img";
 import EditIcon from "@mui/icons-material/Edit";
 import { useRouter } from "next/router";
 
@@ -328,6 +326,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                         </Typography>
                       </Box>
                     )}
+                    <SugarCubeEmbed />
                   </Stack>
 
                   <Box sx={{ m: 1 }}>
