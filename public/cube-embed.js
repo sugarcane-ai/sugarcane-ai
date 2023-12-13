@@ -2,7 +2,9 @@
   if (document.readyState !== "loading") {
     scriptInit();
   } else {
-    window.addEventListener("DOMContentLoaded", scriptInit());
+    window.addEventListener("DOMContentLoaded", () => {
+      scriptInit();
+    });
   }
 })();
 
@@ -19,7 +21,6 @@ function scriptInit() {
 
 function getAllSugarCubeAnchors() {
   var sugarCubeAnchorList = document.querySelectorAll("a[data-cube]");
-  console.log("sugarCubeAnchorList", sugarCubeAnchorList);
   return sugarCubeAnchorList;
 }
 function addButtonEventListener(anchors) {

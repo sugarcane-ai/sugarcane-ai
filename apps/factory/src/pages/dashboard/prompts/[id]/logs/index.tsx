@@ -25,7 +25,6 @@ import {
   ModelTypeSchema,
 } from "~/generated/prisma-client-zod.ts";
 import PromptCompletion from "~/components/prompt_completion";
-<<<<<<< HEAD
 import DownloadButtonImg from "~/components/download_button_img";
 import CopyToClipboardButton from "~/components/copy_button";
 import { LogSchema, GenerateOutput } from "~/validators/service";
@@ -39,13 +38,6 @@ interface PromptLogTableProps {
   outputLog: LogSchema | null;
 }
 
-interface PromptLogTableProps {
-  showSearchFilters: boolean;
-  templateIdProp: string | undefined;
-  versionIdProp: string | undefined;
-  itemsPerPage: number;
-}
-
 export interface FilterOptions {
   environment?: string | undefined;
   llmModel?: string | undefined;
@@ -57,18 +49,11 @@ export interface FilterOptions {
 type FinetunedState = "UNPROCESSED" | "PROCESSED";
 
 const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
-<<<<<<< HEAD
   logModeMax = true,
   promptTemplateId = undefined,
   promptVersionId = undefined,
   itemsPerPage = 10,
   outputLog = undefined,
-=======
-  showSearchFilters = true,
-  templateIdProp = undefined,
-  versionIdProp = undefined,
-  itemsPerPage = 10,
->>>>>>> f6417f2 (Adding log history to prompt template page)
 }) => {
   const router = useRouter();
   const packageId = router.query.id as string;
@@ -80,22 +65,14 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
     environment: undefined,
     llmModel: undefined,
     llmProvider: undefined,
-<<<<<<< HEAD
     version: promptVersionId,
-=======
-    version: versionIdProp,
->>>>>>> f6417f2 (Adding log history to prompt template page)
   });
 
   const { data, hasNextPage, fetchNextPage, refetch } =
     api.log.getLogs.useInfiniteQuery(
       {
         promptPackageId: packageId,
-<<<<<<< HEAD
         promptTemplateId: promptTemplateId,
-=======
-        promptTemplateId: templateIdProp,
->>>>>>> f6417f2 (Adding log history to prompt template page)
         perPage: itemsPerPage,
         ...filterOptions,
       },
@@ -158,11 +135,7 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
         onChange={(e) => setSearchText(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && handleSearch()}
       /> */}
-<<<<<<< HEAD
       {logModeMax && (
-=======
-      {showSearchFilters && (
->>>>>>> f6417f2 (Adding log history to prompt template page)
         <LogSearchFiltering
           filterOptions={filterOptions}
           onFilterChange={(newFilterOptions) =>
