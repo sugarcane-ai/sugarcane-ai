@@ -38,6 +38,7 @@ import Footer from "./footer";
 import DownloadButtonImg from "./download_button_img";
 import EditIcon from "@mui/icons-material/Edit";
 import { useRouter } from "next/router";
+import SugarCubeEmbed from "./sugar_cube_embed";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -328,6 +329,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                         </Typography>
                       </Box>
                     )}
+                    <SugarCubeEmbed />
                   </Stack>
 
                   <Box sx={{ m: 1 }}>

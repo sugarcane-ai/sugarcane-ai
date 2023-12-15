@@ -1,4 +1,5 @@
 import { withSentryConfig } from "@sentry/nextjs";
+import path from "path";
 /**
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
  * for Docker builds.
@@ -27,6 +28,19 @@ const config = {
       },
     ],
   },
+
+  // webpack: (config, options) => {
+  //   config.module.rules.push({
+  //     test: /\.ts$/,
+  //     include: [path.resolve("./widget/cube-embed.ts")],
+  //     use: ["ts-loader"],
+  //   }),
+  //     (config.output = {
+  //       filename: "[name].js",
+  //       path: path.resolve("../../public"),
+  //     });
+  //   return config;
+  // },
 };
 
 export default withSentryConfig(
