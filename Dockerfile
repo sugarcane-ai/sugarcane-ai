@@ -49,13 +49,19 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # You only need to copy next.config.js if you are NOT using the default configuration
-COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/next.config.mjs ./
-COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/public* ./public
-COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/package.json ./package.json
+
+
+# COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/package.json ./package.json
 
 # COPY --from=builder --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/node_modules ./node_modules
+# COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/.next/standalone/apps/${PROJECT_NAME}/ ./
+# COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/public* ./public
+# COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/.next/static* ./.next/static
+
 COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/.next/standalone/ ./
-COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/.next/static* ./.next/static
+COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/next.config.mjs ./apps/${PROJECT_NAME}/
+COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/public* ./apps/${PROJECT_NAME}/public
+COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/.next/static* ./apps/${PROJECT_NAME}/.next/static
 
 
 
@@ -72,5 +78,5 @@ ENV PORT 3000
 ENV HOSTNAME localhost
 ENV NEXT_TELEMETRY_DISABLED 1
 
-ENTRYPOINT ["node", "/app/apps/factory/server.js"]
+# ENTRYPOINT ["node", "/app/apps/factory/server.js"]
 CMD ["node", "/app/apps/factory/server.js"]
