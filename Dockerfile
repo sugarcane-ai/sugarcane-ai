@@ -48,22 +48,14 @@ WORKDIR /app
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# You only need to copy next.config.js if you are NOT using the default configuration
-
-
-# COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/package.json ./package.json
-
-# COPY --from=builder --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/node_modules ./node_modules
-# COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/.next/standalone/apps/${PROJECT_NAME}/ ./
-# COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/public* ./public
-# COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/.next/static* ./.next/static
-
 COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/.next/standalone/ ./
 COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/next.config.mjs ./apps/${PROJECT_NAME}/
 COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/public* ./apps/${PROJECT_NAME}/public
 COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/.next/static* ./apps/${PROJECT_NAME}/.next/static
 
+USER root
 
+RUN ln -s /app/apps/${PROJECT_NAME}/server.js /app/server.js
 
 # WORKAROUND FOR: https://github.com/vercel/next.js/discussions/39432
 # RUN rm -rf ./node_modules
@@ -72,11 +64,17 @@ COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/.next/static* 
 
 USER nextjs
 
-EXPOSE 3000
+# RUN ln -s /app/apps/${PROJECT_NAME}/server.js /app/server.js
 
-ENV PORT 3000
+EXPOSE 80
+
+ENV PORT 80
 ENV HOSTNAME localhost
 ENV NEXT_TELEMETRY_DISABLED 1
 
-# ENTRYPOINT ["node", "/app/apps/factory/server.js"]
-CMD ["node", "/app/apps/factory/server.js"]
+HEALTHCHECK --interval=60s --timeout=3s \
+    CMD wget -qO- http://localhost:80/ || exit 1
+
+# CMD ["node", "/app/apps/factory/server.js"]
+ENTRYPOINT [ "node" ]
+CMD ["/app/server.js"]
