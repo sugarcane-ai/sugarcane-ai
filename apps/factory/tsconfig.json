@@ -40,7 +40,7 @@
     "**/*.cjs",
     "**/*.mjs",
     ".next/types/**/*.ts"
-  ],
+, "next-sitemap.config.mjs"  ],
   "exclude": [
     "node_modules"
   ]
