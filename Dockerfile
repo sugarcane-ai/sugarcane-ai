@@ -54,11 +54,13 @@ COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/next.config.mj
 COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/package.json ./apps/${PROJECT_NAME}/
 COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/public* ./apps/${PROJECT_NAME}/public
 COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/.next/static* ./apps/${PROJECT_NAME}/.next/static
+COPY --chown=nextjs:nodejs ./docker/entrypoint.sh /app/entrypoint.sh
 
+RUN chmod +x /app/entrypoint.sh
 
 USER root
 
-RUN ln -s /app/apps/${PROJECT_NAME}/server.js /app/server.js
+RUN ln -s /app/apps/${PROJECT_NAME}/server.js /app/server.js && ln -s /app/apps/${PROJECT_NAME}/.env /app/.env
 
 # WORKAROUND FOR: https://github.com/vercel/next.js/discussions/39432
 # RUN rm -rf ./node_modules
@@ -66,8 +68,6 @@ RUN ln -s /app/apps/${PROJECT_NAME}/server.js /app/server.js
 # END WORKAROUND
 
 USER nextjs
-
-# RUN ln -s /app/apps/${PROJECT_NAME}/server.js /app/server.js
 
 EXPOSE 80
 
@@ -79,5 +79,5 @@ HEALTHCHECK --interval=60s --timeout=3s \
     CMD wget -qO- http://localhost:80/ || exit 1
 
 # CMD ["node", "/app/apps/factory/server.js"]
-ENTRYPOINT [ "node" ]
-CMD ["/app/server.js"]
+ENTRYPOINT [ "/app/entrypoint.sh" ]
+CMD ["node" "/app/server.js"]
