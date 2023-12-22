@@ -80,4 +80,4 @@ HEALTHCHECK --interval=60s --timeout=3s \
 
 # CMD ["node", "/app/apps/factory/server.js"]
 ENTRYPOINT [ "/app/entrypoint.sh" ]
-CMD ["node" "/app/server.js"]
+CMD ["node", "/app/server.js"]
