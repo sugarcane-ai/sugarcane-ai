@@ -9,7 +9,7 @@
   "keywords": [],
   "scripts": {
     "build": "next build",
-    "cibuild": "cp .env.example .env && next build",
+    "cibuild": "cp .env.example .env && SKIP_ENV_VALIDATION=1 next build",
     "dev": "next dev",
     "postinstall": "npx prisma generate",
     "lint": "next lint",
