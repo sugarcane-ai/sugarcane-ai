@@ -75,7 +75,7 @@ ENV PORT 80
 ENV HOSTNAME localhost
 ENV NEXT_TELEMETRY_DISABLED 1
 
-HEALTHCHECK --interval=60s --timeout=3s \
+HEALTHCHECK --interval=5s --timeout=3s \
     CMD wget -qO- http://localhost:80/ || exit 1
 
 # CMD ["node", "/app/apps/factory/server.js"]
