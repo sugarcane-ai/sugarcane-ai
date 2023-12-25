@@ -1,5 +1,5 @@
 # Builder image
-FROM --platform=linux/amd64 node:18-alpine AS build
+FROM node:18-alpine AS build
 
 RUN apk add --update --no-cache curl bash git python3 make g++
 
@@ -69,14 +69,14 @@ RUN ln -s /app/apps/${PROJECT_NAME}/server.js /app/server.js && ln -s /app/apps/
 
 USER nextjs
 
-EXPOSE 80
+EXPOSE 3000
 
-ENV PORT 80
+ENV PORT 3000
 ENV HOSTNAME localhost
 ENV NEXT_TELEMETRY_DISABLED 1
 
 HEALTHCHECK --interval=5s --timeout=3s \
-    CMD wget -qO- http://localhost:80/ || exit 1
+    CMD wget -qO- http://localhost:3000/ || exit 1
 
 # CMD ["node", "/app/apps/factory/server.js"]
 ENTRYPOINT [ "/app/entrypoint.sh" ]
