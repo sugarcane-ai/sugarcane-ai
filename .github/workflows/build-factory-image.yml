@@ -38,7 +38,9 @@ jobs:
       - name: Set up Docker
         uses: docker/build-push-action@v5.1.0
         with:
-          build-args: PROJECT_NAME=factory
+          build-args: |
+            "PROJECT_NAME=factory"
+            "PORT=80"
           tags: sugarcaneai/factory:latest
           push: true
 
