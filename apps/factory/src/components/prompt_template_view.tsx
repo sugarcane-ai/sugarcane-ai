@@ -33,11 +33,15 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import Counter from "./counter_responsetime";
 import { CreateTemplate } from "./create_template";
 import { PackageOutput as pp } from "~/validators/prompt_package";
+import { LogOutput } from "~/validators/prompt_log";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import Footer from "./footer";
 import DownloadButtonImg from "./download_button_img";
 import EditIcon from "@mui/icons-material/Edit";
+import ShareIcon from "@mui/icons-material/Share";
+import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
+import { useSearchParams } from "next/navigation";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -64,6 +68,8 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const handleOpen = () => setIsOpen(true);
   const [isLoadingState, setIsLoading] = useState(false);
   const router = useRouter();
+  const logId = useSearchParams()?.get("log_id") as string;
+  const [promptOutputShare, setPromptOutputShare] = useState<LogOutput>(null);
   const { data, isLoading } = api.cube.getPrompt.useQuery({
     username: username,
     package: packageName,
@@ -81,6 +87,17 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
       },
     },
   );
+
+  if (logId) {
+    const { data: promptLogOutput } = api.cube.getPromptLogOutput.useQuery({
+      id: logId,
+    });
+    useEffect(() => {
+      if (promptLogOutput) {
+        setPromptOutputShare(promptLogOutput);
+      }
+    }, [promptLogOutput]);
+  }
 
   useEffect(() => {
     const variables = getUniqueJsonArray(
@@ -152,6 +169,19 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
 
   const handleChange = () => {
     setChecked((prevChecked) => !prevChecked);
+  };
+
+  const handleOutputShare = () => {
+    const shareUrl = `${window.location.href}?log_id=${pl?.id}`;
+    navigator.clipboard
+      .writeText(shareUrl)
+      .then(() => {
+        toast.success("Copied to clipboard!");
+      })
+      .catch((err) => {
+        toast.error("Failed to copy");
+        console.error(err);
+      });
   };
 
   return (
@@ -331,7 +361,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                   </Stack>
 
                   <Box sx={{ m: 1 }}>
-                    {promptOutput && (
+                    {(promptOutput || promptOutputShare) && (
                       <Stack direction="row" spacing={2} sx={{ p: 1 }}>
                         <Grid>
                           <Box padding={2}>
@@ -350,13 +380,29 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                                 alignItems: "center",
                               }}
                             >
-                              <PromptOutput
-                                output={promptOutput}
-                                modelType={data?.modelType as ModelTypeType}
-                              />
-                              {data?.modelType !==
-                                ModelTypeSchema.Enum.TEXT2TEXT && (
-                                <DownloadButtonImg base64image={promptOutput} />
+                              {promptOutput ? (
+                                <>
+                                  <PromptOutput
+                                    output={promptOutput}
+                                    modelType={data?.modelType as ModelTypeType}
+                                  />
+                                  {data?.modelType !==
+                                    ModelTypeSchema.Enum.TEXT2TEXT && (
+                                    <DownloadButtonImg
+                                      base64image={promptOutput}
+                                    />
+                                  )}
+                                  <ShareIcon onClick={handleOutputShare} />
+                                </>
+                              ) : (
+                                promptOutputShare && (
+                                  <PromptOutput
+                                    output={promptOutputShare.completion}
+                                    modelType={
+                                      promptOutputShare.llmModelType as ModelTypeType
+                                    }
+                                  />
+                                )
                               )}
                             </div>
                           </Box>
