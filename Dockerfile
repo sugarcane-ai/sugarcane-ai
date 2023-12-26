@@ -69,14 +69,14 @@ RUN ln -s /app/apps/${PROJECT_NAME}/server.js /app/server.js && ln -s /app/apps/
 
 USER nextjs
 
-EXPOSE 3000
+EXPOSE 80
 
-ENV PORT 3000
+ENV PORT 80
 ENV HOSTNAME localhost
 ENV NEXT_TELEMETRY_DISABLED 1
 
 HEALTHCHECK --interval=5s --timeout=3s \
-    CMD wget -qO- http://localhost:3000/ || exit 1
+    CMD wget -qO- http://localhost:80/ || exit 1
 
 # CMD ["node", "/app/apps/factory/server.js"]
 ENTRYPOINT [ "/app/entrypoint.sh" ]
