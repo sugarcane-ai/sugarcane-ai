@@ -43,7 +43,7 @@ FROM node:18-alpine AS release
 ARG PROJECT_NAME
 
 ENV NODE_ENV=production
-ENV PORT=3000
+ENV PORT=${PORT}
 
 WORKDIR /app
 RUN addgroup --system --gid 1001 nodejs
@@ -68,7 +68,7 @@ RUN ln -s /app/apps/${PROJECT_NAME}/server.js /app/server.js && ln -s /app/apps/
 # COPY --from=build /app/node_modules_temp ./node_modules
 # END WORKAROUND
 
-USER nextjs
+# USER nextjs
 
 EXPOSE ${PORT}
 

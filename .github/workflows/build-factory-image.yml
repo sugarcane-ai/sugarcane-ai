@@ -41,7 +41,15 @@ jobs:
           build-args: |
             "PROJECT_NAME=factory"
             "PORT=80"
-          tags: sugarcaneai/factory:latest
+          images: sugarcaneai/factory
+          tags: |
+            latest
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=semver,pattern={{major}}.{{minor}}.{{patch}},value=${{ env.TAG }}
+            type=semver,pattern={{major}}.{{minor}},value=${{ env.TAG }}
+            type=semver,pattern={{major}},value=${{ env.TAG }}
           push: true
 
       # - name: Build, tag, and push docker image to Amazon ECR Public
