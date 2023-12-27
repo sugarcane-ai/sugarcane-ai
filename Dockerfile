@@ -4,7 +4,6 @@ FROM node:18-alpine AS build
 RUN apk add --update --no-cache curl bash git python3 make g++
 
 ARG PROJECT_NAME
-ARG PORT
 
 WORKDIR /app
 
@@ -40,10 +39,15 @@ RUN pnpm --filter ${PROJECT_NAME} cibuild
 # Runtime image
 FROM node:18-alpine AS release
 
+LABEL org.opencontainers.image.authors="ankur@sugarcaneai.dev"
+
 ARG PROJECT_NAME
 
 ENV NODE_ENV=production
-ENV PORT=${PORT}
+ENV PORT 80
+ENV HOSTNAME localhost
+ENV NEXT_TELEMETRY_DISABLED 1
+
 
 WORKDIR /app
 RUN addgroup --system --gid 1001 nodejs
@@ -70,14 +74,11 @@ RUN ln -s /app/apps/${PROJECT_NAME}/server.js /app/server.js && ln -s /app/apps/
 
 # USER nextjs
 
-EXPOSE ${PORT}
 
-ENV PORT ${PORT}
-ENV HOSTNAME localhost
-ENV NEXT_TELEMETRY_DISABLED 1
+EXPOSE $PORT
 
 HEALTHCHECK --interval=5s --timeout=3s \
-    CMD wget -qO- http://localhost:${PORT}/ || exit 1
+    CMD wget -qO- http://localhost:$PORT/ || exit 1
 
 # CMD ["node", "/app/apps/factory/server.js"]
 ENTRYPOINT [ "/app/entrypoint.sh" ]
