@@ -59,7 +59,7 @@ const PromptHeader = ({ pp }: { pp: pp }) => {
               ></Button>
             </Grid> */}
             <Grid item xs={12} sm={6} md={4}>
-              {/* <LikeButton count={likes}></LikeButton> */}
+              <LikeButton EntityId={pp?.id!} EntityType={"PromptPackage"} />
             </Grid>
           </Grid>
         </Stack>
