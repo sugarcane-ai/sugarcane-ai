@@ -21,6 +21,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ EntityId, EntityType }) => {
     data?.likesCount != null ? data.likesCount : 0,
   );
   const [hasLiked, setHasLiked] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [LikeId, setLikeId] = useState<string>("");
 
   useEffect(() => {
@@ -40,6 +41,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ EntityId, EntityType }) => {
 
   const { data: sessionData } = useSession();
   const handleLikeClick = async () => {
+    setLoading(true);
     console.log(data?.likesCount);
     console.log(data?.likes);
 
@@ -68,6 +70,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ EntityId, EntityType }) => {
       setCounter(counter! + 1);
       setHasLiked(!hasLiked);
     }
+    setLoading(false);
   };
 
   return (
@@ -79,6 +82,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ EntityId, EntityType }) => {
         sx={{ color: "#FFFFFF" }}
       >
         <Button
+          disabled={loading}
           size="small"
           startIcon={<FavoriteIcon />}
           onClick={() => (sessionData != null ? handleLikeClick() : signIn())}
