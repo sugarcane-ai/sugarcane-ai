@@ -4,6 +4,7 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 import { getPromptInput, getPromptOutput } from "~/validators/service";
+import { getLogInput, logOutput } from "~/validators/prompt_log";
 import { getPv } from "./service";
 
 export const cubeRouter = createTRPCRouter({
@@ -40,5 +41,22 @@ export const cubeRouter = createTRPCRouter({
         };
       }
       return null;
+    }),
+
+  getPromptLogOutput: publicProcedure
+    .input(getLogInput)
+    .output(logOutput)
+    .query(async ({ ctx, input }) => {
+      const { id } = input;
+      console.log(id);
+      let query = {
+        id: id,
+      };
+
+      const log = await ctx.prisma.promptLog.findFirst({
+        where: query,
+      });
+
+      return log;
     }),
 });
