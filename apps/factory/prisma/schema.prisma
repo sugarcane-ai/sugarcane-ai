@@ -226,7 +226,7 @@ model PromptLog {
 model Like {
   id         String     @id @default(uuid())
   likes      LikeUser[]
-  likesCount Int
+  likesCount Int        @default(0)
   EntityId   String
   EntityType String // This field can store the type of the liked model (e.g., "PromptPackage", "PromptTemplate", "PromptVersion", etc.)
   createdAt  DateTime   @default(now())

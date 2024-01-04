@@ -12,63 +12,75 @@ interface LikeButtonProps {
 }
 
 const LikeButton: React.FC<LikeButtonProps> = ({ EntityId, EntityType }) => {
-  const { data } = api.like.getLikes.useQuery({
+  const likesCount = api.like.getLikes.useQuery({
     EntityId,
     EntityType,
   });
 
+  const liked = api.like.UserLikeCheck.useQuery({
+    EntityId,
+    EntityType,
+  });
+
+  const UnlikeMutation = api.like.unlikeEntity.useMutation();
+  const LikeMutation = api.like.likeEntity.useMutation();
+
   const [counter, setCounter] = useState<number>(
-    data?.likesCount != null ? data.likesCount : 0,
+    likesCount.data?.likesCount != null ? likesCount.data.likesCount : 0,
   );
-  const [hasLiked, setHasLiked] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [LikeId, setLikeId] = useState<string>("");
+  const [hasLiked, setHasLiked] = useState<boolean>(false);
+  const { data: sessionData } = useSession();
 
   useEffect(() => {
-    data?.likes.some((like) => {
-      if (like.userId === sessionData?.user.id) {
-        setHasLiked(true);
-        setLikeId(like.likeId!);
+    if (likesCount.data?.likesCount != null) {
+      setCounter(likesCount.data.likesCount);
+      if (sessionData?.user) {
+        setHasLiked(liked.data?.hasLiked!);
       }
-    });
-
-    if (data?.likesCount != null) {
-      setCounter(data.likesCount);
     }
-  }, [data?.likesCount]);
+  }, [likesCount.data?.likesCount]);
 
-  const UpdateMutation = api.like.createLike.useMutation();
-
-  const { data: sessionData } = useSession();
   const handleLikeClick = async () => {
     setLoading(true);
-    console.log(data?.likesCount);
-    console.log(data?.likes);
-
-    UpdateMutation.mutate(
-      {
-        EntityId,
-        EntityType,
-        hasLiked,
-        LikeId,
-      },
-      {
-        onSuccess() {
-          console.log("Likes Updated");
-        },
-        onError(error) {
-          const errorData = JSON.parse(error.message);
-          console.log("error: ", errorData);
-        },
-      },
-    );
-
+    console.log(likesCount.data?.likesCount);
     if (hasLiked) {
-      setCounter(counter! - 1);
-      setHasLiked(!hasLiked);
+      UnlikeMutation.mutate(
+        {
+          EntityId,
+          EntityType,
+          LikeId: liked.data?.likeId!,
+        },
+        {
+          onSuccess() {
+            console.log("Likes Updated");
+            setCounter(counter! - 1);
+            setHasLiked((prevHasLiked) => !prevHasLiked);
+          },
+          onError(error) {
+            const errorData = JSON.parse(error.message);
+            console.log("error: ", errorData);
+          },
+        },
+      );
     } else {
-      setCounter(counter! + 1);
-      setHasLiked(!hasLiked);
+      LikeMutation.mutate(
+        {
+          EntityId,
+          EntityType,
+        },
+        {
+          onSuccess() {
+            console.log("Likes Updated");
+            setCounter(counter! + 1);
+            setHasLiked((prevHasLiked) => !prevHasLiked);
+          },
+          onError(error) {
+            const errorData = JSON.parse(error.message);
+            console.log("error: ", errorData);
+          },
+        },
+      );
     }
     setLoading(false);
   };
@@ -84,10 +96,14 @@ const LikeButton: React.FC<LikeButtonProps> = ({ EntityId, EntityType }) => {
         <Button
           disabled={loading}
           size="small"
-          startIcon={<FavoriteIcon />}
+          startIcon={
+            <FavoriteIcon
+              sx={hasLiked ? { color: "red" } : { color: "white" }}
+            />
+          }
           onClick={() => (sessionData != null ? handleLikeClick() : signIn())}
         >
-          Like
+          {hasLiked ? "Liked" : "Like"}
         </Button>
         <Button sx={{ cursor: "default", pointerEvents: "none" }}>
           {counter} Likes

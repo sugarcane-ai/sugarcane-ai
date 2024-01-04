@@ -1,11 +1,16 @@
 import { z } from "zod";
 
-export const createLikeInput = z
+export const LikeInput = z
+  .object({
+    EntityId: z.string(),
+    EntityType: z.string(),
+  })
+  .strict();
+export const UnlikeInput = z
   .object({
     EntityId: z.string(),
     EntityType: z.string(),
     LikeId: z.string(),
-    hasLiked: z.boolean(),
   })
   .strict();
 
@@ -13,5 +18,11 @@ export const getLikeInput = z
   .object({
     EntityId: z.string(),
     EntityType: z.string(),
+  })
+  .strict();
+
+export const LikePublicOutput = z
+  .object({
+    likesCount: z.number(),
   })
   .strict();
