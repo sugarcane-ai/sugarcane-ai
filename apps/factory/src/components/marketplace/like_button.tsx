@@ -56,6 +56,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ EntityId, EntityType }) => {
             console.log("Likes Updated");
             setCounter(counter! - 1);
             setHasLiked((prevHasLiked) => !prevHasLiked);
+            setLoading(false);
           },
           onError(error) {
             const errorData = JSON.parse(error.message);
@@ -74,6 +75,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ EntityId, EntityType }) => {
             console.log("Likes Updated");
             setCounter(counter! + 1);
             setHasLiked((prevHasLiked) => !prevHasLiked);
+            setLoading(false);
           },
           onError(error) {
             const errorData = JSON.parse(error.message);
@@ -82,7 +84,6 @@ const LikeButton: React.FC<LikeButtonProps> = ({ EntityId, EntityType }) => {
         },
       );
     }
-    setLoading(false);
   };
 
   return (
