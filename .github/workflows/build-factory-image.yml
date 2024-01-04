@@ -6,19 +6,23 @@ on:
     branches:
       - develop
       - main
-      - docker_versioning
+      - docker/*
   pull_request:
     branches:
       - main
 
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+  SHORT_SHA: ${{ github.sha || github.ref_name }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Add SHORT_SHA env property with commit short sha
+        run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+
       - name: Checkout repository
         uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -43,5 +47,5 @@ jobs:
             "PROJECT_NAME=factory"
           tags: |
             ${{ secrets.DOCKER_REPO_FACTORY }}:${{ env.BRANCH_NAME }}-latest
-            ${{ secrets.DOCKER_REPO_FACTORY }}:${{ github.sha }}
+            ${{ secrets.DOCKER_REPO_FACTORY }}:${{ env.SHORT_SHA }}
           push: true
