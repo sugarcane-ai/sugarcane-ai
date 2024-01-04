@@ -36,7 +36,6 @@ import { PackageOutput as pp } from "~/validators/prompt_package";
 import Footer from "./footer";
 import EditIcon from "@mui/icons-material/Edit";
 import { useRouter } from "next/router";
-import LikeButton from "./marketplace/like_button";
 import ShareIcon from "@mui/icons-material/Share";
 import ShareCube from "./cubes/share_cube";
 import { NextSeo } from "next-seo";
