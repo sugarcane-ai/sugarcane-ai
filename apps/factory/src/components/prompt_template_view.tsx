@@ -157,7 +157,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     setChecked((prevChecked) => !prevChecked);
   };
 
-  const shareUrl = `${env.NEXTAUTH_URL}/${username}/${packageName}/${template}/${versionOrEnvironment}`;
+  const shareUrl = `${env.NEXT_PUBLIC_APP_URL}/${username}/${packageName}/${template}/${versionOrEnvironment}`;
   const imageUrl = `${process.env.NEXT_PUBLIC_APP_LOGO}`;
 
   return (

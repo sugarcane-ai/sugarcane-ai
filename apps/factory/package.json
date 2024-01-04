@@ -8,7 +8,7 @@
   "main": "index.js",
   "keywords": [],
   "scripts": {
-    "build": "next build",
+    "build": "SKIP_ENV_VALIDATION=1 next build",
     "cibuild": "cp .env.example .env && SKIP_ENV_VALIDATION=1 next build",
     "dev": "next dev",
     "postinstall": "npx prisma generate",
