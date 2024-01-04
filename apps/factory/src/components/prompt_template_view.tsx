@@ -223,8 +223,8 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                       columnSpacing={2}
                       sx={{ position: "relative" }}
                     >
-                      <Grid item xs={1.5} sm={3.5} md={3.5} lg={3.5}></Grid>
-                      <Grid item xs={12} sm={12} md={5} lg={5} alignContent={"center"} justifyContent={"center"} >
+                      <Grid item xs={0} sm={0} md={3.5} lg={3.5}></Grid>
+                      <Grid item xs={12} sm={12} md={5} lg={5} alignItems={"center"} justifyContent={"center"}>
                         <Typography
                           sx={{
                             textAlign: "center",
@@ -235,8 +235,8 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                           {!template ? "" : template.replaceAll("-", " ")}
                         </Typography>
                       </Grid>
-                      <Grid item xs={12} sm={12} md={3.5} lg={3.5} display={"inline-flex"} alignContent={"center"} justifyContent={"center"}>
-                      {isLoading ? (
+                      <Grid item xs={12} sm={12} md={3.5} lg={3.5} display={"inline-flex"} alignItems={"center"} justifyContent={"center"}>
+                          {isLoading ? (
                             <CircularProgress />
                           ) : (
                             <LikeButton
