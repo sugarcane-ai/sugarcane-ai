@@ -11,6 +11,9 @@ on:
     branches:
       - main
 
+env:
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -29,17 +32,16 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      - name: Read npm package version
-        id: version
-        run: echo ::set-output name=npm_package_version::$(node -e "console.log(require('./apps/factory/package.json').version)")
+      # - name: Npm version name
+      #   run: echo running on branch ${NPM_PACKAGE_VERSION} --- ${GITHUB_ENV}
 
-      - name: Set up Docker
+      - name: Build Docker Image
         uses: docker/build-push-action@v5.1.0
+
         with:
           build-args: |
             "PROJECT_NAME=factory"
           tags: |
-            ${{ secrets.DOCKER_REPO_FACTORY }}:latest
+            ${{ secrets.DOCKER_REPO_FACTORY }}:${{ env.BRANCH_NAME }}-latest
             ${{ secrets.DOCKER_REPO_FACTORY }}:${{ github.sha }}
-            ${{ secrets.DOCKER_REPO_FACTORY }}:${{ env.npm_package_version }}
           push: true
