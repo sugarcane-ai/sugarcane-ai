@@ -29,13 +29,6 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN pnpm --filter ${PROJECT_NAME} postinstall
 RUN pnpm --filter ${PROJECT_NAME} cibuild
 
-# # WORKAROUND FOR: https://github.com/vercel/next.js/discussions/39432
-# RUN pnpm install --prod --frozen-lockfile --offline --shamefully-hoist --ignore-scripts --workspace-root --filter ${PROJECT_NAME} && \
-#     cp -Lr ./node_modules ./node_modules_temp && \
-#     rm -rf ./node_modules_temp/.cache && \
-#     rm -rf ./node_modules_temp/.pnpm
-# # END WORKAROUND
-
 # Runtime image
 FROM node:18-alpine AS release
 
@@ -45,7 +38,7 @@ ARG PROJECT_NAME
 
 ENV NODE_ENV=production
 ENV PORT 80
-ENV HOSTNAME 0.0.0.0
+ENV HOSTNAME 0.0.0.0.e
 ENV NEXT_TELEMETRY_DISABLED 1
 
 
@@ -67,19 +60,10 @@ USER root
 
 RUN ln -s /app/apps/${PROJECT_NAME}/server.js /app/server.js && ln -s /app/apps/${PROJECT_NAME}/.env /app/.env
 
-# WORKAROUND FOR: https://github.com/vercel/next.js/discussions/39432
-# RUN rm -rf ./node_modules
-# COPY --from=build /app/node_modules_temp ./node_modules
-# END WORKAROUND
-
-# USER nextjs
-
-
 EXPOSE $PORT
 
 HEALTHCHECK --interval=5s --timeout=3s \
     CMD wget -qO- http://localhost:$PORT/ || exit 1
 
-# CMD ["node", "/app/apps/factory/server.js"]
 ENTRYPOINT [ "/app/entrypoint.sh" ]
 CMD ["node", "/app/server.js"]
