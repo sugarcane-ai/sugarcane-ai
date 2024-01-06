@@ -19,7 +19,7 @@ export const likeRouter = createTRPCRouter({
           },
         });
 
-        await ctx.prisma.like.upsert({
+        const entityLike = await ctx.prisma.like.upsert({
           where: {
             EntityId_EntityType: {
               EntityId,
@@ -48,7 +48,7 @@ export const likeRouter = createTRPCRouter({
           },
         });
 
-        return newLike;
+        return entityLike.id;
       } catch (error) {
         console.error("Error creating Like:", error);
         throw Error("Failed to create Like");
@@ -107,7 +107,6 @@ export const likeRouter = createTRPCRouter({
                 EntityType,
               },
             },
-            include: { likes: true },
           });
 
           const result = {

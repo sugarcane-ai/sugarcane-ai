@@ -28,8 +28,11 @@ const LikeButton: React.FC<LikeButtonProps> = ({ EntityId, EntityType }) => {
   const [counter, setCounter] = useState<number>(
     likesCount.data?.likesCount != null ? likesCount.data.likesCount : 0,
   );
-  const [loading, setLoading] = useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
   const [hasLiked, setHasLiked] = useState<boolean>(false);
+  const [likedId, setLikeId] = useState<string>(
+    liked.data?.likeId != undefined ? liked.data.likeId : "",
+  );
   const { data: sessionData } = useSession();
 
   useEffect(() => {
@@ -37,26 +40,29 @@ const LikeButton: React.FC<LikeButtonProps> = ({ EntityId, EntityType }) => {
       setCounter(likesCount.data.likesCount);
       if (sessionData?.user) {
         setHasLiked(liked.data?.hasLiked!);
+        if (!hasLiked) {
+          setLikeId(liked.data?.likeId!);
+        }
       }
     }
-  }, [likesCount.data?.likesCount]);
+  }, [likesCount.isLoading]);
 
   const handleLikeClick = async () => {
-    setLoading(true);
+    setButtonLoading(true);
     console.log(likesCount.data?.likesCount);
     if (hasLiked) {
       UnlikeMutation.mutate(
         {
           EntityId,
           EntityType,
-          LikeId: liked.data?.likeId!,
+          LikeId: likedId!,
         },
         {
           onSuccess() {
             console.log("Likes Updated");
             setCounter(counter! - 1);
             setHasLiked((prevHasLiked) => !prevHasLiked);
-            setLoading(false);
+            setButtonLoading(false);
           },
           onError(error) {
             const errorData = JSON.parse(error.message);
@@ -71,11 +77,12 @@ const LikeButton: React.FC<LikeButtonProps> = ({ EntityId, EntityType }) => {
           EntityType,
         },
         {
-          onSuccess() {
+          onSuccess(fetchedLikeId) {
             console.log("Likes Updated");
             setCounter(counter! + 1);
+            setLikeId(fetchedLikeId);
             setHasLiked((prevHasLiked) => !prevHasLiked);
-            setLoading(false);
+            setButtonLoading(false);
           },
           onError(error) {
             const errorData = JSON.parse(error.message);
@@ -95,7 +102,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ EntityId, EntityType }) => {
         sx={{ color: "#FFFFFF" }}
       >
         <Button
-          disabled={loading}
+          disabled={buttonLoading}
           size="small"
           startIcon={
             <FavoriteIcon
