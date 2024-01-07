@@ -158,7 +158,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   };
 
   const shareUrl = `${env.NEXT_PUBLIC_APP_URL}/${username}/${packageName}/${template}/${versionOrEnvironment}`;
-  const imageUrl = `${env.NEXT_PUBLIC_APP_URL}/api/og`;
+  const imageUrl = `${env.NEXT_PUBLIC_APP_URL}/generated/assets/og`;
 
   return (
     <>
