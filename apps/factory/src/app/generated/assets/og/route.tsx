@@ -2,13 +2,21 @@ import { ImageResponse } from "next/server";
 import { env } from "~/env.mjs";
 
 export const runtime = "edge";
-export const contentType = "image/png";
-export const size = {
-  width: 1200,
-  height: 630,
-};
+// export const contentType = "image/png";
+// export const size = {
+//   width: 1200,
+//   height: 630,
+// };
 
-export async function GET() {
+export function GET() {
+  const options = {
+    width: 1200,
+    height: 630,
+
+    // Options that will be passed to the HTTP response
+    // status?: number = 200
+    // statusText?: string
+  };
   return new ImageResponse(
     (
       <div
@@ -49,5 +57,6 @@ export async function GET() {
         </div>
       </div>
     ),
+    options,
   );
 }
