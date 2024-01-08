@@ -1,7 +1,7 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-
+import { env } from "~/env.mjs";
 import {
   Button,
   Dialog,
@@ -18,6 +18,14 @@ import {
   XIcon,
   LinkedinShareButton,
   LinkedinIcon,
+  EmailShareButton,
+  EmailIcon,
+  RedditShareButton,
+  RedditIcon,
+  FacebookMessengerShareButton,
+  TelegramShareButton,
+  TelegramIcon,
+  FacebookMessengerIcon,
 } from "react-share";
 
 interface Props {
@@ -46,7 +54,12 @@ const ShareCube = ({ setOpenShareModal, open, shareUrl }: Props) => {
             }}
           >
             <DialogContent>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
+              <Typography
+                id="modal-modal-title"
+                variant="h6"
+                component="h2"
+                sx={{ textAlign: "center" }}
+              >
                 Share Cube
               </Typography>
               <Typography id="modal-modal-description" sx={{ mt: 2 }}>
@@ -58,7 +71,7 @@ const ShareCube = ({ setOpenShareModal, open, shareUrl }: Props) => {
                     flexWrap: "wrap",
                   }}
                 >
-                  <Box>
+                  <Box sx={{ margin: "0 5px" }}>
                     <FacebookShareButton
                       url={shareUrl}
                       style={{ cursor: "pointer" }}
@@ -66,20 +79,43 @@ const ShareCube = ({ setOpenShareModal, open, shareUrl }: Props) => {
                       <FacebookIcon size={32} round />
                     </FacebookShareButton>
                   </Box>
-                  <Box>
+                  <Box sx={{ margin: "0 5px" }}>
                     <WhatsappShareButton url={shareUrl}>
                       <WhatsappIcon size={32} round />
                     </WhatsappShareButton>
                   </Box>
-                  <Box>
+                  <Box sx={{ margin: "0 5px" }}>
                     <TwitterShareButton url={shareUrl}>
                       <XIcon size={32} round />
                     </TwitterShareButton>
                   </Box>
-                  <Box>
+                  <Box sx={{ margin: "0 5px" }}>
                     <LinkedinShareButton url={shareUrl}>
                       <LinkedinIcon size={32} round />
                     </LinkedinShareButton>
+                  </Box>
+                  <Box sx={{ margin: "0 5px" }}>
+                    <EmailShareButton url={shareUrl}>
+                      <EmailIcon size={32} round />
+                    </EmailShareButton>
+                  </Box>
+                  <Box sx={{ margin: "0 5px" }}>
+                    <RedditShareButton url={shareUrl}>
+                      <RedditIcon size={32} round />
+                    </RedditShareButton>
+                  </Box>
+                  <Box>
+                    <FacebookMessengerShareButton
+                      url={shareUrl}
+                      appId={`${env.NEXT_PUBLIC_APP_ID}`}
+                    >
+                      <FacebookMessengerIcon size={32} round />
+                    </FacebookMessengerShareButton>
+                  </Box>
+                  <Box sx={{ margin: "0 5px" }}>
+                    <TelegramShareButton url={shareUrl}>
+                      <TelegramIcon size={32} round />
+                    </TelegramShareButton>
                   </Box>
                 </Box>
               </Typography>
