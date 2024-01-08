@@ -51,6 +51,7 @@ export const env = createEnv({
     NEXT_PUBLIC_API_ENDPOINT: z.string().min(10),
 
     NEXT_PUBLIC_APP_URL: z.string().url(),
+    NEXT_PUBLIC_APP_ID: z.string(),
   },
 
   /**
@@ -83,6 +84,7 @@ export const env = createEnv({
     SENTRY_DSN: process.env.SENTRY_DSN,
     SENTRY_ORG: process.env.SENTRY_ORG,
     SENTRY_PROJECT: process.env.SENTRY_PROJECT,
+    NEXT_PUBLIC_APP_ID: process.env.NEXT_PUBLIC_APP_ID,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

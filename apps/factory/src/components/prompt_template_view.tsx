@@ -215,7 +215,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                 </Box>
               ) : data || !versionOrEnvironment ? (
                 <>
-                  <Box sx={{ flexGrow: 1 }}>
+                  <Box sx={{ flexGrow: 1, marginRight: "1rem" }}>
                     <Grid container columnSpacing={2}>
                       <Grid item xs={1.5} sm={1} md={1} lg={1}></Grid>
                       <Grid item xs={9} sm={10} md={10} lg={10}>
@@ -251,7 +251,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                       </Grid>
                     </Grid>
                   </Box>
-                  <Box sx={{ flexGrow: 1 }}>
+                  <Box sx={{ flexGrow: 1, marginRight: "1rem" }}>
                     <Grid container wrap="nowrap" columnSpacing={2}>
                       <Grid item xs={1.3} sm={1} md={1} lg={1}></Grid>
                       <Grid item xs={9.4} sm={10} md={10} lg={10}>
@@ -268,7 +268,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                         </Typography>
                       </Grid>
                       <Grid item xs={1.3} sm={1} md={1} lg={1}>
-                        <Tooltip title="edti template" placement="top">
+                        <Tooltip title="edit template" placement="top">
                           <IconButton color="primary">
                             {session?.user.username == username && (
                               <EditIcon
