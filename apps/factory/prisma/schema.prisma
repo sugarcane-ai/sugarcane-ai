@@ -1,72 +1,34 @@
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["postgresqlExtensions"]
+  binaryTargets   = ["native", "linux-musl"]
 }
 
 generator zod {
   provider               = "zod-prisma-types"
   output                 = "../src/generated/prisma-client-zod.ts"
-  createInputTypes       = false
-  addInputTypeValidation = false
+  createInputTypes       = "false"
+  addInputTypeValidation = "false"
 }
 
-// console.log(`database url ${env("DATABASE_URL")}`);
 datasource db {
-  // provider = "sqlite"
-  provider = "postgresql"
-  // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-  // Further reading:
-  // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-  url      = env("DATABASE_URL")
-
-  // extensions = [uuidOssp(map: "uuid-ossp"), timescaleDb(map: "timescaledb")]
-  extensions = [uuidOssp(map: "uuid-ossp"), pgVector(map: "vector"), timescaleDb(map: "timescaledb")]
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [timescaledb, uuid_ossp(map: "uuid-ossp"), vector]
 }
 
-// LabelledState enum-like values
-enum LabelledState {
-  UNLABELLED
-  SELECTED
-  REJECTED
-  NOTSURE
-}
-
-enum PackageVisibility {
-  PUBLIC
-  PRIVATE
-}
-
-// FinetunedState enum-like values
-enum FinetunedState {
-  UNPROCESSED
-  PROCESSED
-}
-
-enum PromptEnvironment {
-  DEV
-  PREVIEW
-  RELEASE
-}
-
-enum ModelType {
-  TEXT2TEXT
-  TEXT2IMAGE
-}
-
-// Necessary for Next auth
 model Account {
   id                String   @id @default(uuid())
   userId            String
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? // @db.Text
-  access_token      String? // @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? // @db.Text
+  id_token          String?
   session_state     String?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt @map("updated_at")
@@ -109,9 +71,9 @@ model PromptPackage {
   userId          String
   name            String
   description     String
-  visibility      PackageVisibility @default(PUBLIC)
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt @map("updated_at")
+  visibility      PackageVisibility @default(PUBLIC)
   User            User              @relation(fields: [userId], references: [id])
   templates       PromptTemplate[]
   PromptVariables PromptVariables[]
@@ -132,25 +94,23 @@ model PromptTemplate {
   updatedAt        DateTime          @updatedAt @map("updated_at")
   modelType        ModelType         @default(TEXT2TEXT)
   promptPackage    PromptPackage     @relation(fields: [promptPackageId], references: [id])
+  User             User              @relation(fields: [userId], references: [id])
   previewVersion   PromptVersion?    @relation("previewVersion", fields: [previewVersionId], references: [id], map: "previewVersion")
   releaseVersion   PromptVersion?    @relation("releaseVersion", fields: [releaseVersionId], references: [id], map: "releaseVersion")
   PromptVariables  PromptVariables[]
   versions         PromptVersion[]   @relation("template")
-  User             User              @relation(fields: [userId], references: [id])
 
   @@unique([promptPackageId, name])
 }
 
 model PromptVersion {
   id               String            @id @default(uuid())
-  forkedFromId     String?
   userId           String
   version          String
   template         String
   inputFields      String[]
   templateFields   String[]
   llmProvider      String
-  llmModelType     ModelType         @default(TEXT2TEXT)
   llmModel         String
   llmConfig        Json
   lang             String[]
@@ -163,6 +123,8 @@ model PromptVersion {
   promptTemplateId String
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt @map("updated_at")
+  forkedFromId     String?
+  llmModelType     ModelType         @default(TEXT2TEXT)
   previewVersion   PromptTemplate?   @relation("previewVersion")
   releaseVersion   PromptTemplate?   @relation("releaseVersion")
   PromptVariables  PromptVariables[]
@@ -178,15 +140,15 @@ model User {
   name           String?
   email          String?          @unique
   emailVerified  DateTime?
-  username       String?          @unique
   image          String?
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt @map("updated_at")
+  username       String?          @unique
   accounts       Account[]
   promptPackages PromptPackage[]
+  PromptTemplate PromptTemplate[]
   PromptVersion  PromptVersion[]
   sessions       Session[]
-  PromptTemplate PromptTemplate[]
 }
 
 model VerificationToken {
@@ -201,13 +163,10 @@ model VerificationToken {
 
 model PromptLog {
   id                String            @id @default(uuid())
-  userId            String
   inputId           String?
-  environment       PromptEnvironment @default(DEV)
   version           String
   prompt            String
   completion        String
-  llmModelType      ModelType         @default(TEXT2TEXT)
   llmProvider       String
   llmModel          String
   llmConfig         Json
@@ -223,4 +182,35 @@ model PromptLog {
   promptVersionId   String
   createdAt         DateTime          @default(now()) @map("created_at")
   updatedAt         DateTime          @updatedAt @map("updated_at")
+  environment       PromptEnvironment @default(DEV)
+  userId            String
+  llmModelType      ModelType         @default(TEXT2TEXT)
+}
+
+enum LabelledState {
+  UNLABELLED
+  SELECTED
+  REJECTED
+  NOTSURE
+}
+
+enum PackageVisibility {
+  PUBLIC
+  PRIVATE
+}
+
+enum FinetunedState {
+  UNPROCESSED
+  PROCESSED
+}
+
+enum PromptEnvironment {
+  DEV
+  PREVIEW
+  RELEASE
+}
+
+enum ModelType {
+  TEXT2TEXT
+  TEXT2IMAGE
 }

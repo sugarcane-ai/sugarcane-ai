@@ -52,9 +52,13 @@ COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/next.config.mj
 COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/package.json ./apps/${PROJECT_NAME}/
 COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/public* ./apps/${PROJECT_NAME}/public
 COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/.next/static* ./apps/${PROJECT_NAME}/.next/static
+COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/prisma ./apps/${PROJECT_NAME}/prisma
 COPY --chown=nextjs:nodejs ./docker/entrypoint.sh /app/entrypoint.sh
 
+RUN rm -rf /app/apps/${PROJECT_NAME}/.env*
 RUN chmod +x /app/entrypoint.sh
+
+RUN cd /app/apps/${PROJECT_NAME} && npm install prisma
 
 USER root
 

@@ -98,6 +98,9 @@ importers:
       openai:
         specifier: ^4.6.0
         version: 4.11.1
+      prisma:
+        specifier: ^5.3.1
+        version: 5.4.2
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -252,9 +255,6 @@ importers:
       prettier-plugin-tailwindcss:
         specifier: ^0.5.1
         version: 0.5.5(prettier@3.0.3)
-      prisma:
-        specifier: ^5.3.1
-        version: 5.4.2
       storybook:
         specifier: ^7.4.0
         version: 7.4.6
@@ -3154,6 +3154,7 @@ packages:
   /@prisma/engines@5.4.2:
     resolution: {integrity: sha512-fqeucJ3LH0e1eyFdT0zRx+oETLancu5+n4lhiYECyEz6H2RDskPJHJYHkVc0LhkU4Uv7fuEnppKU3nVKNzMh8g==}
     requiresBuild: true
+    dev: false
 
   /@prisma/generator-helper@5.4.2:
     resolution: {integrity: sha512-UC2W3ZUs87jbdEOCmsQfCyGeuLA0oosAKgS+0vTCoZWnKUPGvMNxMqNPL08rpXTc1vwUFvl09R76ZVC3Zm7PHw==}
@@ -12009,6 +12010,7 @@ packages:
     requiresBuild: true
     dependencies:
       '@prisma/engines': 5.4.2
+    dev: false
 
   /prismjs@1.27.0:
     resolution: {integrity: sha512-t13BGPUlFDR7wRB5kQDG4jjl7XeuH6jbJGt11JHPL96qwsEHNX2+68tFXqc1/k+/jALsbSWJKUOT/hcYAZ5LkA==}
