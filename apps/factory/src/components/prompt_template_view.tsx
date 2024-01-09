@@ -43,6 +43,7 @@ import { NextSeo } from "next-seo";
 import DownloadButtonImg from "./download_button_img";
 import { prisma } from "~/server/db";
 import { env } from "~/env.mjs";
+import LikeButton from "./marketplace/like_button";
 
 interface PromptTemplateViewProps {
   username: string;
