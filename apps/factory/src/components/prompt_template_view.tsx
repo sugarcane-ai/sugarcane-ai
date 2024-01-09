@@ -27,7 +27,7 @@ import {
 import { useSession, signIn } from "next-auth/react";
 import Link from "@mui/material/Link";
 const isDev = process.env.NODE_ENV === "development";
-import { displayModes, DisplayModes } from "~/validators/base";
+import { displayModes, DisplayModes, promptEnvironment } from "~/validators/base";
 import PromptViewArrow from "./prompt_view_arrow";
 import { LoadingButton } from "@mui/lab";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -43,6 +43,7 @@ import { NextSeo } from "next-seo";
 import DownloadButtonImg from "./download_button_img";
 import { prisma } from "~/server/db";
 import { env } from "~/env.mjs";
+
 interface PromptTemplateViewProps {
   username: string;
   packageName: string;
