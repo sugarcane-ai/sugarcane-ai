@@ -223,6 +223,11 @@ model PromptLog {
   updatedAt         DateTime          @updatedAt @map("updated_at")
 }
 
+enum EntityTypes {
+  SugarCubes
+  PromptPackage
+}
+
 model Like {
   id         String     @id @default(uuid())
   likes      LikeUser[]

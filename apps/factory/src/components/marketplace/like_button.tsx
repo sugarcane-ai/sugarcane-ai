@@ -5,10 +5,11 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 
 import { api } from "~/utils/api";
 import { signIn, useSession } from "next-auth/react";
+import { EntityTypesType } from "~/generated/prisma-client-zod.ts";
 
 interface LikeButtonProps {
   EntityId: string;
-  EntityType: string;
+  EntityType: EntityTypesType;
 }
 
 const LikeButton: React.FC<LikeButtonProps> = ({ EntityId, EntityType }) => {
@@ -25,14 +26,10 @@ const LikeButton: React.FC<LikeButtonProps> = ({ EntityId, EntityType }) => {
   const UnlikeMutation = api.like.unlikeEntity.useMutation();
   const LikeMutation = api.like.likeEntity.useMutation();
 
-  const [counter, setCounter] = useState<number>(
-    likesCount.data?.likesCount != null ? likesCount.data.likesCount : 0,
-  );
+  const [counter, setCounter] = useState<number>(0);
   const [buttonLoading, setButtonLoading] = useState(false);
   const [hasLiked, setHasLiked] = useState<boolean>(false);
-  const [likedId, setLikeId] = useState<string>(
-    liked.data?.likeId != undefined ? liked.data.likeId : "",
-  );
+  const [likedId, setLikeId] = useState<string>("");
   const { data: sessionData } = useSession();
 
   useEffect(() => {
@@ -99,7 +96,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ EntityId, EntityType }) => {
         variant="outlined"
         color="inherit"
         size="small"
-        sx={{ color: "#FFFFFF" }}
+        sx={{ color: "#FFFFFF", padding: "20px" }}
       >
         <Button
           disabled={buttonLoading}

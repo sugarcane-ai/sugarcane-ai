@@ -20,6 +20,7 @@ import { GenerateInput, GenerateOutput } from "~/validators/service";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import PromptOutput from "./prompt_output";
 import {
+  EntityTypesSchema,
   ModelTypeSchema,
   ModelTypeType,
 } from "~/generated/prisma-client-zod.ts";
@@ -38,6 +39,7 @@ import Footer from "./footer";
 import DownloadButtonImg from "./download_button_img";
 import EditIcon from "@mui/icons-material/Edit";
 import { useRouter } from "next/router";
+import LikeButton from "./marketplace/like_button";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -107,6 +109,16 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   };
 
   const generateMutation = api.service.generate.useMutation(); // Make sure to import 'api' and set up the service
+  const { data: sugarcubeData, isLoading: templateIdLoading } =
+    api.cube.getPrompt.useQuery({
+      username,
+      package: packageName,
+      template,
+      versionOrEnvironment:
+        versionOrEnvironment === "preview"
+          ? promptEnvironment.Enum.PREVIEW
+          : promptEnvironment.Enum.RELEASE,
+    });
 
   const handleRun = async (e: any) => {
     setIsLoading(true);
@@ -188,7 +200,11 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
               ) : data || !versionOrEnvironment ? (
                 <>
                   <Box sx={{ flexGrow: 1 }}>
-                    <Grid container columnSpacing={2}>
+                    <Grid
+                      container
+                      columnSpacing={2}
+                      sx={{ position: "relative" }}
+                    >
                       <Grid item xs={1.5} sm={1} md={1} lg={1}></Grid>
                       <Grid item xs={9} sm={10} md={10} lg={10}>
                         <Typography
@@ -200,6 +216,22 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                         >
                           {!template ? "" : template.replaceAll("-", " ")}
                         </Typography>
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "0px",
+                            right: "0px",
+                          }}
+                        >
+                          {templateIdLoading ? (
+                            <CircularProgress />
+                          ) : (
+                            <LikeButton
+                              EntityId={sugarcubeData?.templateId!}
+                              EntityType={EntityTypesSchema.enum.SugarCubes}
+                            />
+                          )}
+                        </div>
                       </Grid>
                       <Grid item xs={1.5} sm={1} md={1} lg={1}>
                         {false && (
