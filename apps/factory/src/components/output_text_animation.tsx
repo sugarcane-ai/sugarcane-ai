@@ -16,6 +16,13 @@ const OutputTextAnimation: React.FC<OutputTextAnimationProps> = ({
   const [displayedText, setDisplayedText] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
 
+  function extractCodeBlock(input: string): string | null {
+    const regex = /```([\s\S]+?)```/;
+    const match = input.match(regex);
+
+    return match ? match[1]!.trim() : null;
+  }
+
   useEffect(() => {
     const scrollToBottom = () => {
       if (containerRef.current) {
@@ -40,6 +47,7 @@ const OutputTextAnimation: React.FC<OutputTextAnimationProps> = ({
     } else {
       setDisplayedText(output);
       scrollToBottom(); // Scroll to bottom whenever new text is added
+      if (containerRef.current) containerRef.current.scrollLeft = 0;
     }
   }, [output, modelType]);
 
@@ -47,6 +55,7 @@ const OutputTextAnimation: React.FC<OutputTextAnimationProps> = ({
     <Box
       ref={containerRef}
       sx={{
+        maxWidth: "700px",
         "&::-webkit-scrollbar-thumb": {
           backgroundColor: "Highlight",
         },
@@ -62,12 +71,18 @@ const OutputTextAnimation: React.FC<OutputTextAnimationProps> = ({
     >
       {tokens ? (
         <>
-          {displayedText}
+          <Typography variant="body2" textAlign={"left"}>
+            <pre>
+              <code>{displayedText}</code>
+            </pre>
+          </Typography>
           <p>tokens: {tokens}</p>
         </>
       ) : (
         <Typography variant="body2" textAlign={"left"}>
-          {displayedText}
+          <pre>
+            <code>{displayedText}</code>
+          </pre>
         </Typography>
       )}
     </Box>
