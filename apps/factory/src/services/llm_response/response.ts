@@ -29,9 +29,9 @@ export function generateOutput(
       };
     }
   } else {
-    if (response?.images?.length > 0) {
+    if (response?.data?.length > 0) {
       return {
-        completion: response.images[0],
+        completion: response.data[0].url || "",
         performance: {
           latency: latency || 0,
           prompt_tokens: 0,

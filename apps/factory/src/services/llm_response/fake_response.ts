@@ -15,6 +15,7 @@ export const fakeResponse = {
       },
     ],
     usage: { prompt_tokens: 127, completion_tokens: 7, total_tokens: 134 },
+    system_fingerprint: null,
   },
   llama2FakeResponse: {
     request_id: "RDXi54GS2RAy21pnzM0Qt6wb",
