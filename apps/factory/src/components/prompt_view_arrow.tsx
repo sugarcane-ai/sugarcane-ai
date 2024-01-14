@@ -1,15 +1,27 @@
-import React, { useState } from "react";
-import { Stack, Box, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Stack, Box, Typography, Grid } from "@mui/material";
 import { FaCaretDown, FaCaretRight } from "react-icons/fa";
+import { PromptDataType } from "~/validators/prompt_version";
 
-type PromptViewArrowProps = {
+interface PromptDataInputType {
+  promptInputs: PromptDataType | undefined;
+}
+
+interface PromptViewArrowProps extends PromptDataInputType {
   promptTemplate: string;
-};
+  haveroleUserAssistant: boolean | undefined;
+}
 
 const PromptViewArrow: React.FC<PromptViewArrowProps> = ({
   promptTemplate,
+  promptInputs,
+  haveroleUserAssistant,
 }) => {
   const [isTextOpen, setIsTextOpen] = useState(false);
+
+  useEffect(() => {
+    console.log(promptInputs);
+  }, []);
 
   return (
     <div style={{ paddingLeft: 15, paddingRight: 15 }}>
@@ -32,11 +44,60 @@ const PromptViewArrow: React.FC<PromptViewArrowProps> = ({
             />
           )}
         </Box>
-        <Typography sx={{ color: "var(--sugarhub-text-color)" }}>
-          {isTextOpen ? promptTemplate : "Click to view prompt Template"}
-        </Typography>
+        {isTextOpen ? (
+          <>
+            <Typography sx={{ color: "var(--sugarhub-text-color)" }}>
+              Click to view prompt Template
+            </Typography>
+          </>
+        ) : (
+          <>
+            {haveroleUserAssistant ? (
+              <>
+                <PromptDataView promptInputs={promptInputs} />
+              </>
+            ) : (
+              <>
+                <Typography sx={{ color: "var(--sugarhub-text-color)" }}>
+                  {promptTemplate}
+                </Typography>
+              </>
+            )}
+          </>
+        )}
       </Stack>
     </div>
+  );
+};
+
+export const PromptDataView = ({ promptInputs }: PromptDataInputType) => {
+  return (
+    <>
+      <Grid container spacing={1} wrap="wrap">
+        {promptInputs?.map((promptInput) => {
+          return (
+            <>
+              <Grid item xs={2} md={2} lg={2}>
+                <Typography sx={{ color: "var(--sugarhub-text-color)" }}>
+                  {promptInput.role}
+                </Typography>
+              </Grid>
+              <Grid item xs={10} md={10} lg={10} zeroMinWidth>
+                <Typography
+                  sx={{
+                    overflowWrap: "break-word",
+                    margin: "0 1rem",
+                    color: "var(--sugarhub-text-color)",
+                  }}
+                >
+                  {promptInput.content}
+                </Typography>
+              </Grid>
+            </>
+          );
+        })}
+      </Grid>
+    </>
   );
 };
 

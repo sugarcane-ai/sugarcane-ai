@@ -41,6 +41,12 @@ import { NextSeo } from "next-seo";
 import DownloadButtonImg from "./download_button_img";
 import { prisma } from "~/server/db";
 import { env } from "~/env.mjs";
+import { providerModels } from "~/validators/base";
+import {
+  PromptDataSchemaType,
+  PromptDataType,
+} from "~/validators/prompt_version";
+import { promptEnvironment } from "~/validators/base";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -58,6 +64,8 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const { data: session, status } = useSession();
   const [checked, setChecked] = useState(isDev);
   const [pvrs, setVariables] = useState<PromptVariableProps[]>();
+  const [openAivariables, setOpenAiVariables] =
+    useState<PromptVariableProps[]>();
   const [pl, setPl] = useState<GenerateOutput>(null);
   const [promptOutput, setPromptOutput] = useState("");
   const [promptPerformance, setPromptPerformacne] = useState({});
@@ -66,13 +74,29 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const handleOpen = () => setIsOpen(true);
   const [isLoadingState, setIsLoading] = useState(false);
   const [openShareModal, setOpenShareModal] = useState<boolean>(false);
+
   const router = useRouter();
-  const { data, isLoading } = api.cube.getPrompt.useQuery({
-    username: username,
-    package: packageName,
-    template: template,
-    versionOrEnvironment: versionOrEnvironment?.toUpperCase(),
-  });
+  const { data, isLoading } = api.cube.getPrompt.useQuery(
+    {
+      username: username,
+      package: packageName,
+      template: template,
+      versionOrEnvironment: versionOrEnvironment?.toUpperCase(),
+    },
+    {
+      onSuccess(item) {
+        setOpenAiVariables(
+          getUniqueJsonArray(
+            getVariables(
+              JSON.stringify((item?.promptData as PromptDataSchemaType).data) ||
+                "",
+            ),
+            "key",
+          ),
+        );
+      },
+    },
+  );
 
   api.prompt.getPackage.useQuery(
     {
@@ -85,26 +109,41 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     },
   );
 
+  const haveroleUserAssistant = providerModels[
+    `${data?.modelType as keyof typeof providerModels}`
+  ]?.models[`${data?.llmProvider}`]?.find((mod) => mod.name === data?.model)
+    ?.role;
+
   useEffect(() => {
-    const variables = getUniqueJsonArray(
-      getVariables(data?.template || ""),
-      "key",
-    );
-    setVariables(variables);
+    setVariables(getUniqueJsonArray(getVariables(data?.template || ""), "key"));
   }, [data]);
 
   const handleVariablesChange = (k: string, v: string) => {
-    setVariables((pvrs) => {
-      // Step 2: Update the state
-      return pvrs?.map((pvr) => {
-        if (pvr.key === k) {
-          // pvr.value = v;
-          console.log(`gPv  ${pvr.key}: ${pvr.value} => ${v}`);
-          return { ...pvr, ...{ value: v } };
-        }
-        return pvr;
+    if (haveroleUserAssistant) {
+      setOpenAiVariables((openAivariables) => {
+        // Step 2: Update the state
+        return openAivariables?.map((pvr) => {
+          if (pvr.key === k) {
+            // pvr.value = v;
+            console.log(`gPv  ${pvr.key}: ${pvr.value} => ${v}`);
+            return { ...pvr, ...{ value: v } };
+          }
+          return pvr;
+        });
       });
-    });
+    } else {
+      setVariables((pvrs) => {
+        // Step 2: Update the state
+        return pvrs?.map((pvr) => {
+          if (pvr.key === k) {
+            // pvr.value = v;
+            console.log(`gPv  ${pvr.key}: ${pvr.value} => ${v}`);
+            return { ...pvr, ...{ value: v } };
+          }
+          return pvr;
+        });
+      });
+    }
 
     // console.log(`pvrs >>>> ${JSON.stringify(pvrs)}`);
   };
@@ -120,6 +159,11 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
       data[`${item.type}${item.key}`] = item.value;
     }
 
+    let promptDataVariables: { [key: string]: any } = {};
+    for (const item of openAivariables as PromptVariableProps[]) {
+      promptDataVariables[`${item.type}${item.key}`] = item.value;
+    }
+
     const pl = await generateMutation.mutateAsync(
       {
         username: username,
@@ -127,8 +171,9 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
         template: template || "",
         versionOrEnvironment: versionOrEnvironment?.toUpperCase() || "",
         isDevelopment: checked,
-
+        environment: promptEnvironment.Enum.DEV,
         data: data,
+        promptDataVariables: promptDataVariables,
       } as GenerateInput,
       {
         onSuccess() {
@@ -290,10 +335,16 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                     {pvrs && (
                       <>
                         {data && (
-                          <PromptViewArrow promptTemplate={data?.template} />
+                          <PromptViewArrow
+                            promptTemplate={data?.template}
+                            promptInputs={
+                              (data?.promptData as PromptDataSchemaType).data
+                            }
+                            haveroleUserAssistant={haveroleUserAssistant}
+                          />
                         )}
                         <PromptVariables
-                          vars={pvrs}
+                          vars={!haveroleUserAssistant ? pvrs : openAivariables}
                           onChange={handleVariablesChange}
                           mode={displayModes.Enum.EDIT}
                           cube={true}
