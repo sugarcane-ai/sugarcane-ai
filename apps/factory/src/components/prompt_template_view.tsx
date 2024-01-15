@@ -64,8 +64,6 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const { data: session, status } = useSession();
   const [checked, setChecked] = useState(isDev);
   const [pvrs, setVariables] = useState<PromptVariableProps[]>();
-  const [openAivariables, setOpenAiVariables] =
-    useState<PromptVariableProps[]>();
   const [pl, setPl] = useState<GenerateOutput>(null);
   const [promptOutput, setPromptOutput] = useState("");
   const [promptPerformance, setPromptPerformacne] = useState({});
@@ -76,27 +74,12 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const [openShareModal, setOpenShareModal] = useState<boolean>(false);
 
   const router = useRouter();
-  const { data, isLoading } = api.cube.getPrompt.useQuery(
-    {
-      username: username,
-      package: packageName,
-      template: template,
-      versionOrEnvironment: versionOrEnvironment?.toUpperCase(),
-    },
-    {
-      onSuccess(item) {
-        setOpenAiVariables(
-          getUniqueJsonArray(
-            getVariables(
-              JSON.stringify((item?.promptData as PromptDataSchemaType).data) ||
-                "",
-            ),
-            "key",
-          ),
-        );
-      },
-    },
-  );
+  const { data, isLoading } = api.cube.getPrompt.useQuery({
+    username: username,
+    package: packageName,
+    template: template,
+    versionOrEnvironment: versionOrEnvironment?.toUpperCase(),
+  });
 
   api.prompt.getPackage.useQuery(
     {
@@ -115,35 +98,39 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     ?.role;
 
   useEffect(() => {
+    if (haveroleUserAssistant) {
+      setVariables([
+        ...getUniqueJsonArray(
+          getVariables(
+            JSON.stringify((data?.promptData as PromptDataSchemaType).data) ||
+              "",
+          ),
+          "key",
+        ),
+      ]);
+    } else {
+      setVariables([
+        ...getUniqueJsonArray(getVariables(data?.template || ""), "key"),
+      ]);
+    }
+  }, []);
+
+  useEffect(() => {
     setVariables(getUniqueJsonArray(getVariables(data?.template || ""), "key"));
   }, [data]);
 
   const handleVariablesChange = (k: string, v: string) => {
-    if (haveroleUserAssistant) {
-      setOpenAiVariables((openAivariables) => {
-        // Step 2: Update the state
-        return openAivariables?.map((pvr) => {
-          if (pvr.key === k) {
-            // pvr.value = v;
-            console.log(`gPv  ${pvr.key}: ${pvr.value} => ${v}`);
-            return { ...pvr, ...{ value: v } };
-          }
-          return pvr;
-        });
+    setVariables((pvrs) => {
+      // Step 2: Update the state
+      return pvrs?.map((pvr) => {
+        if (pvr.key === k) {
+          // pvr.value = v;
+          console.log(`gPv  ${pvr.key}: ${pvr.value} => ${v}`);
+          return { ...pvr, ...{ value: v } };
+        }
+        return pvr;
       });
-    } else {
-      setVariables((pvrs) => {
-        // Step 2: Update the state
-        return pvrs?.map((pvr) => {
-          if (pvr.key === k) {
-            // pvr.value = v;
-            console.log(`gPv  ${pvr.key}: ${pvr.value} => ${v}`);
-            return { ...pvr, ...{ value: v } };
-          }
-          return pvr;
-        });
-      });
-    }
+    });
 
     // console.log(`pvrs >>>> ${JSON.stringify(pvrs)}`);
   };
@@ -159,11 +146,6 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
       data[`${item.type}${item.key}`] = item.value;
     }
 
-    let promptDataVariables: { [key: string]: any } = {};
-    for (const item of openAivariables as PromptVariableProps[]) {
-      promptDataVariables[`${item.type}${item.key}`] = item.value;
-    }
-
     const pl = await generateMutation.mutateAsync(
       {
         username: username,
@@ -173,7 +155,6 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
         isDevelopment: checked,
         environment: promptEnvironment.Enum.DEV,
         data: data,
-        promptDataVariables: promptDataVariables,
       } as GenerateInput,
       {
         onSuccess() {
@@ -260,7 +241,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                 </Box>
               ) : data || !versionOrEnvironment ? (
                 <>
-                  <Box sx={{ flexGrow: 1 }}>
+                  <Box sx={{ flexGrow: 1, paddingRight: "1rem" }}>
                     <Grid container columnSpacing={2}>
                       <Grid item xs={1.5} sm={1} md={1} lg={1}></Grid>
                       <Grid item xs={9} sm={10} md={10} lg={10}>
@@ -275,7 +256,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                         </Typography>
                       </Grid>
                       <Grid item xs={1.5} sm={1} md={1} lg={1}>
-                        <Tooltip title="share cube" placement="top">
+                        <Tooltip title="Share Cube" placement="top">
                           <IconButton
                             onClick={() => setOpenShareModal(!openShareModal)}
                           >
@@ -298,7 +279,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                       </Grid>
                     </Grid>
                   </Box>
-                  <Box sx={{ flexGrow: 1 }}>
+                  <Box sx={{ flexGrow: 1, paddingRight: "1rem" }}>
                     <Grid container wrap="nowrap" columnSpacing={2}>
                       <Grid item xs={1.3} sm={1} md={1} lg={1}></Grid>
                       <Grid item xs={9.4} sm={10} md={10} lg={10}>
@@ -315,7 +296,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                         </Typography>
                       </Grid>
                       <Grid item xs={1.3} sm={1} md={1} lg={1}>
-                        <Tooltip title="edti template" placement="top">
+                        <Tooltip title="Edit Template" placement="top">
                           <IconButton color="primary">
                             {session?.user.username == username && (
                               <EditIcon
@@ -324,6 +305,10 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                                     `/dashboard/prompts/${data?.promptPackageId}?ptid=${data?.templateId}&edit=${true}`,
                                   )
                                 }
+                                sx={{
+                                  color: "var(--sugarhub-text-color)",
+                                  fontSize: "2rem",
+                                }}
                               ></EditIcon>
                             )}
                           </IconButton>
@@ -344,7 +329,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                           />
                         )}
                         <PromptVariables
-                          vars={!haveroleUserAssistant ? pvrs : openAivariables}
+                          vars={pvrs}
                           onChange={handleVariablesChange}
                           mode={displayModes.Enum.EDIT}
                           cube={true}

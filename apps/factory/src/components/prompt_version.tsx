@@ -104,12 +104,6 @@ function PromptVersion({
   );
 
   const [promptInputs, setPromptInputs] = useState<PromptDataType>(prompt.data);
-  const [openAivariables, setOpenAiVariables] = useState<PromptVariableProps[]>(
-    getUniqueJsonArray(
-      getVariables(JSON.stringify(lpv?.promptData) || ""),
-      "key",
-    ),
-  );
 
   // this is a boolean value which will help to tell when to provide (role:<user, assistant>) editor
   const haveroleUserAssistant = providerModels[
@@ -137,51 +131,39 @@ function PromptVersion({
   });
 
   const debouncedHandleTemplateChange = _debounce((txt: string) => {
-    if (haveroleUserAssistant) {
-      setIsDirty(true);
-      const variables = getUniqueJsonArray(getVariables(txt), "key");
-      setOpenAiVariables(variables);
-    } else {
-      setTemplate(txt);
-      setIsDirty(true);
-      const variables = getUniqueJsonArray(getVariables(txt), "key");
-      setVariables([...variables]);
-    }
+    const variables = getUniqueJsonArray(getVariables(txt), "key");
+    setVariables([...variables]);
   }, 500);
 
   const handleVariablesChange = (k: string, v: string) => {
-    if (haveroleUserAssistant) {
-      setOpenAiVariables((openAivariables) => {
-        // Step 2: Update the state
-        return openAivariables.map((pvr) => {
-          if (pvr.key === k) {
-            // pvr.value = v;
-            console.log(`gPv  ${pvr.key}: ${pvr.value} => ${v}`);
-            return { ...pvr, ...{ value: v } };
-          }
-          return pvr;
-        });
+    setVariables((pvrs) => {
+      // Step 2: Update the state
+      return pvrs.map((pvr) => {
+        if (pvr.key === k) {
+          // pvr.value = v;
+          console.log(`gPv  ${pvr.key}: ${pvr.value} => ${v}`);
+          return { ...pvr, ...{ value: v } };
+        }
+        return pvr;
       });
-    } else {
-      setVariables((pvrs) => {
-        // Step 2: Update the state
-        return pvrs.map((pvr) => {
-          if (pvr.key === k) {
-            // pvr.value = v;
-            console.log(`gPv  ${pvr.key}: ${pvr.value} => ${v}`);
-            return { ...pvr, ...{ value: v } };
-          }
-          return pvr;
-        });
-      });
-    }
-
+    });
     // console.log(`pvrs >>>> ${JSON.stringify(pvrs)}`);
   };
 
   useEffect(() => {
-    setOpenAiVariables([...openAivariables]);
-    setVariables([...pvrs]);
+    if (haveroleUserAssistant) {
+      setVariables([
+        ...getUniqueJsonArray(
+          getVariables(JSON.stringify(lpv?.promptData) || ""),
+          "key",
+        ),
+      ]);
+    } else {
+      setVariables([
+        ...getUniqueJsonArray(getVariables(lpv?.template || ""), "key"),
+      ]);
+    }
+    // setOpenAiVariables([...openAivariables]);
   }, []);
 
   const handleChange = () => {
@@ -197,11 +179,6 @@ function PromptVersion({
       data[`${item.type}${item.key}`] = item.value;
     }
 
-    let promptDataVariables: { [key: string]: any } = {};
-    for (const item of openAivariables) {
-      promptDataVariables[`${item.type}${item.key}`] = item.value;
-    }
-
     const pl = await generateMutation.mutateAsync(
       {
         username: ns.username,
@@ -212,7 +189,6 @@ function PromptVersion({
         // llmModelType: pt?.modelType,
         environment: promptEnvironment.Enum.DEV,
         data: data,
-        promptDataVariables: promptDataVariables,
       } as GenerateInput,
       {
         onSuccess() {
@@ -239,6 +215,18 @@ function PromptVersion({
   };
 
   useEffect(() => {
+    if (haveroleUserAssistant) {
+      setVariables([
+        ...getUniqueJsonArray(
+          getVariables(JSON.stringify(lpv?.promptData) || ""),
+          "key",
+        ),
+      ]);
+    } else {
+      setVariables([
+        ...getUniqueJsonArray(getVariables(lpv?.template || ""), "key"),
+      ]);
+    }
     handleSave();
   }, [provider, model]);
 
@@ -511,7 +499,7 @@ function PromptVersion({
                       (input: { id: string; role: string; content: string }) =>
                         input.content.length === 0,
                     )
-                    ? openAivariables.some((v) => v.value === "")
+                    ? pvrs.some((v) => v.value === "")
                     : true
                   : template.length <= 10 || pvrs.some((v) => v.value === "")
               }
@@ -577,7 +565,7 @@ function PromptVersion({
           </Stack>
           <Box sx={{ m: 1 }}>
             <PromptVariables
-              vars={!haveroleUserAssistant ? pvrs : openAivariables}
+              vars={pvrs}
               onChange={handleVariablesChange}
               mode={displayModes.Enum.VIEW}
             />

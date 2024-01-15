@@ -38,7 +38,7 @@ import PromptHeader from "~/components/marketplace/prompt_header";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import PublicUrl from "~/components/integration/public_url";
-import { PromptDataView } from "~/components/prompt_view_arrow";
+import { PromptView } from "~/components/prompt_view_arrow";
 const MarketplacePage: NextPage = () => {
   const router = useRouter();
   const { id } = router.query as { id: string };
@@ -168,13 +168,11 @@ function VersionRow({
                   <Typography variant="h6" sx={{ marginBottom: "1rem" }}>
                     Template :
                   </Typography>
-                  {haveroleUserAssistant ? (
-                    <>
-                      <PromptDataView promptInputs={prompt.data} />
-                    </>
-                  ) : (
-                    <>{pv.template}</>
-                  )}
+                  <PromptView
+                    promptInputs={prompt.data}
+                    haveroleUserAssistant={haveroleUserAssistant}
+                    promptTemplate={pv.template}
+                  />
                 </Typography>
               )}
             </Box>

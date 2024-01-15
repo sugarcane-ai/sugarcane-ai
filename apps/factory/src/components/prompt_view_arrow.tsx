@@ -3,13 +3,18 @@ import { Stack, Box, Typography, Grid } from "@mui/material";
 import { FaCaretDown, FaCaretRight } from "react-icons/fa";
 import { PromptDataType } from "~/validators/prompt_version";
 
-interface PromptDataInputType {
-  promptInputs: PromptDataType | undefined;
-}
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 
-interface PromptViewArrowProps extends PromptDataInputType {
-  promptTemplate: string;
+interface PromptViewArrowProps {
+  promptInputs: PromptDataType | undefined;
   haveroleUserAssistant: boolean | undefined;
+  promptTemplate: string;
 }
 
 const PromptViewArrow: React.FC<PromptViewArrowProps> = ({
@@ -52,17 +57,11 @@ const PromptViewArrow: React.FC<PromptViewArrowProps> = ({
           </>
         ) : (
           <>
-            {haveroleUserAssistant ? (
-              <>
-                <PromptDataView promptInputs={promptInputs} />
-              </>
-            ) : (
-              <>
-                <Typography sx={{ color: "var(--sugarhub-text-color)" }}>
-                  {promptTemplate}
-                </Typography>
-              </>
-            )}
+            <PromptView
+              promptInputs={promptInputs}
+              haveroleUserAssistant={haveroleUserAssistant}
+              promptTemplate={promptTemplate}
+            />
           </>
         )}
       </Stack>
@@ -70,33 +69,65 @@ const PromptViewArrow: React.FC<PromptViewArrowProps> = ({
   );
 };
 
-export const PromptDataView = ({ promptInputs }: PromptDataInputType) => {
+export const PromptView = ({
+  promptInputs,
+  haveroleUserAssistant,
+  promptTemplate,
+}: PromptViewArrowProps) => {
   return (
     <>
-      <Grid container spacing={1} wrap="wrap">
-        {promptInputs?.map((promptInput) => {
-          return (
-            <>
-              <Grid item xs={2} md={2} lg={2}>
-                <Typography sx={{ color: "var(--sugarhub-text-color)" }}>
-                  {promptInput.role}
-                </Typography>
-              </Grid>
-              <Grid item xs={10} md={10} lg={10} zeroMinWidth>
-                <Typography
-                  sx={{
-                    overflowWrap: "break-word",
-                    margin: "0 1rem",
-                    color: "var(--sugarhub-text-color)",
-                  }}
-                >
-                  {promptInput.content}
-                </Typography>
-              </Grid>
-            </>
-          );
-        })}
-      </Grid>
+      {haveroleUserAssistant ? (
+        <>
+          <TableContainer>
+            <Table aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ color: "var(--sugarhub-text-color)" }}>
+                    ROLE
+                  </TableCell>
+                  <TableCell
+                    align="right"
+                    sx={{ color: "var(--sugarhub-text-color)" }}
+                  >
+                    CONTENT
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {promptInputs?.map((promptInput) => (
+                  <TableRow
+                    key={promptInput.role}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell
+                      component="th"
+                      scope="row"
+                      sx={{ color: "var(--sugarhub-text-color)" }}
+                    >
+                      {promptInput.role}
+                    </TableCell>
+                    <TableCell
+                      align="right"
+                      sx={{
+                        color: "var(--sugarhub-text-color)",
+                        overflowWrap: "break-word",
+                      }}
+                    >
+                      {promptInput.content}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </>
+      ) : (
+        <>
+          <Typography sx={{ color: "var(--sugarhub-text-color)" }}>
+            {promptTemplate}
+          </Typography>
+        </>
+      )}
     </>
   );
 };

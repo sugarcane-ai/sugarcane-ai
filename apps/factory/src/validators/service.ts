@@ -58,7 +58,7 @@ export const generateInput = z
   .object({
     // Template Data
     data: z.record(z.any()),
-    promptDataVariables: z.record(z.any()),
+    // promptDataVariables: z.record(z.any()),
     isDevelopment: z.boolean().default(false),
   })
   .merge(getPromptInput)

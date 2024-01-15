@@ -45,7 +45,7 @@ export const serviceRouter = createTRPCRouter({
           ) {
             prompt = generatePrompt(
               JSON.stringify(pv.promptData.data),
-              input.promptDataVariables || {},
+              input.data || {},
             );
           } else {
             prompt = generatePrompt(pv.template, input.data || {});
