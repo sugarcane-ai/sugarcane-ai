@@ -39,7 +39,7 @@ export const providerModels: ProviderModels = {
     ],
     models: {
       openai: [
-        { name: "davinci", label: "Davinci", enabled: false, role: false },
+        // { name: "davinci", label: "Davinci", enabled: false, role: false },
         {
           name: "gpt-3.5-turbo",
           label: "Gpt 3.5 Turbo",
