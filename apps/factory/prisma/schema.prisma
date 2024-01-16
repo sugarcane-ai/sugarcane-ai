@@ -147,7 +147,7 @@ model PromptVersion {
   userId           String
   version          String
   template         String
-  promptData       Json
+  promptData       Json              @default("{}")
   inputFields      String[]
   templateFields   String[]
   llmProvider      String

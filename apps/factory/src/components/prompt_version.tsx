@@ -126,9 +126,10 @@ function PromptVersion({
   const handleTemplateChange = (txt: string) => {
     debouncedHandleTemplateChange(txt);
   };
-  useEffect(() => {
-    console.log("----------", lpv, "---------------");
-  });
+
+  // useEffect(() => {
+  //   console.log("----------", lpv, "---------------");
+  // });
 
   const debouncedHandleTemplateChange = _debounce((txt: string) => {
     const variables = getUniqueJsonArray(getVariables(txt), "key");
