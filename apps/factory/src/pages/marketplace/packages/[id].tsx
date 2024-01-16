@@ -132,13 +132,13 @@ function VersionRow({
         </TableCell>
 
         <TableCell align="right" sx={{ color: "var(--sugarhub-text-color)" }}>
-          {getRandomValue(1000, 5000)}
+          60
         </TableCell>
         <TableCell align="right" sx={{ color: "var(--sugarhub-text-color)" }}>
-          {getRandomValue(2000, 4000)}
+          50
         </TableCell>
         <TableCell align="right" sx={{ color: "var(--sugarhub-text-color)" }}>
-          {getRandomValue(70, 98)}
+          90
         </TableCell>
         <TableCell align="right" sx={{ color: "var(--sugarhub-text-color)" }}>
           <PublicUrl
