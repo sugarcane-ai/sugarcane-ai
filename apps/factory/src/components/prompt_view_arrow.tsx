@@ -78,7 +78,7 @@ export const PromptView = ({
     <>
       {haveroleUserAssistant ? (
         <>
-          <TableContainer>
+          <TableContainer sx={{ maxHeight: "200px", overflowY: "auto" }}>
             <Table aria-label="simple table">
               <TableHead>
                 <TableRow>
