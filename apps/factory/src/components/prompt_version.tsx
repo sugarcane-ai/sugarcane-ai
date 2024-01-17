@@ -141,14 +141,12 @@ function PromptVersion({
       // Step 2: Update the state
       return pvrs.map((pvr) => {
         if (pvr.key === k) {
-          // pvr.value = v;
           console.log(`gPv  ${pvr.key}: ${pvr.value} => ${v}`);
           return { ...pvr, ...{ value: v } };
         }
         return pvr;
       });
     });
-    // console.log(`pvrs >>>> ${JSON.stringify(pvrs)}`);
   };
 
   useEffect(() => {
@@ -371,7 +369,10 @@ function PromptVersion({
                   minRows={5}
                   maxRows={10}
                   defaultValue={template}
-                  onChange={(e) => handleTemplateChange(e.target.value)}
+                  onChange={(e) => {
+                    setTemplate(e.target.value);
+                    handleTemplateChange(e.target.value);
+                  }}
                   variant="outlined"
                 />
               </>
