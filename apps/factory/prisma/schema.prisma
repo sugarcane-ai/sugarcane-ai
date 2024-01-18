@@ -225,3 +225,26 @@ model PromptLog {
   createdAt         DateTime          @default(now()) @map("created_at")
   updatedAt         DateTime          @updatedAt @map("updated_at")
 }
+
+model Event {
+  id        String      @id @default(uuid())
+  slug      String?
+  title     String?
+  desc      String?
+  banner    String?
+  eventUsers    EventUser[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt @map("updated_at")
+}
+
+model EventUser {
+  id        String   @id @default(uuid())
+  userId    String
+  referral  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @map("updated_at")
+  Event     Event?   @relation(fields: [eventId], references: [id])
+  eventId   String?
+
+  @@unique([userId])
+}
