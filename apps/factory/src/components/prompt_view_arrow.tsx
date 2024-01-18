@@ -51,17 +51,17 @@ const PromptViewArrow: React.FC<PromptViewArrowProps> = ({
         </Box>
         {isTextOpen ? (
           <>
-            <Typography sx={{ color: "var(--sugarhub-text-color)" }}>
-              Click to view prompt Template
-            </Typography>
-          </>
-        ) : (
-          <>
             <PromptView
               promptInputs={promptInputs}
               haveroleUserAssistant={haveroleUserAssistant}
               promptTemplate={promptTemplate}
             />
+          </>
+        ) : (
+          <>
+            <Typography sx={{ color: "var(--sugarhub-text-color)" }}>
+              Click to view prompt Template
+            </Typography>
           </>
         )}
       </Stack>
