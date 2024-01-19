@@ -20,6 +20,7 @@ import { GenerateInput, GenerateOutput } from "~/validators/service";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import PromptOutput from "./prompt_output";
 import {
+  EntityTypesSchema,
   ModelTypeSchema,
   ModelTypeType,
 } from "~/generated/prisma-client-zod.ts";
@@ -48,6 +49,7 @@ import {
 } from "~/validators/prompt_version";
 import { promptEnvironment } from "~/validators/base";
 import CopyToClipboardButton from "./copy_button";
+import LikeButton from "./marketplace/like_button";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -243,6 +245,14 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
               ) : data || !versionOrEnvironment ? (
                 <>
                   <Box sx={{ display: "flex", justifyContent: "end" }}>
+                    {isLoading ? (
+                      <CircularProgress />
+                    ) : (
+                      <LikeButton
+                        EntityId={data?.promptPackageId ?? ""}
+                        EntityType={EntityTypesSchema.enum.SugarCubes}
+                      />
+                    )}
                     <Tooltip title="Share Cube" placement="top">
                       <IconButton
                         onClick={() => setOpenShareModal(!openShareModal)}

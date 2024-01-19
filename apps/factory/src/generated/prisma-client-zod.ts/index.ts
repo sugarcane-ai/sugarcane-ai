@@ -68,6 +68,10 @@ export const VerificationTokenScalarFieldEnumSchema = z.enum(['identifier','toke
 
 export const PromptLogScalarFieldEnumSchema = z.enum(['id','userId','inputId','environment','version','prompt','completion','llmModelType','llmProvider','llmModel','llmConfig','latency','prompt_tokens','completion_tokens','total_tokens','extras','labelledState','finetunedState','promptPackageId','promptTemplateId','promptVersionId','createdAt','updatedAt']);
 
+export const LikeScalarFieldEnumSchema = z.enum(['id','likesCount','EntityId','EntityType','createdAt','updatedAt']);
+
+export const LikeUserScalarFieldEnumSchema = z.enum(['id','userId','likeId','createdAt','updatedAt']);
+
 export const SortOrderSchema = z.enum(['asc','desc']);
 
 export const JsonNullValueInputSchema = z.enum(['JsonNull',]);
@@ -97,6 +101,10 @@ export type PromptEnvironmentType = `${z.infer<typeof PromptEnvironmentSchema>}`
 export const ModelTypeSchema = z.enum(['TEXT2TEXT','TEXT2IMAGE']);
 
 export type ModelTypeType = `${z.infer<typeof ModelTypeSchema>}`
+
+export const EntityTypesSchema = z.enum(['SugarCubes','PromptPackage']);
+
+export type EntityTypesType = `${z.infer<typeof EntityTypesSchema>}`
 
 /////////////////////////////////////////
 // MODELS
@@ -288,3 +296,32 @@ export const PromptLogSchema = z.object({
 })
 
 export type PromptLog = z.infer<typeof PromptLogSchema>
+
+/////////////////////////////////////////
+// LIKE SCHEMA
+/////////////////////////////////////////
+
+export const LikeSchema = z.object({
+  id: z.string().uuid(),
+  likesCount: z.number().int(),
+  EntityId: z.string(),
+  EntityType: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type Like = z.infer<typeof LikeSchema>
+
+/////////////////////////////////////////
+// LIKE USER SCHEMA
+/////////////////////////////////////////
+
+export const LikeUserSchema = z.object({
+  id: z.string().uuid(),
+  userId: z.string(),
+  likeId: z.string().nullable(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type LikeUser = z.infer<typeof LikeUserSchema>
