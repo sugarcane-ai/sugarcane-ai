@@ -8,6 +8,7 @@ import {
   Paper,
   Grid,
   Stack,
+  CircularProgress,
 } from "@mui/material";
 import LikeButton from "./like_button";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
@@ -60,10 +61,14 @@ const PromptHeader = ({ pp }: { pp: pp }) => {
               ></Button>
             </Grid> */}
             <Grid item xs={12} sm={6} md={4}>
-              <LikeButton
-                EntityId={pp!.id}
-                EntityType={EntityTypesSchema.Enum.PromptPackage}
-              />
+              {pp?.id === undefined ? (
+                <CircularProgress />
+              ) : (
+                <LikeButton
+                  EntityId={pp?.id}
+                  EntityType={EntityTypesSchema.Enum.PromptPackage}
+                />
+              )}
             </Grid>
           </Grid>
         </Stack>
