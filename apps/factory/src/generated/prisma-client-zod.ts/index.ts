@@ -110,6 +110,7 @@ export const PromptRunModesSchema = z.enum(['AUTHORISED_ONLY','LOGGEDIN_ONLY','A
 
 export type PromptRunModesType = `${z.infer<typeof PromptRunModesSchema>}`
 
+
 /////////////////////////////////////////
 // MODELS
 /////////////////////////////////////////
@@ -324,7 +325,7 @@ export type Like = z.infer<typeof LikeSchema>
 export const LikeUserSchema = z.object({
   id: z.string().uuid(),
   userId: z.string(),
-  likeId: z.string(),
+  likeId: z.string().nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 })
