@@ -79,7 +79,7 @@ class OpenAIVendor extends BaseVendor {
     const res = await this.openai.images.generate({
       prompt: prompt,
       n: 1,
-      size: "256x256",
+      size: "512x512",
     });
     let response: DalleSchemaType = {
       created: "",
