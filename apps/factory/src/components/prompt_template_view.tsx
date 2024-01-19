@@ -249,8 +249,8 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                       <CircularProgress />
                     ) : (
                       <LikeButton
-                        EntityId={data?.promptPackageId ?? ""}
-                        EntityType={EntityTypesSchema.enum.SugarCubes}
+                        EntityId={data?.templateId ?? ""}
+                        EntityType={EntityTypesSchema.enum.PromptTemplate}
                       />
                     )}
                     <Tooltip title="Share Cube" placement="top">

@@ -102,7 +102,7 @@ export const ModelTypeSchema = z.enum(['TEXT2TEXT','TEXT2IMAGE']);
 
 export type ModelTypeType = `${z.infer<typeof ModelTypeSchema>}`
 
-export const EntityTypesSchema = z.enum(['SugarCubes','PromptPackage']);
+export const EntityTypesSchema = z.enum(['PromptPackage','PromptTemplate','PromptVersion']);
 
 export type EntityTypesType = `${z.infer<typeof EntityTypesSchema>}`
 

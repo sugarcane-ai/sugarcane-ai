@@ -227,8 +227,9 @@ model PromptLog {
 }
 
 enum EntityTypes {
-  SugarCubes
   PromptPackage
+  PromptTemplate
+  PromptVersion
 }
 
 model Like {
@@ -239,15 +240,17 @@ model Like {
   EntityType String // This field can store the type of the liked model (e.g., "PromptPackage", "PromptTemplate", "PromptVersion", etc.)
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt @map("updated_at")
+
   @@unique([EntityId, EntityType])
 }
 
 model LikeUser {
-  id     String  @id @default(uuid())
-  userId String
-  likeId String?
+  id        String   @id @default(uuid())
+  userId    String
+  likeId    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @map("updated_at")
-  Like Like? @relation(fields: [likeId], references: [id])
+  Like      Like?    @relation(fields: [likeId], references: [id])
+
   @@unique([userId, likeId])
 }
