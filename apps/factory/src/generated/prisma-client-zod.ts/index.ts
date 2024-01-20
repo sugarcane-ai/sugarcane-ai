@@ -319,7 +319,7 @@ export type Like = z.infer<typeof LikeSchema>
 export const LikeUserSchema = z.object({
   id: z.string().uuid(),
   userId: z.string(),
-  likeId: z.string().nullable(),
+  likeId: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 })

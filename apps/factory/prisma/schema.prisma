@@ -247,10 +247,10 @@ model Like {
 model LikeUser {
   id        String   @id @default(uuid())
   userId    String
-  likeId    String?
+  likeId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @map("updated_at")
-  Like      Like?    @relation(fields: [likeId], references: [id])
+  Like      Like     @relation(fields: [likeId], references: [id])
 
   @@unique([userId, likeId])
 }
