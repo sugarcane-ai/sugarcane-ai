@@ -23,6 +23,7 @@ import {
   EntityTypesSchema,
   ModelTypeSchema,
   ModelTypeType,
+  PromptRunModesSchema,
 } from "~/generated/prisma-client-zod.ts";
 import { useSession, signIn } from "next-auth/react";
 import Link from "@mui/material/Link";
@@ -43,10 +44,7 @@ import DownloadButtonImg from "./download_button_img";
 import { prisma } from "~/server/db";
 import { env } from "~/env.mjs";
 import { providerModels } from "~/validators/base";
-import {
-  PromptDataSchemaType,
-  PromptDataType,
-} from "~/validators/prompt_version";
+import { PromptDataSchemaType } from "~/validators/prompt_version";
 import { promptEnvironment } from "~/validators/base";
 import CopyToClipboardButton from "./copy_button";
 import AddIcon from "@mui/icons-material/Add";
@@ -192,6 +190,15 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     setChecked((prevChecked) => !prevChecked);
   };
 
+  const handleSubmit = (e: any) => {
+    if (session || data?.runMode === PromptRunModesSchema.Enum.ALL) {
+      handleRun(e);
+    } else {
+      signIn();
+    }
+    return;
+  };
+
   const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL}/${username}/${packageName}/${template}/${versionOrEnvironment}`;
   const imageUrl = `${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/og`;
 
@@ -322,9 +329,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                       color: "var(--sugarhub-text-color)",
                       wordBreak: "break-word",
                     }}
-                  >
-                    {data?.description}
-                  </Typography>
+                  ></Typography>
                   <Box sx={{ marginTop: "1rem", marginBottom: "1rem" }}>
                     {pvrs && (
                       <>
@@ -351,26 +356,8 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                     spacing={2}
                     sx={{ padding: { xs: "0 15px" } }}
                   >
-                    {isDev && (
-                      <FormControlLabel
-                        sx={{ color: "var(--sugarhub-text-color)" }}
-                        control={
-                          <Checkbox
-                            checked={checked}
-                            onChange={handleChange}
-                            sx={{
-                              color: "var(--button-color-disable)",
-                              "&.Mui-checked": {
-                                color: "var(--sugarcube-component-bg-color)",
-                              },
-                            }}
-                          />
-                        }
-                        label="Dummy"
-                      />
-                    )}
                     <LoadingButton
-                      onClick={session ? handleRun : () => void signIn()}
+                      onClick={handleSubmit}
                       sx={{
                         ...loadingButtonClass,
                         width: "8rem",
@@ -407,6 +394,32 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                       </Link>
                     </LoadingButton>
                   </Stack>
+
+                  {isDev && (
+                    <Box sx={{ display: "flex", mt: "1em", ml: "1em" }}>
+                      <FormControlLabel
+                        sx={{ color: "var(--sugarhub-text-color)" }}
+                        control={
+                          <Checkbox
+                            checked={checked}
+                            onChange={handleChange}
+                            sx={{
+                              color: "var(--button-color-disable)",
+                              "&.Mui-checked": {
+                                color: "var(--sugarcube-component-bg-color)",
+                              },
+                            }}
+                          />
+                        }
+                        label="Dry Run"
+                      />
+                      <Typography
+                        sx={{ color: "var(--sugarhub-text-color)", pt: "10px" }}
+                      >
+                        Mode: {data?.runMode}
+                      </Typography>
+                    </Box>
+                  )}
 
                   <Box>
                     {promptOutput && (
