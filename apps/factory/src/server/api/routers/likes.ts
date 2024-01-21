@@ -11,44 +11,48 @@ export const likeRouter = createTRPCRouter({
     .input(LikeInput)
     .mutation(async ({ input, ctx }) => {
       const { EntityId, EntityType } = input;
+      const userId = ctx.jwt?.id as string;
 
       try {
-        const newLike = await ctx.prisma.likeUser.create({
-          data: {
-            userId: ctx.session!.user.id,
-          },
-        });
+        const transaction = await ctx.prisma.$transaction(async (prisma) => {
+          const newLike = await prisma.likeUser.create({
+            data: {
+              userId: userId,
+            },
+          });
 
-        const entityLike = await ctx.prisma.like.upsert({
-          where: {
-            EntityId_EntityType: {
+          const entityLike = await prisma.like.upsert({
+            where: {
+              EntityId_EntityType: {
+                EntityId,
+                EntityType,
+              },
+            },
+            create: {
+              likes: {
+                connect: {
+                  id: newLike.id,
+                },
+              },
               EntityId,
               EntityType,
+              likesCount: 1,
             },
-          },
-          create: {
-            likes: {
-              connect: {
-                id: newLike.id,
+            update: {
+              likes: {
+                connect: {
+                  id: newLike.id,
+                },
+              },
+              likesCount: {
+                increment: 1,
               },
             },
-            EntityId,
-            EntityType,
-            likesCount: 1,
-          },
-          update: {
-            likes: {
-              connect: {
-                id: newLike.id,
-              },
-            },
-            likesCount: {
-              increment: 1,
-            },
-          },
+          });
+          return entityLike.id;
         });
 
-        return entityLike.id;
+        return transaction;
       } catch (error) {
         console.error("Error creating Like:", error);
         throw Error("Failed to create Like");
@@ -59,33 +63,37 @@ export const likeRouter = createTRPCRouter({
     .input(UnlikeInput)
     .mutation(async ({ input, ctx }) => {
       const { EntityId, EntityType, LikeId } = input;
+      const userId = ctx.jwt?.id as string;
 
       try {
         // Delete the existing like from LikeUser table
-        await ctx.prisma.likeUser.deleteMany({
-          where: {
-            userId: ctx.session?.user.id,
-            likeId: LikeId,
-          },
+        const transaction = await ctx.prisma.$transaction(async (prisma) => {
+          await prisma.likeUser.deleteMany({
+            where: {
+              userId: userId,
+              likeId: LikeId,
+            },
+          });
+
+          // Decrease likesCount in EntityLike by 1
+          const updatedEntity = await prisma.like.update({
+            where: {
+              EntityId_EntityType: {
+                EntityId,
+                EntityType,
+              },
+            },
+            data: {
+              likesCount: {
+                decrement: 1,
+              },
+            },
+          });
+          return updatedEntity;
         });
 
-        // Decrease likesCount in EntityLike by 1
-        const updatedEntity = await ctx.prisma.like.update({
-          where: {
-            EntityId_EntityType: {
-              EntityId,
-              EntityType,
-            },
-          },
-          data: {
-            likesCount: {
-              decrement: 1,
-            },
-          },
-        });
-
-        console.log("Like deleted and Entity updated:", updatedEntity);
-        return updatedEntity;
+        console.log("Like deleted and Entity updated:", transaction);
+        return transaction;
       } catch (error) {
         console.error("Error deleting Like:", error);
         throw Error("Failed to delete Like");
@@ -124,6 +132,7 @@ export const likeRouter = createTRPCRouter({
     .input(getLikeInput)
     .query(async ({ input, ctx }) => {
       const { EntityId, EntityType } = input;
+      const userId = ctx.jwt?.id as string;
 
       return ctx.prisma
         .$transaction(async (prisma) => {
@@ -144,7 +153,7 @@ export const likeRouter = createTRPCRouter({
 
           if (entityLike) {
             const userLike = entityLike.likes.find(
-              (like) => like.userId === ctx.session?.user.id,
+              (like) => like.userId === userId,
             );
             if (userLike) {
               result.hasLiked = true;
