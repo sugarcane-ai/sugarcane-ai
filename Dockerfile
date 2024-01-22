@@ -1,7 +1,7 @@
 # Builder image
 FROM node:18.18-alpine AS build
 
-RUN apk add --update --no-cache curl bash git python3 make g++
+RUN apk add --update --no-cache curl bash git python3 make g++ vips-dev build-base
 
 ARG PROJECT_NAME
 
