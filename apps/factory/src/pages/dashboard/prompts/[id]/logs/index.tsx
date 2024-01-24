@@ -27,11 +27,12 @@ import {
 import PromptCompletion from "~/components/prompt_completion";
 import DownloadButtonImg from "~/components/download_button_img";
 import CopyToClipboardButton from "~/components/copy_button";
-import { LogSchema, GenerateOutput } from "~/validators/service";
 import PromotOutputLog from "~/components/prompt_output_log";
 import { providerModels } from "~/validators/base";
 import { PromptView } from "~/components/prompt_view_arrow";
 import DownloadButtonBase64 from "~/components/download_button_base64";
+import { LogSchema } from "~/validators/prompt_log";
+import { GenerateOutput } from "~/validators/service";
 import PromptLlmResponse, {
   LlmResponseAction,
 } from "~/components/prompt_llm_response";
@@ -42,7 +43,7 @@ interface PromptLogTableProps {
   promptTemplateId: string | undefined;
   promptVersionId: string | undefined;
   itemsPerPage: number;
-  outputLog: LogSchema | null;
+  outputLog: GenerateOutput;
 }
 
 export interface FilterOptions {

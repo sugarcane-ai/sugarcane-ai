@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/server";
 import { env } from "~/env.mjs";
 
-export async function GET(req: Request) {
+export function GET(req: Request) {
   return ogImageResponse();
 }
 
