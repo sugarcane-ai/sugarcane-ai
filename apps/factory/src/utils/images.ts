@@ -20,9 +20,9 @@ export async function resizeBase64Image(
     .toBuffer();
 
   console.log(
-    `Reduce size from ${buffer.length} to ${resizedBuffer.length}:  ${
-      (resizedBuffer.length * 100) / buffer.length
-    }`,
+    `Reduce to size(${width}x${height}) from ${buffer.length} to ${
+      resizedBuffer.length
+    }:  ${(resizedBuffer.length * 100) / buffer.length}`,
   );
 
   return resizedBuffer.toString("base64");

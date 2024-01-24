@@ -69,12 +69,14 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
       </>
     );
   } else if (pl?.llmModelType === ModelTypeSchema.Enum.TEXT2IMAGE) {
+    const w = cube ? 1024 : 128;
+    const h = cube ? 1024 : 128;
     return (
       <img
         className={`${
           cube ? "outputImage h-full w-full" : imgClassName
         } object-fill`}
-        src={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/logs/${pl.id}?128x128`}
+        src={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/logs/${pl.id}?w=${w}&h=${h}`}
         alt="Image"
       />
     );
