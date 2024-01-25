@@ -68,6 +68,10 @@ export const VerificationTokenScalarFieldEnumSchema = z.enum(['identifier','toke
 
 export const PromptLogScalarFieldEnumSchema = z.enum(['id','userId','inputId','environment','version','prompt','completion','llmModelType','llmProvider','llmModel','llmConfig','latency','prompt_tokens','completion_tokens','total_tokens','extras','labelledState','finetunedState','promptPackageId','promptTemplateId','promptVersionId','createdAt','updatedAt']);
 
+export const EventScalarFieldEnumSchema = z.enum(['id','slug','title','desc','banner','createdAt','updatedAt']);
+
+export const EventUserScalarFieldEnumSchema = z.enum(['id','userId','referral','createdAt','updatedAt','eventId']);
+
 export const SortOrderSchema = z.enum(['asc','desc']);
 
 export const JsonNullValueInputSchema = z.enum(['JsonNull',]);
@@ -293,3 +297,34 @@ export const PromptLogSchema = z.object({
 })
 
 export type PromptLog = z.infer<typeof PromptLogSchema>
+
+/////////////////////////////////////////
+// EVENT SCHEMA
+/////////////////////////////////////////
+
+export const EventSchema = z.object({
+  id: z.string().uuid(),
+  slug: z.string().nullable(),
+  title: z.string().nullable(),
+  desc: z.string().nullable(),
+  banner: z.string().nullable(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type Event = z.infer<typeof EventSchema>
+
+/////////////////////////////////////////
+// EVENT USER SCHEMA
+/////////////////////////////////////////
+
+export const EventUserSchema = z.object({
+  id: z.string().uuid(),
+  userId: z.string(),
+  referral: z.string().nullable(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  eventId: z.string().nullable(),
+})
+
+export type EventUser = z.infer<typeof EventUserSchema>
