@@ -1,9 +1,11 @@
+import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import {
   LikeInput,
   LikePublicOutput,
   UnlikeInput,
   getLikeInput,
+  getLikeOutput,
 } from "~/validators/like";
 
 export const likeRouter = createTRPCRouter({
@@ -68,10 +70,12 @@ export const likeRouter = createTRPCRouter({
       try {
         // Delete the existing like from LikeUser table
         const transaction = await ctx.prisma.$transaction(async (prisma) => {
-          await prisma.likeUser.deleteMany({
+          await prisma.likeUser.delete({
             where: {
-              userId: userId,
-              likeId: LikeId,
+              userId_likeId: {
+                userId: userId,
+                likeId: LikeId,
+              },
             },
           });
 
@@ -130,6 +134,7 @@ export const likeRouter = createTRPCRouter({
 
   UserLikeCheck: protectedProcedure
     .input(getLikeInput)
+    .output(getLikeOutput)
     .query(async ({ input, ctx }) => {
       const { EntityId, EntityType } = input;
       const userId = ctx.jwt?.id as string;
@@ -146,21 +151,21 @@ export const likeRouter = createTRPCRouter({
             include: { likes: true },
           });
 
-          const result = {
-            likeId: "",
-            hasLiked: false,
-          };
-
           if (entityLike) {
             const userLike = entityLike.likes.find(
               (like) => like.userId === userId,
             );
             if (userLike) {
-              result.hasLiked = true;
-              result.likeId = entityLike.id;
+              return {
+                likeId: entityLike.id,
+                hasLiked: true,
+              };
             }
           }
-          return result;
+          return {
+            likeId: entityLike!.id,
+            hasLiked: false,
+          };
         })
         .catch((error) => {
           console.error("Error fetching Likes:", error);

@@ -28,25 +28,23 @@ const LikeButton: React.FC<LikeButtonProps> = ({ EntityId, EntityType }) => {
 
   const [counter, setCounter] = useState<number>(0);
   const [buttonLoading, setButtonLoading] = useState(false);
-  const [hasLiked, setHasLiked] = useState<boolean>(false);
-  const [likedId, setLikeId] = useState<string>("");
+  const [hasLiked, setHasLiked] = useState<boolean>();
+  const [likedId, setLikeId] = useState<string>();
   const { data: sessionData } = useSession();
 
   useEffect(() => {
     if (likesCount.data?.likesCount != null) {
       setCounter(likesCount.data.likesCount);
       if (sessionData?.user) {
-        setHasLiked(liked.data!.hasLiked);
-        if (!hasLiked) {
-          setLikeId(liked.data!.likeId);
-        }
+        setHasLiked(liked.data?.hasLiked);
+        setLikeId(liked.data?.likeId);
       }
     }
-  }, [likesCount.isLoading]);
+  }, [likesCount.isLoading, sessionData?.user]);
 
   const handleLikeClick = () => {
     setButtonLoading(true);
-    console.log(likesCount.data?.likesCount);
+    console.log(liked.data?.likeId);
     if (hasLiked) {
       UnlikeMutation.mutate(
         {
