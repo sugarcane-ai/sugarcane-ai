@@ -40,7 +40,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ EntityId, EntityType }) => {
         setLikeId(liked.data?.likeId);
       }
     }
-  }, [likesCount.isLoading, sessionData?.user]);
+  }, [likesCount.data, sessionData?.user]);
 
   const handleLikeClick = () => {
     setButtonLoading(true);
