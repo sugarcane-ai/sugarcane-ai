@@ -105,7 +105,9 @@ function PromptVersion({
     lpv.promptData as PromptDataSchemaType,
   );
 
-  const [promptInputs, setPromptInputs] = useState<PromptDataType>([]);
+  const [promptInputs, setPromptInputs] = useState<PromptDataType>(
+    prompt.data as PromptDataType,
+  );
 
   // this is a boolean value which will help to tell when to provide (role:<user, assistant>) editor
   const getRole = (providerName: string, modelName: string) => {
@@ -114,9 +116,27 @@ function PromptVersion({
     ].models[`${providerName}`]?.find((mod) => mod.name === modelName)?.hasRole;
   };
 
+  const getLocalStorageKey = (
+    packageId: string,
+    templateId: string,
+    version: string,
+  ) => {
+    return `promptInputs_${packageId}_${templateId}_${version}`;
+  };
+
   const pvUpdateMutation = api.prompt.updateVersion.useMutation({
     onSuccess: (v) => {
       if (v !== null) {
+        const localStorageKey = getLocalStorageKey(
+          v.promptPackageId,
+          v.promptTemplateId,
+          v.version,
+        );
+        const prompt = v.promptData as PromptDataSchemaType;
+        if (localStorage.getItem(localStorageKey)) {
+          localStorage.removeItem(localStorageKey);
+        }
+        localStorage.setItem(localStorageKey, JSON.stringify(prompt));
         setPv(v);
         toast.success("Saved");
       } else {
@@ -162,6 +182,9 @@ function PromptVersion({
     } else {
       handleSetVariable(lpv?.template);
     }
+
+    // remove localStorage key when component unmounts
+    // return cleanup
   }, []);
 
   const handleChange = () => {
@@ -212,12 +235,39 @@ function PromptVersion({
     }
   };
 
+  // this function will run during unmounting
+
+  // const cleanup = () => {
+  //   const localStorageKey = getLocalStorageKey(
+  //     lpv.promptPackageId,
+  //     lpv.promptTemplateId,
+  //     lpv.version
+  //   );
+  //   localStorage.removeItem(localStorageKey);
+  // };
+
   const handleChangeProviderModel = () => {
     // logic to change the value of promptInputs and variables
     let newPrompt, newPromptInputs;
+
+    // store prompt instead of promptInputs in localstorage
+    const localStorageKey = getLocalStorageKey(
+      lpv.promptPackageId,
+      lpv.promptTemplateId,
+      lpv.version,
+    );
+    const storedPrompt = localStorage.getItem(localStorageKey);
+
+    // console.log(provider, model)
     if (getRole(provider, model)) {
-      newPrompt = getTemplate(provider, model);
-      newPromptInputs = newPrompt.data;
+      if (storedPrompt && JSON.parse(storedPrompt).p === provider) {
+        // this condition is for recovering data when window reloads
+        newPrompt = JSON.parse(storedPrompt);
+        newPromptInputs = newPrompt.data;
+      } else {
+        newPrompt = getTemplate(provider, model);
+        newPromptInputs = newPrompt.data;
+      }
       setPrompt(newPrompt!);
       setPromptInputs(newPromptInputs!);
       handleSetVariable(JSON.stringify(newPrompt.data));
