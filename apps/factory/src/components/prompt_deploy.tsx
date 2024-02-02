@@ -208,7 +208,7 @@ function PromptDeploy({
                 <IconButton sx={{ p: "10px" }} aria-label="directions">
                   <PublicUrl
                     title={"Public URL"}
-                    url={`/${ns?.username}/${pp?.name}/${pt?.name}/${environmentType}`}
+                    url={`${process.env.NEXT_PUBLIC_APP_URL}/${ns?.username}/${pp?.name}/${pt?.name}/${environmentType}`}
                   />
                 </IconButton>
               </Box>
