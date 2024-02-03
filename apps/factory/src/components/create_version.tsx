@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Dialog,
@@ -35,6 +35,7 @@ import type {
 } from "~/validators/prompt_version";
 import { createVersionInput } from "~/validators/prompt_version";
 import LLMSelector from "./llm_selector";
+import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
 
 CreateVersion.defaultProps = {
   icon: <AddCircleIcon />,
@@ -57,9 +58,8 @@ export function CreateVersion({
   forkedFromId: string | null;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-
-  const [provider, setProvider] = useState("llama2");
-  const [model, setModel] = useState("7b");
+  const [provider, setProvider] = useState("");
+  const [model, setModel] = useState("");
   // const [version, setVersion] = useState(v);
 
   const {
@@ -100,6 +100,16 @@ export function CreateVersion({
       }
     },
   });
+
+  useEffect(() => {
+    if (pt?.modelType === ModelTypeSchema.enum.TEXT2TEXT) {
+      handleProviderChange("llama2");
+      handleModelChange("7b");
+    } else {
+      handleProviderChange("openai");
+      handleModelChange("dall-e");
+    }
+  }, [pt?.modelType]);
 
   const onFormSubmit = (data: CreateVersionInput) => {
     const response = {

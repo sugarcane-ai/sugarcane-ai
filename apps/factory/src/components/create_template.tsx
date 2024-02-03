@@ -64,9 +64,6 @@ export function CreateTemplate({
     ModelTypeType | undefined
   >(ModelTypeSchema.enum.TEXT2TEXT);
 
-  const [runMode, setRunMode] = useState<PromptRunModesType | undefined>(
-    PromptRunModesSchema.enum.LOGGEDIN_ONLY,
-  );
   const [datatoUpdate, setDataToUpdate] = useState<CreateTemplateInput>(
     {} as CreateTemplateInput,
   );
@@ -159,7 +156,6 @@ export function CreateTemplate({
       onSuccess(items) {
         setDataToUpdate(items!);
         setDefaultModelType(items?.modelType);
-        setRunMode(items?.runMode);
         if (edit === "true" && ptId) {
           reset({
             name: items?.name,
@@ -201,7 +197,6 @@ export function CreateTemplate({
           description: data.description,
           promptPackageId: datatoUpdate.promptPackageId,
           modelType: datatoUpdate.modelType,
-          runMode: datatoUpdate.runMode,
         };
         setDataToUpdate(updatedInput);
       },
@@ -268,6 +263,7 @@ export function CreateTemplate({
               onModelChange={handleModelChange}
               modelType={watch("modelType")}
               flag={true}
+              readonly={!ptId ? false : true}
             />
 
             <FormTextInput
@@ -286,15 +282,6 @@ export function CreateTemplate({
               error={!!errors.description}
               helperText={errors.description?.message}
               readonly={false}
-            />
-
-            <FormSelectInput
-              name="runMode"
-              control={control}
-              label="Who can run this template"
-              defaultValue={runMode}
-              readonly={false}
-              enumValues={PromptRunModesSchema.enum}
             />
           </Stack>
         </DialogContent>

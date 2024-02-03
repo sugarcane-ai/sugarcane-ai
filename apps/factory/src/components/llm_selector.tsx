@@ -32,6 +32,7 @@ function LLMSelector({
   publishedAt,
   modelType,
   flag,
+  readonly,
 }: {
   initialProvider: string;
   initialModel: string;
@@ -40,6 +41,7 @@ function LLMSelector({
   publishedAt?: any;
   modelType: string | undefined;
   flag: boolean;
+  readonly?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -82,7 +84,6 @@ function LLMSelector({
   };
 
   useEffect(() => {
-    // console.log(provider, model)
     setProvider(initialProvider);
     setModel(initialModel);
   }, [initialProvider, initialModel]);
@@ -121,6 +122,7 @@ function LLMSelector({
                 !flag ? handleNextProviderChange : handleChange
               }
               modelType={modelType}
+              readonly={readonly}
             />
             <Divider />
 
@@ -143,6 +145,7 @@ function LLMSelector({
           handleModelChange={handleModelChange}
           handleProviderChange={!flag ? handleNextProviderChange : handleChange}
           modelType={modelType}
+          readonly={readonly}
         />
       </>
     );
@@ -157,12 +160,14 @@ export const LLM = ({
   handleModelChange,
   handleProviderChange,
   modelType,
+  readonly,
 }: {
   provider: string;
   model: string;
   handleModelChange: (e: any) => void;
   handleProviderChange: (provider: string) => void;
   modelType: string | undefined;
+  readonly: boolean | undefined;
 }) => {
   return (
     <>
@@ -174,6 +179,7 @@ export const LLM = ({
             onChange={(e) => {
               handleProviderChange(e.target.value);
             }}
+            disabled={readonly}
           >
             {providerModels[
               modelType as keyof typeof providerModels
@@ -191,7 +197,11 @@ export const LLM = ({
 
         <FormControl fullWidth>
           <FormLabel>Model</FormLabel>
-          <Select value={model} onChange={handleModelChange}>
+          <Select
+            value={model}
+            onChange={handleModelChange}
+            disabled={readonly}
+          >
             {providerModels[modelType as keyof typeof providerModels].models?.[
               provider
             ]?.map((model: Model) => (

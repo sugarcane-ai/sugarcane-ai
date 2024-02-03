@@ -1,4 +1,4 @@
-import React, { useState, useImperativeHandle } from "react";
+import React, { useState } from "react";
 import { Box, styled, Paper, Tabs, Tab, Typography, Chip } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import { api } from "~/utils/api";
@@ -6,14 +6,12 @@ import PromptVersion from "~/components/prompt_version";
 import { PackageOutput as pp } from "~/validators/prompt_package";
 import { TemplateOutput as pt } from "~/validators/prompt_template";
 import {
-  CreateVersionInput,
-  GetVersionInput,
   GetVersionsInput,
   InputCreateVersion,
   VersionOutput as pv,
 } from "~/validators/prompt_version";
 import { CreateVersion } from "./create_version";
-import { VersionSchema } from "~/validators/prompt_version";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const Item = styled(Paper)(({ theme }) => ({
   width: "100%",
@@ -80,6 +78,10 @@ const PromptTemplate = ({
       onSettled() {
         setIsLoading(false);
       },
+      onError(error) {
+        console.log(error);
+        setIsLoading(false);
+      },
     });
   };
 
@@ -107,7 +109,15 @@ const PromptTemplate = ({
         {/* <Chip label={pvs?.length || 'NA'} color={'primary'} variant="outlined" />  */}
         {isLoading ? (
           <>
-            <p>Loading</p>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <CircularProgress />
+            </Box>
           </>
         ) : (
           <Grid id="pts-container" container spacing={2}>
