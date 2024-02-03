@@ -37,6 +37,8 @@ import toast from "react-hot-toast";
 import { useSearchParams } from "next/navigation";
 import { FormSelectInput } from "./form_components/formSelectInput";
 import { TemplateListOutput } from "~/validators/prompt_template";
+import { LLM } from "./llm_selector";
+import LLMSelector from "./llm_selector";
 export function CreateTemplate({
   pp,
   pts,
@@ -69,6 +71,9 @@ export function CreateTemplate({
     {} as CreateTemplateInput,
   );
 
+  const [provider, setProvider] = useState("");
+  const [model, setModel] = useState("");
+
   const {
     control,
     handleSubmit,
@@ -76,6 +81,7 @@ export function CreateTemplate({
     clearErrors,
     formState: { errors },
     reset,
+    watch,
   } = useForm<CreateTemplateInput>({
     defaultValues: {
       name: "",
@@ -87,6 +93,8 @@ export function CreateTemplate({
     mode: "onChange",
     reValidateMode: "onChange",
   });
+
+  const modelType = watch("modelType");
 
   useEffect(() => {
     if (customError && customError.error) {
@@ -102,6 +110,21 @@ export function CreateTemplate({
     }
   }, [status]);
 
+  useEffect(() => {
+    setDefaultModelType(modelType);
+    if (watch("modelType") === ModelTypeSchema.enum.TEXT2TEXT) {
+      handleProviderChange("llama2");
+      handleModelChange("7b");
+    } else if (watch("modelType") === ModelTypeSchema.enum.TEXT2IMAGE) {
+      handleProviderChange("openai");
+      handleModelChange("dall-e");
+    }
+  }, [watch("modelType")]);
+
+  useEffect(() => {
+    console.log(provider, model);
+  }, [provider, model]);
+
   const handleClose = () => {
     setIsOpen(false);
     reset({
@@ -114,7 +137,14 @@ export function CreateTemplate({
 
   const onFormSubmit = (data: CreateTemplateInput) => {
     try {
-      onCreate?.(data);
+      const newObj = {
+        options: {
+          provider: provider,
+          model: model,
+        },
+        template: data,
+      };
+      onCreate?.(newObj);
       handleClose();
     } catch (err) {
       console.error(err);
@@ -181,6 +211,13 @@ export function CreateTemplate({
     });
   };
 
+  const handleProviderChange = (provider: string) => {
+    setProvider(provider);
+  };
+  const handleModelChange = (model: string) => {
+    setModel(model);
+  };
+
   return (
     <Box component="span">
       <Tooltip
@@ -194,7 +231,7 @@ export function CreateTemplate({
             !ptId
               ? () => {
                   setIsOpen(true);
-                  setDefaultModelType("TEXT2TEXT");
+                  setDefaultModelType(ModelTypeSchema.enum.TEXT2TEXT);
                 }
               : () => {
                   fetchTemplateData();
@@ -224,6 +261,15 @@ export function CreateTemplate({
               readonly={!ptId ? false : true}
             />
 
+            <LLMSelector
+              initialProvider={provider}
+              initialModel={model}
+              onProviderChange={handleProviderChange}
+              onModelChange={handleModelChange}
+              modelType={watch("modelType")}
+              flag={true}
+            />
+
             <FormTextInput
               name="name"
               control={control}
@@ -236,7 +282,7 @@ export function CreateTemplate({
             <FormTextInput
               name="description"
               control={control}
-              label="description"
+              label="Description"
               error={!!errors.description}
               helperText={errors.description?.message}
               readonly={false}
