@@ -315,13 +315,6 @@ export const promptRouter = createTRPCRouter({
       const userId = ctx.jwt?.id as string;
       let pv = null;
       console.log(`update version -------------- ${JSON.stringify(input)}`);
-
-      // check the value of isChange if its true means we have to provide new template otherwise promptData should be same
-      let currentTemplate = input.promptData;
-
-      if (input.isChange) {
-        currentTemplate = getTemplate(input.llmProvider, input.llmModel);
-      }
       if (userId) {
         pv = await ctx.prisma.promptVersion.update({
           where: {
@@ -333,7 +326,7 @@ export const promptRouter = createTRPCRouter({
           data: {
             // version: input.version,
             template: input.template,
-            promptData: currentTemplate as PromptDataSchemaType,
+            promptData: input.promptData as PromptDataSchemaType,
             llmProvider: input.llmProvider,
             llmModel: input.llmModel,
             llmConfig: input.llmConfig,

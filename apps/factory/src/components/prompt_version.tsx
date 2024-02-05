@@ -102,9 +102,9 @@ function PromptVersion({
   const [isDirty, setIsDirty] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
 
-  // isChange is used to detect change in Provider and Model using LLM selector,
+  // isLLMChanged is used to detect change in Provider and Model using LLM selector,
   //  if true we will change the template otherwise template remains same
-  const [isChange, setIsChange] = useState(false);
+  const [isLLMChanged, setIsLLMChanged] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [outputLog, setOutputLog] = useState<GenerateOutput>(null);
   const [prompt, setPrompt] = useState<PromptDataSchemaType>(
@@ -126,7 +126,7 @@ function PromptVersion({
     onSuccess: (v) => {
       if (v !== null) {
         setPv(v);
-        handleSetPrompt(v);
+        onUpdateSuccess(v);
         toast.success("Saved");
       } else {
         toast.error("Failed to save");
@@ -134,7 +134,7 @@ function PromptVersion({
     },
   });
 
-  const handleSetPrompt = (lpv: VersionSchema) => {
+  const onUpdateSuccess = (lpv: VersionSchema) => {
     const prompt = lpv.promptData as PromptDataSchemaType;
     const promptinput = prompt.data;
     setPrompt(prompt);
@@ -234,21 +234,21 @@ function PromptVersion({
     }
   };
 
-  const onChange = () => {
-    setIsChange(true);
+  const onLLMChange = () => {
     setIsDirty(true);
     setIsLoading(true);
+    setIsLLMChanged(true);
   };
 
   const handleChangeProvider = (provider: string) => {
     console.log(provider);
     setProvider(provider);
-    onChange();
+    onLLMChange();
   };
   const handleChangeModel = (model: string) => {
     console.log(model);
     setModel(model);
-    onChange();
+    onLLMChange();
   };
 
   useEffect(() => {
@@ -263,19 +263,24 @@ function PromptVersion({
     };
   }, [template, isDirty]);
 
+  // if current and nextProvide will be same i will not do anything other wise i will call getTemplate fumction
+
   const handleSave = () => {
+    let currentTemplate = { v: prompt.v, p: prompt.p, data: promptInputs };
+    if (isLLMChanged) {
+      currentTemplate = getTemplate(provider, model);
+    }
     pvUpdateMutation.mutate({
       promptPackageId: lpv.promptPackageId,
       promptTemplateId: lpv.promptTemplateId,
       id: lpv.id,
       template: template,
-      promptData: { v: prompt.v, p: prompt.p, data: promptInputs },
+      promptData: currentTemplate,
       llmProvider: provider,
       llmModel: model,
       llmConfig: llmConfig,
-      isChange: isChange,
     });
-    setIsChange(false);
+    setIsLLMChanged(false);
     setIsDirty(false);
   };
 

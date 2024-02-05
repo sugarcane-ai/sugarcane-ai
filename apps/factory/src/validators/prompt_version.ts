@@ -89,7 +89,6 @@ export const updateVersionInput = z
     llmProvider: z.string(),
     llmModel: z.string(),
     llmConfig: llmConfigSchema,
-    isChange: z.boolean(),
   })
   .strict()
   .required();
