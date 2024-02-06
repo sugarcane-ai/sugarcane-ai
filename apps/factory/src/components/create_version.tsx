@@ -12,6 +12,8 @@ import {
   Grid,
   IconButton,
   Input,
+  MenuItem,
+  Select,
   Stack,
   TextField,
   Tooltip,
@@ -35,12 +37,12 @@ import type {
   InputCreateVersion,
 } from "~/validators/prompt_version";
 import { createVersionInput } from "~/validators/prompt_version";
-import LLMSelector from "./llm_selector";
+import LLMSelector, { LLMForm } from "./llm_selector";
 import {
   ModelTypeSchema,
   ModelTypeType,
 } from "~/generated/prisma-client-zod.ts";
-import { LLM, providerModels } from "~/validators/base";
+import { LLM, Model, Provider, providerModels } from "~/validators/base";
 
 CreateVersion.defaultProps = {
   icon: <AddCircleIcon />,
@@ -73,6 +75,8 @@ export function CreateVersion({
       forkedFrom?.llmModel ||
       providerModels[pt?.modelType as ModelTypeType].defaultModel,
   });
+
+  console.log(`LLM ||| 6 >>>>>>>>> ${JSON.stringify(llm)}`);
 
   const {
     control,
@@ -174,12 +178,59 @@ export function CreateVersion({
               helperText={errors.version?.message}
               readonly={false}
             />
-            <LLMSelector
+
+            <FormControl fullWidth>
+              <FormLabel>Provider</FormLabel>
+              <Select
+                value={llm.provider}
+                onChange={(e) => {
+                  setLLM((prev) => ({ ...prev, provider: e.target.value }));
+                }}
+              >
+                {providerModels[llm.modelType].providers.map(
+                  (provider: Provider) => (
+                    <MenuItem
+                      key={provider.name}
+                      value={provider.name}
+                      disabled={!provider.enabled}
+                    >
+                      {provider.label}
+                    </MenuItem>
+                  ),
+                )}
+              </Select>
+            </FormControl>
+
+            <FormControl fullWidth>
+              <FormLabel>Model</FormLabel>
+              <Select
+                value={llm.model}
+                // onChange={handleModelChange}
+                onChange={(e) => {
+                  setLLM((prev) => ({ ...prev, model: e.target.value }));
+                  // onLLMChange({ ...llm, model: e.target.value });
+                }}
+              >
+                {providerModels[llm.modelType].models?.[llm.provider]?.map(
+                  (model: Model) => (
+                    <MenuItem
+                      key={model.name}
+                      value={model.name}
+                      disabled={!model.enabled}
+                    >
+                      {model.label}
+                    </MenuItem>
+                  ),
+                )}
+              </Select>
+            </FormControl>
+
+            {/* <LLMForm
               key={llm.modelType + llm.model + llm.provider}
               initialLLM={llm}
               onLLMChange={handleLLMChange}
-              needConsent={false}
-            />
+              readonly={false}
+            /> */}
           </Stack>
         </DialogContent>
 
@@ -189,6 +240,7 @@ export function CreateVersion({
           <Button size="small" onClick={handleClose} variant="outlined">
             Cancel
           </Button>
+
           <Button
             size="small"
             onClick={handleSubmit(onFormSubmit)}

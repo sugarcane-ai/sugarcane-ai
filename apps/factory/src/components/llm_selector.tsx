@@ -103,7 +103,7 @@ function LLMSelector({
                 The LLM provider and model that'll be used to power this prompt.
               </Typography>
               <LLMForm
-                initLLM={llm}
+                initialLLM={llm}
                 onLLMChange={handleLLMChange}
                 // handleProviderChange={
                 //   !flag ? handleNextProviderChange : handleChange
@@ -125,7 +125,7 @@ function LLMSelector({
     return (
       <>
         <LLMForm
-          initLLM={llm}
+          initialLLM={llm}
           onLLMChange={handleLLMChange}
           readonly={readonly}
         />
@@ -137,15 +137,15 @@ function LLMSelector({
 export default LLMSelector;
 
 export const LLMForm = ({
-  initLLM,
+  initialLLM,
   onLLMChange,
   readonly,
 }: {
-  initLLM: LLM;
+  initialLLM: LLM;
   onLLMChange: (e: any) => void;
   readonly: boolean | undefined;
 }) => {
-  const [llm, setLLM] = useState<LLM>(initLLM);
+  const [llm, setLLM] = useState<LLM>(initialLLM);
 
   console.log(`LLM ||| 3 >>>>>>>>> ${JSON.stringify(llm)}`);
 
