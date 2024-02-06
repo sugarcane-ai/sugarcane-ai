@@ -601,7 +601,7 @@ function PromptVersion({
               }
             />
             <LLMSelector
-              key={lpv.id}
+              key={lpv.id + llm.modelType + llm.model + llm.provider}
               initialLLM={llm}
               onLLMChange={handleLLMChange}
               publishedAt={lpv.publishedAt}

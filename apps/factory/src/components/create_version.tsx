@@ -175,6 +175,7 @@ export function CreateVersion({
               readonly={false}
             />
             <LLMSelector
+              key={llm.modelType + llm.model + llm.provider}
               initialLLM={llm}
               onLLMChange={handleLLMChange}
               needConsent={false}

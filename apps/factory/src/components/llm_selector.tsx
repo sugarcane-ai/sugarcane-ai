@@ -30,14 +30,16 @@ function LLMSelector({
   readonly?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [pLLm, setLLM] = useState<LLM>(initialLLM);
+  const [llm, setLLM] = useState<LLM>(initialLLM);
+
+  console.log(`LLM ||| 2 >>>>>>>>> ${JSON.stringify(llm)}`);
 
   //
   const [openConsent, setOpenConsent] = useState("");
 
   const onConsent = (haveConsent: boolean) => {
     if (haveConsent) {
-      handleLLMChange(pLLm, true);
+      handleLLMChange(llm, true);
     }
 
     // Close the consent popup
@@ -86,7 +88,7 @@ function LLMSelector({
           onClick={(e) => setIsOpen(true)}
           disabled={!!publishedAt}
         >
-          {pLLm.provider} - {pLLm.model}
+          {llm.provider} - {llm.model}
         </Button>
 
         <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
@@ -101,7 +103,7 @@ function LLMSelector({
                 The LLM provider and model that'll be used to power this prompt.
               </Typography>
               <LLMForm
-                llm={pLLm}
+                initLLM={llm}
                 onLLMChange={handleLLMChange}
                 // handleProviderChange={
                 //   !flag ? handleNextProviderChange : handleChange
@@ -122,7 +124,11 @@ function LLMSelector({
   } else {
     return (
       <>
-        <LLMForm llm={pLLm} onLLMChange={handleLLMChange} readonly={readonly} />
+        <LLMForm
+          initLLM={llm}
+          onLLMChange={handleLLMChange}
+          readonly={readonly}
+        />
       </>
     );
   }
@@ -131,29 +137,32 @@ function LLMSelector({
 export default LLMSelector;
 
 export const LLMForm = ({
-  llm,
+  initLLM,
   onLLMChange,
   readonly,
 }: {
-  llm: LLM;
+  initLLM: LLM;
   onLLMChange: (e: any) => void;
   readonly: boolean | undefined;
 }) => {
-  const [pLLM, setLLM] = useState<LLM>(llm);
+  const [llm, setLLM] = useState<LLM>(initLLM);
+
+  console.log(`LLM ||| 3 >>>>>>>>> ${JSON.stringify(llm)}`);
 
   return (
     <>
+      <p>xxx {JSON.stringify(llm)}xx</p>
       <Stack spacing={2} mt={2}>
         <FormControl fullWidth>
           <FormLabel>Provider</FormLabel>
           <Select
-            value={pLLM.provider}
+            value={llm.provider}
             onChange={(e) => {
               setLLM((prev) => ({ ...prev, provider: e.target.value }));
             }}
             disabled={readonly}
           >
-            {providerModels[pLLM.modelType].providers.map(
+            {providerModels[llm.modelType].providers.map(
               (provider: Provider) => (
                 <MenuItem
                   key={provider.name}
@@ -170,15 +179,15 @@ export const LLMForm = ({
         <FormControl fullWidth>
           <FormLabel>Model</FormLabel>
           <Select
-            value={pLLM.model}
+            value={llm.model}
             // onChange={handleModelChange}
             onChange={(e) => {
               setLLM((prev) => ({ ...prev, model: e.target.value }));
-              onLLMChange({ ...pLLM, model: e.target.value });
+              onLLMChange({ ...llm, model: e.target.value });
             }}
             disabled={readonly}
           >
-            {providerModels[pLLM.modelType].models?.[pLLM.provider]?.map(
+            {providerModels[llm.modelType].models?.[llm.provider]?.map(
               (model: Model) => (
                 <MenuItem
                   key={model.name}

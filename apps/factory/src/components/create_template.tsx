@@ -8,8 +8,12 @@ import {
   DialogContentText,
   DialogTitle,
   Divider,
+  FormControl,
+  FormLabel,
   Grid,
   IconButton,
+  MenuItem,
+  Select,
   Stack,
   Tooltip,
   Typography,
@@ -38,7 +42,7 @@ import { useSearchParams } from "next/navigation";
 import { FormSelectInput } from "./form_components/formSelectInput";
 import { TemplateListOutput } from "~/validators/prompt_template";
 import LLMSelector from "./llm_selector";
-import { LLM } from "~/validators/base";
+import { LLM, getDefaultLLM, providerModels } from "~/validators/base";
 export function CreateTemplate({
   pp,
   pts,
@@ -70,12 +74,11 @@ export function CreateTemplate({
 
   // const [provider, setProvider] = useState("");
   // const [model, setModel] = useState("");
+  const [llm, setLLM] = useState<LLM>(() =>
+    getDefaultLLM(ModelTypeSchema.enum.TEXT2TEXT),
+  );
 
-  const [llm, setLLM] = useState<LLM>({
-    modelType: ModelTypeSchema.enum.TEXT2TEXT,
-    provider: "",
-    model: "",
-  });
+  console.log(`LLM ||| 1 >>>>>>>>> ${JSON.stringify(llm)}`);
 
   const {
     control,
@@ -127,8 +130,7 @@ export function CreateTemplate({
     try {
       const newObj = {
         options: {
-          provider: llm.provider,
-          model: llm.model,
+          llm: llm,
         },
         template: data,
       };
@@ -144,15 +146,17 @@ export function CreateTemplate({
       id: `${ptId}`,
     },
     {
-      onSuccess(items) {
-        setDataToUpdate(items!);
-        setLLM((prev) => ({ ...prev, modelType: items?.modelType }) as LLM);
+      onSuccess(template) {
+        setDataToUpdate(template!);
+        if (template?.modelType) {
+          setLLM((prev) => ({ ...prev, modelType: template.modelType }) as LLM);
+        }
         if (edit === "true" && ptId) {
           reset({
-            name: items?.name,
-            description: items?.description,
-            promptPackageId: items?.promptPackageId,
-            modelType: items?.modelType,
+            name: template?.name,
+            description: template?.description,
+            promptPackageId: template?.promptPackageId,
+            modelType: template?.modelType,
           });
           setIsOpen(true);
         }
@@ -198,8 +202,11 @@ export function CreateTemplate({
   };
 
   const handleLLMChange = (llm: LLM) => {
+    console.log(`LLM ||| 4 >>>>>>>>> ${JSON.stringify(llm)}`);
     setLLM(llm);
   };
+
+  const modelTypeOptions = Object.entries(ModelTypeSchema.enum);
 
   return (
     <Box component="span">
@@ -213,10 +220,11 @@ export function CreateTemplate({
           onClick={(e: any) => {
             if (!ptId) {
               setIsOpen(true);
-              setLLM((prev) => ({
-                ...prev,
-                modelType: e.target.value,
-              }));
+              console.log(`LLM ||| 5 >>>>>>>>> ${JSON.stringify(llm)}`);
+              // setLLM((prev) => ({
+              //   ...prev,
+              //   modelType: e.target.value,
+              // }));
             } else {
               fetchTemplateData();
             }
@@ -237,15 +245,42 @@ export function CreateTemplate({
           <DialogContentText></DialogContentText>
 
           <Stack spacing={2} mt={2}>
-            <FormDropDownInput
+            <FormControl fullWidth>
+              <FormLabel>Model Type</FormLabel>
+              <Select
+                value={llm.modelType}
+                // onChange={handleModelChange}
+                onChange={(e: any) => {
+                  const pLLM = getDefaultLLM(e.target.value);
+                  setLLM(pLLM);
+                  // setLLM((prev) => ({ ...prev, model: e.target.value }));
+                  // onLLMChange({ ...llm, model: e.target.value });
+                }}
+                disabled={!ptId ? false : true}
+              >
+                {modelTypeOptions.map(([key, value]) => (
+                  <MenuItem key={key} value={value}>
+                    {value}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            {/* <FormSelectInput
               name="modelType"
               control={control}
               label="Model Type"
               defaultValue={llm.modelType}
+              enumValues={ModelTypeSchema.enum}
+              onChange={(e: any) => {
+                const pLLM = getDefaultLLM(e.target.value);
+                setLLM(pLLM);
+              }}
               readonly={!ptId ? false : true}
-            />
+            /> */}
 
             <LLMSelector
+              key={llm.modelType + llm.model + llm.provider}
               initialLLM={llm}
               onLLMChange={handleLLMChange}
               needConsent={false}
