@@ -16,6 +16,8 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { providerModels, Provider, Model, LLM } from "~/validators/base";
+import { FormProviderSelectInput } from "./form_components/formProviderSelect";
+import { FormModelSelectInput } from "./form_components/formModelSelect";
 function LLMSelector({
   initialLLM,
   onLLMChange,
@@ -151,7 +153,6 @@ export const LLMForm = ({
 
   return (
     <>
-      <p>xxx {JSON.stringify(llm)}xx</p>
       <Stack spacing={2} mt={2}>
         <FormControl fullWidth>
           <FormLabel>Provider</FormLabel>
@@ -242,5 +243,56 @@ const ConsentProvider = ({
         </DialogActions>
       </Dialog>
     </div>
+  );
+};
+
+export const LLMForm2 = ({
+  initialLLM,
+  control,
+  onLLMChange,
+  readonly,
+}: {
+  initialLLM: LLM;
+  onLLMChange: (e: any) => void;
+  control: any;
+  readonly: boolean | undefined;
+}) => {
+  const [llm, setLLM] = useState<LLM>(initialLLM);
+
+  console.log(`LLM ||| 3 >>>>>>>>> ${JSON.stringify(llm)}`);
+
+  return (
+    <>
+      <Stack spacing={2} mt={2}>
+        <FormProviderSelectInput
+          name="provider"
+          control={control}
+          label="Provider"
+          modelType={llm.modelType}
+          defaultValue={llm.provider}
+          // error={!!errors.version}
+          // helperText={errors.version?.message}
+          readonly={false}
+          onChange={(e) => {
+            setLLM((prev) => ({ ...prev, provider: e.target.value }));
+          }}
+        />
+
+        <FormModelSelectInput
+          name="model"
+          control={control}
+          label="Model"
+          provider={llm.provider}
+          modelType={llm.modelType}
+          defaultValue={llm.model}
+          // error={!!errors.version}
+          // helperText={errors.version?.message}
+          readonly={false}
+          onChange={(e) => {
+            setLLM((prev) => ({ ...prev, model: e.target.value }));
+          }}
+        />
+      </Stack>
+    </>
   );
 };

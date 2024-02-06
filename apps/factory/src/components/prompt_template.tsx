@@ -137,6 +137,7 @@ const PromptTemplate = ({
                 ))}
               <Box sx={{ flexGrow: 1, p: 2 }}>
                 <CreateVersion
+                  // key={pt?.updatedAt?.toDateString()}
                   pp={pp}
                   pt={pt}
                   onCreate={handleVersionCreate}

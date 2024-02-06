@@ -373,7 +373,7 @@ function PromptVersion({
               </Button>
             </Tooltip>
             <CreateVersion
-              key={lpv.updatedAt?.toDateString()}
+              key={lpv.id + "2"}
               pp={pp}
               pt={pt}
               forkedFrom={lpv}
