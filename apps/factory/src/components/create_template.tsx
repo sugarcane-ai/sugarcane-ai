@@ -135,7 +135,6 @@ export function CreateTemplate({
         template: data,
       };
       onCreate?.(newObj);
-      handleClose();
     } catch (err) {
       console.error(err);
     }

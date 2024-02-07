@@ -40,7 +40,7 @@ import type {
   InputCreateVersion,
 } from "~/validators/prompt_version";
 import { createVersionInput } from "~/validators/prompt_version";
-import LLMSelector, { LLMForm, LLMForm2 } from "./llm_selector";
+import LLMSelector, { LLMForm } from "./llm_selector";
 import {
   ModelTypeSchema,
   ModelTypeType,
