@@ -12,9 +12,13 @@ export const getPackagesInput = z
 // .strict()
 export type GetPackagesInput = z.infer<typeof getPackagesInput>;
 
+export const filterOrder = z.enum(["asc", "desc"]);
+export type FilterOrder = z.infer<typeof filterOrder>;
+
 export const getMarketPlacePackagesInput = z
   .object({
     pageNo: z.number().default(1),
+    filterOrder: filterOrder.default(filterOrder.enum.desc),
     visibility: packageVisibility.optional(),
   })
   .optional();
