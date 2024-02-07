@@ -27,7 +27,10 @@ import { FormProviderSelectInput } from "./form_components/formProviderSelect";
 import { FormModelSelectInput } from "./form_components/formModelSelect";
 import { Controller } from "react-hook-form";
 import { FormSelectInput } from "./form_components/formSelectInput";
-import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
+import {
+  ModelTypeSchema,
+  ModelTypeType,
+} from "~/generated/prisma-client-zod.ts";
 function LLMSelector({
   initialLLM,
   onLLMChange,
@@ -97,7 +100,7 @@ function LLMSelector({
         <ConsentProvider nextProvider={openConsent} onResult={onConsent} />
         <Button
           variant="text"
-          onClick={(e) => setIsOpen(true)}
+          onClick={(e: any) => setIsOpen(true)}
           disabled={!!publishedAt}
         >
           {llm.provider} - {llm.model}
@@ -140,7 +143,6 @@ function LLMSelector({
           initialLLM={llm}
           onLLMChange={handleLLMChange}
           readonly={readonly}
-          control={false}
         />
       </>
     );
@@ -169,12 +171,12 @@ export const LLMForm = ({
           <FormLabel>Provider</FormLabel>
           <Select
             value={llm.provider}
-            onChange={(e) => {
+            onChange={(e: any) => {
               setLLM((prev) => ({ ...prev, provider: e.target.value }));
             }}
             disabled={readonly}
           >
-            {providerModels[llm.modelType].providers.map(
+            {providerModels[llm.modelType as ModelTypeType].providers.map(
               (provider: Provider) => (
                 <MenuItem
                   key={provider.name}
@@ -193,23 +195,23 @@ export const LLMForm = ({
           <Select
             value={llm.model}
             // onChange={handleModelChange}
-            onChange={(e) => {
+            onChange={(e: any) => {
               setLLM((prev) => ({ ...prev, model: e.target.value }));
               onLLMChange({ ...llm, model: e.target.value });
             }}
             disabled={readonly}
           >
-            {providerModels[llm.modelType].models?.[llm.provider]?.map(
-              (model: Model) => (
-                <MenuItem
-                  key={model.name}
-                  value={model.name}
-                  disabled={!model.enabled}
-                >
-                  {model.label}
-                </MenuItem>
-              ),
-            )}
+            {providerModels[llm.modelType as ModelTypeType].models?.[
+              llm.provider
+            ]?.map((model: Model) => (
+              <MenuItem
+                key={model.name}
+                value={model.name}
+                disabled={!model.enabled}
+              >
+                {model.label}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
       </Stack>

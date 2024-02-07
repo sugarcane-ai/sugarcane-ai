@@ -15,6 +15,7 @@ export function FormTextInput({
   error,
   helperText,
   readonly, // onChange,
+  required,
 }: Props) {
   return (
     <FormControl fullWidth>
@@ -27,6 +28,7 @@ export function FormTextInput({
             {...field}
             variant="outlined"
             fullWidth
+            required={required}
             error={error}
             helperText={helperText}
             InputProps={{

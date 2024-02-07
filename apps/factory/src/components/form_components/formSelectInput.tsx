@@ -1,13 +1,6 @@
-import React, { ReactNode } from "react";
+import React, { ChangeEventHandler, ReactNode } from "react";
 import { Controller } from "react-hook-form";
-import {
-  FormControl,
-  FormLabel,
-  Select,
-  MenuItem,
-  SelectChangeEvent,
-  TextField,
-} from "@mui/material";
+import { FormControl, FormLabel, MenuItem, TextField } from "@mui/material";
 import type { FormInputProps } from "./formInputProps";
 
 interface Props<T extends string | number> extends FormInputProps {
@@ -17,7 +10,8 @@ interface Props<T extends string | number> extends FormInputProps {
   defaultValue: T | undefined;
   readonly: boolean;
   enumValues: Record<string, T>;
-  onChange: (event: SelectChangeEvent<any>, child: ReactNode) => void;
+  // onChange: (event: any) => void;
+  onChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
 }
 
 export function FormSelectInput<T extends string | number>({
@@ -37,18 +31,15 @@ export function FormSelectInput<T extends string | number>({
         control={control}
         defaultValue={defaultValue}
         // onChange={onChange}
-        render={({ ref, ...field }) => (
+        render={({ ...field }) => (
           <TextField
             select
             required
             variant="outlined"
-            inputRef={ref}
+            // inputRef={ref}
             disabled={readonly}
             {...field}
-            onChange={(event) =>
-              onChange(event as SelectChangeEvent<any>, field)
-            }
-            // onChange={onChange}
+            onChange={onChange}
           >
             {Object.entries(enumValues).map(([key, value]) => (
               <MenuItem key={key} value={value}>

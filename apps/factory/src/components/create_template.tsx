@@ -20,7 +20,10 @@ import {
   Typography,
 } from "@mui/material";
 import { PackageOutput as pp } from "~/validators/prompt_package";
-import { TemplateOutput as pt } from "~/validators/prompt_template";
+import {
+  TemplateOutput as pt,
+  templateOutput,
+} from "~/validators/prompt_template";
 // import AddIcon from '@mui/icons-material/Add';
 // import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from "@mui/icons-material/AddCircle";
@@ -32,7 +35,10 @@ import {
 import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { CreateTemplateInput } from "~/validators/prompt_template";
+import type {
+  CreateTemplateInput,
+  TemplateOutput,
+} from "~/validators/prompt_template";
 import { createTemplateInput } from "~/validators/prompt_template";
 import { FormTextInput } from "./form_components/formTextInput";
 import { FormDropDownInput } from "./form_components/formDropDownInput";
@@ -79,7 +85,7 @@ export function CreateTemplate({
     {} as CreateTemplateInput,
   );
 
-  const [llm, setLLM] = useState<LLM>(() => getDefaultLLM(defaultModelType));
+  const [llm, setLLM] = useState<LLM>(getDefaultLLM(defaultModelType));
 
   console.log(`LLM ||| 1 >>>>>>>>> ${JSON.stringify(llm)}`);
 
@@ -154,11 +160,14 @@ export function CreateTemplate({
       id: `${ptId}`,
     },
     {
-      onSuccess(template) {
-        setDataToUpdate(template!);
-        if (template?.modelType) {
-          setLLM((prev) => ({ ...prev, modelType: template.modelType }) as LLM);
-        }
+      onSuccess(template: TemplateOutput) {
+        setDataToUpdate({
+          ...getDefaultLLM(template?.modelType || defaultModelType),
+          ...template!,
+        });
+        // if (template?.modelType) {
+        //   setLLM((prev) => ({ ...prev, modelType: template.modelType }) as LLM);
+        // }
         if (edit === "true" && ptId) {
           reset({
             name: template?.name,
@@ -274,35 +283,35 @@ export function CreateTemplate({
               <Controller
                 name={"provider"}
                 control={control}
-                render={({ ref, ...field }) => (
+                render={({ ...field }) => (
                   <TextField
                     // required
                     select
                     variant="outlined"
-                    inputRef={ref}
+                    // inputRef={ref}
                     {...field}
                     defaultValue={""}
                     error={!!errors.provider}
                     helperText={errors.provider?.message}
                     disabled={!!ptId}
-                    onChange={(event) => {
+                    onChange={(event: any) => {
                       setLLM((llm) => ({
                         ...llm,
                         provider: event.target.value,
                       }));
                     }}
                   >
-                    {providerModels[llm.modelType].providers.map(
-                      (provider: Provider) => (
-                        <MenuItem
-                          key={provider.name}
-                          value={provider.name}
-                          disabled={!provider.enabled}
-                        >
-                          {provider.label}
-                        </MenuItem>
-                      ),
-                    )}
+                    {providerModels[
+                      llm.modelType as ModelTypeType
+                    ].providers.map((provider: Provider) => (
+                      <MenuItem
+                        key={provider.name}
+                        value={provider.name}
+                        disabled={!provider.enabled}
+                      >
+                        {provider.label}
+                      </MenuItem>
+                    ))}
                   </TextField>
                 )}
               />
@@ -312,32 +321,32 @@ export function CreateTemplate({
               <Controller
                 name={"model"}
                 control={control}
-                render={({ ref, ...field }) => (
+                render={({ ...field }) => (
                   <TextField
                     select
                     // required
                     variant="outlined"
-                    inputRef={ref}
+                    // inputRef={ref}
                     {...field}
                     defaultValue={""}
                     disabled={!!ptId}
                     error={!!errors.model}
                     helperText={errors.model?.message}
-                    onChange={(event) => {
+                    onChange={(event: any) => {
                       setLLM((llm) => ({ ...llm, model: event.target.value }));
                     }}
                   >
-                    {providerModels[llm.modelType].models?.[llm.provider]?.map(
-                      (model: Model) => (
-                        <MenuItem
-                          key={model.name}
-                          value={model.name}
-                          disabled={!model.enabled}
-                        >
-                          {model.label}
-                        </MenuItem>
-                      ),
-                    )}
+                    {providerModels[llm.modelType as ModelTypeType].models?.[
+                      llm.provider
+                    ]?.map((model: Model) => (
+                      <MenuItem
+                        key={model.name}
+                        value={model.name}
+                        disabled={!model.enabled}
+                      >
+                        {model.label}
+                      </MenuItem>
+                    ))}
                   </TextField>
                 )}
               />
@@ -353,7 +362,7 @@ export function CreateTemplate({
 
             <FormTextInput
               name="name"
-              required
+              required={true}
               control={control}
               label="Name"
               error={!!errors.name}
@@ -363,7 +372,7 @@ export function CreateTemplate({
 
             <FormTextInput
               name="description"
-              required
+              required={true}
               control={control}
               label="Description"
               error={!!errors.description}
