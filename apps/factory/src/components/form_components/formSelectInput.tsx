@@ -6,6 +6,7 @@ import {
   Select,
   MenuItem,
   SelectChangeEvent,
+  TextField,
 } from "@mui/material";
 import type { FormInputProps } from "./formInputProps";
 
@@ -35,26 +36,26 @@ export function FormSelectInput<T extends string | number>({
         name={name}
         control={control}
         defaultValue={defaultValue}
-        render={({ field }) => (
-          <Select
+        // onChange={onChange}
+        render={({ ref, ...field }) => (
+          <TextField
+            select
+            required
+            variant="outlined"
+            inputRef={ref}
+            disabled={readonly}
             {...field}
-            aria-label={name}
-            defaultValue={defaultValue}
-            inputProps={{
-              readOnly: readonly,
-            }}
-            onChange={onChange}
+            onChange={(event) =>
+              onChange(event as SelectChangeEvent<any>, field)
+            }
+            // onChange={onChange}
           >
             {Object.entries(enumValues).map(([key, value]) => (
-              <MenuItem
-                key={key}
-                value={value}
-                // selected={defaultValue === value ? true : false}
-              >
-                {key} {value} {defaultValue}
+              <MenuItem key={key} value={value}>
+                {value}
               </MenuItem>
             ))}
-          </Select>
+          </TextField>
         )}
       />
     </FormControl>

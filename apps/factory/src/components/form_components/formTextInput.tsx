@@ -5,6 +5,7 @@ import type { FormInputProps } from "./formInputProps";
 
 interface Props extends FormInputProps {
   readonly: boolean;
+  // onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export function FormTextInput({
@@ -13,7 +14,7 @@ export function FormTextInput({
   label,
   error,
   helperText,
-  readonly,
+  readonly, // onChange,
 }: Props) {
   return (
     <FormControl fullWidth>
@@ -31,6 +32,7 @@ export function FormTextInput({
             InputProps={{
               readOnly: readonly,
             }}
+            // onChange={onChange}
             autoComplete="off"
             disabled={readonly}
           />

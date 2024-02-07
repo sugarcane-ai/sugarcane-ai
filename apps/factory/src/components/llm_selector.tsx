@@ -13,11 +13,21 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  TextField,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { providerModels, Provider, Model, LLM } from "~/validators/base";
+import {
+  providerModels,
+  Provider,
+  Model,
+  LLM,
+  getDefaultLLM,
+} from "~/validators/base";
 import { FormProviderSelectInput } from "./form_components/formProviderSelect";
 import { FormModelSelectInput } from "./form_components/formModelSelect";
+import { Controller } from "react-hook-form";
+import { FormSelectInput } from "./form_components/formSelectInput";
+import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
 function LLMSelector({
   initialLLM,
   onLLMChange,
@@ -130,6 +140,7 @@ function LLMSelector({
           initialLLM={llm}
           onLLMChange={handleLLMChange}
           readonly={readonly}
+          control={false}
         />
       </>
     );

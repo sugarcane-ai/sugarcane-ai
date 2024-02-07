@@ -15,6 +15,7 @@ import {
   MenuItem,
   Select,
   Stack,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -29,7 +30,7 @@ import {
   PromptRunModesSchema,
 } from "~/generated/prisma-client-zod.ts";
 import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { CreateTemplateInput } from "~/validators/prompt_template";
 import { createTemplateInput } from "~/validators/prompt_template";
@@ -41,8 +42,15 @@ import toast from "react-hot-toast";
 import { useSearchParams } from "next/navigation";
 import { FormSelectInput } from "./form_components/formSelectInput";
 import { TemplateListOutput } from "~/validators/prompt_template";
-import LLMSelector from "./llm_selector";
-import { LLM, getDefaultLLM, providerModels } from "~/validators/base";
+import LLMSelector, { LLMForm } from "./llm_selector";
+import {
+  providerModels,
+  Provider,
+  Model,
+  LLM,
+  getDefaultLLM,
+} from "~/validators/base";
+import { get } from "lodash";
 export function CreateTemplate({
   pp,
   pts,
@@ -64,19 +72,14 @@ export function CreateTemplate({
   // const router = useRouter();
   const searchParams = useSearchParams();
   const edit = searchParams?.get("edit");
-  // const [defaultModelType, setDefaultModelType] = useState<
-  //   ModelTypeType | undefined
-  // >(ModelTypeSchema.enum.TEXT2TEXT);
+
+  const defaultModelType = ModelTypeSchema.enum.TEXT2TEXT;
 
   const [datatoUpdate, setDataToUpdate] = useState<CreateTemplateInput>(
     {} as CreateTemplateInput,
   );
 
-  // const [provider, setProvider] = useState("");
-  // const [model, setModel] = useState("");
-  const [llm, setLLM] = useState<LLM>(() =>
-    getDefaultLLM(ModelTypeSchema.enum.TEXT2TEXT),
-  );
+  const [llm, setLLM] = useState<LLM>(() => getDefaultLLM(defaultModelType));
 
   console.log(`LLM ||| 1 >>>>>>>>> ${JSON.stringify(llm)}`);
 
@@ -92,15 +95,17 @@ export function CreateTemplate({
     defaultValues: {
       name: "",
       description: "",
-      modelType: ModelTypeSchema.enum.TEXT2TEXT,
+      modelType: llm.modelType,
       promptPackageId: pp?.id,
+      model: llm.model,
+      provider: llm.provider,
     },
     resolver: zodResolver(createTemplateInput),
     mode: "onChange",
     reValidateMode: "onChange",
   });
 
-  const modelType = watch("modelType");
+  // const modelType = watch("modelType");
 
   useEffect(() => {
     if (customError && customError.error) {
@@ -118,11 +123,14 @@ export function CreateTemplate({
 
   const handleClose = () => {
     setIsOpen(false);
+    const llm = getDefaultLLM(defaultModelType);
     reset({
       name: "",
       description: "",
       promptPackageId: pp?.id,
-      modelType: ModelTypeSchema.enum.TEXT2TEXT,
+      modelType: llm.modelType,
+      model: llm.model,
+      provider: llm.provider,
     });
   };
 
@@ -132,7 +140,7 @@ export function CreateTemplate({
         options: {
           llm: llm,
         },
-        template: data,
+        template: { ...data, ...llm },
       };
       onCreate?.(newObj);
       handleClose();
@@ -166,6 +174,7 @@ export function CreateTemplate({
 
   const fetchTemplateData = () => {
     reset({
+      ...llm,
       name: datatoUpdate.name,
       description: datatoUpdate.description,
       promptPackageId: datatoUpdate.promptPackageId,
@@ -188,6 +197,7 @@ export function CreateTemplate({
         handleClose();
         toast.success("Template Updated Successfully");
         const updatedInput = {
+          ...llm,
           name: datatoUpdate.name,
           description: data.description,
           promptPackageId: datatoUpdate.promptPackageId,
@@ -201,12 +211,12 @@ export function CreateTemplate({
     });
   };
 
-  const handleLLMChange = (llm: LLM) => {
-    console.log(`LLM ||| 4 >>>>>>>>> ${JSON.stringify(llm)}`);
-    setLLM(llm);
-  };
+  // const handleLLMChange = (llm: LLM) => {
+  //   console.log(`LLM ||| 4 >>>>>>>>> ${JSON.stringify(llm)}`);
+  //   setLLM(llm);
+  // };
 
-  const modelTypeOptions = Object.entries(ModelTypeSchema.enum);
+  // const modelTypeOptions = Object.entries(ModelTypeSchema.enum);
 
   return (
     <Box component="span">
@@ -245,50 +255,105 @@ export function CreateTemplate({
           <DialogContentText></DialogContentText>
 
           <Stack spacing={2} mt={2}>
-            <FormControl fullWidth>
-              <FormLabel>Model Type</FormLabel>
-              <Select
-                value={llm.modelType}
-                // onChange={handleModelChange}
-                onChange={(e: any) => {
-                  const pLLM = getDefaultLLM(e.target.value);
-                  setLLM(pLLM);
-                  // setLLM((prev) => ({ ...prev, model: e.target.value }));
-                  // onLLMChange({ ...llm, model: e.target.value });
-                }}
-                disabled={!ptId ? false : true}
-              >
-                {modelTypeOptions.map(([key, value]) => (
-                  <MenuItem key={key} value={value}>
-                    {value}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            {/* <FormSelectInput
+            <FormSelectInput
               name="modelType"
               control={control}
               label="Model Type"
-              defaultValue={llm.modelType}
+              error={!!errors.modelType}
+              helperText={errors.modelType?.message}
               enumValues={ModelTypeSchema.enum}
+              defaultValue={llm.modelType}
+              readonly={!!ptId}
               onChange={(e: any) => {
                 const pLLM = getDefaultLLM(e.target.value);
-                setLLM(pLLM);
+                setLLM((prev) => ({ ...prev, ...pLLM }));
               }}
-              readonly={!ptId ? false : true}
-            /> */}
+            />
+            <FormControl component="fieldset">
+              <FormLabel component="legend">{"Provider"}</FormLabel>
+              <Controller
+                name={"provider"}
+                control={control}
+                render={({ ref, ...field }) => (
+                  <TextField
+                    // required
+                    select
+                    variant="outlined"
+                    inputRef={ref}
+                    {...field}
+                    defaultValue={""}
+                    error={!!errors.provider}
+                    helperText={errors.provider?.message}
+                    disabled={!!ptId}
+                    onChange={(event) => {
+                      setLLM((llm) => ({
+                        ...llm,
+                        provider: event.target.value,
+                      }));
+                    }}
+                  >
+                    {providerModels[llm.modelType].providers.map(
+                      (provider: Provider) => (
+                        <MenuItem
+                          key={provider.name}
+                          value={provider.name}
+                          disabled={!provider.enabled}
+                        >
+                          {provider.label}
+                        </MenuItem>
+                      ),
+                    )}
+                  </TextField>
+                )}
+              />
+            </FormControl>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">{"Model"}</FormLabel>
+              <Controller
+                name={"model"}
+                control={control}
+                render={({ ref, ...field }) => (
+                  <TextField
+                    select
+                    // required
+                    variant="outlined"
+                    inputRef={ref}
+                    {...field}
+                    defaultValue={""}
+                    disabled={!!ptId}
+                    error={!!errors.model}
+                    helperText={errors.model?.message}
+                    onChange={(event) => {
+                      setLLM((llm) => ({ ...llm, model: event.target.value }));
+                    }}
+                  >
+                    {providerModels[llm.modelType].models?.[llm.provider]?.map(
+                      (model: Model) => (
+                        <MenuItem
+                          key={model.name}
+                          value={model.name}
+                          disabled={!model.enabled}
+                        >
+                          {model.label}
+                        </MenuItem>
+                      ),
+                    )}
+                  </TextField>
+                )}
+              />
+            </FormControl>
 
-            <LLMSelector
+            {/* <LLMForm
               key={llm.modelType + llm.model + llm.provider}
               initialLLM={llm}
               onLLMChange={handleLLMChange}
-              needConsent={false}
               readonly={!ptId ? false : true}
-            />
+              control={control}
+            /> */}
 
             <FormTextInput
               name="name"
+              required
               control={control}
               label="Name"
               error={!!errors.name}
@@ -298,6 +363,7 @@ export function CreateTemplate({
 
             <FormTextInput
               name="description"
+              required
               control={control}
               label="Description"
               error={!!errors.description}
