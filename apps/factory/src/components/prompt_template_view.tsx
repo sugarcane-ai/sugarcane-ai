@@ -296,23 +296,25 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                         />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title="Edit Template" placement="top">
-                      <IconButton color="primary">
-                        {session?.user.username == username && (
+                    {session?.user.username == username && (
+                      <Tooltip title="Edit Template" placement="top">
+                        <IconButton
+                          color="primary"
+                          onClick={() =>
+                            router.push(
+                              `/dashboard/prompts/${data?.promptPackageId}?ptid=${data?.templateId}&edit=${true}`,
+                            )
+                          }
+                        >
                           <EditIcon
-                            onClick={() =>
-                              router.push(
-                                `/dashboard/prompts/${data?.promptPackageId}?ptid=${data?.templateId}&edit=${true}`,
-                              )
-                            }
                             sx={{
                               color: "var(--sugarhub-text-color)",
                               fontSize: "2rem",
                             }}
                           ></EditIcon>
-                        )}
-                      </IconButton>
-                    </Tooltip>
+                        </IconButton>
+                      </Tooltip>
+                    )}
                   </Box>
                   <ShareCube
                     setOpenShareModal={setOpenShareModal}
