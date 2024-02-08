@@ -13,11 +13,24 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  TextField,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { providerModels, Provider, Model, LLM } from "~/validators/base";
+import {
+  providerModels,
+  Provider,
+  Model,
+  LLM,
+  getDefaultLLM,
+} from "~/validators/base";
 import { FormProviderSelectInput } from "./form_components/formProviderSelect";
 import { FormModelSelectInput } from "./form_components/formModelSelect";
+import { Controller } from "react-hook-form";
+import { FormSelectInput } from "./form_components/formSelectInput";
+import {
+  ModelTypeSchema,
+  ModelTypeType,
+} from "~/generated/prisma-client-zod.ts";
 function LLMSelector({
   initialLLM,
   onLLMChange,
@@ -86,12 +99,15 @@ function LLMSelector({
     }
   };
 
+  // return <></>;
+
+  // Got Agree from user to let go off old template
   return (
     <>
       <ConsentProvider nextProvider={openConsent} onResult={onConsent} />
       <Button
         variant="text"
-        onClick={(e) => setIsOpen(true)}
+        onClick={(e: any) => setIsOpen(true)}
         disabled={!!publishedAt}
       >
         {llm.provider} - {llm.model}
@@ -151,12 +167,12 @@ export const LLMForm = ({
           <FormLabel>Provider</FormLabel>
           <Select
             value={llm.provider}
-            onChange={(e) => {
+            onChange={(e: any) => {
               setLLM((prev) => ({ ...prev, provider: e.target.value }));
             }}
             disabled={readonly}
           >
-            {providerModels[llm.modelType].providers.map(
+            {providerModels[llm.modelType as ModelTypeType].providers.map(
               (provider: Provider) => (
                 <MenuItem
                   key={provider.name}
@@ -175,23 +191,23 @@ export const LLMForm = ({
           <Select
             value={llm.model}
             // onChange={handleModelChange}
-            onChange={(e) => {
+            onChange={(e: any) => {
               setLLM((prev) => ({ ...prev, model: e.target.value }));
               onLLMChange({ ...llm, model: e.target.value });
             }}
             disabled={readonly}
           >
-            {providerModels[llm.modelType].models?.[llm.provider]?.map(
-              (model: Model) => (
-                <MenuItem
-                  key={model.name}
-                  value={model.name}
-                  disabled={!model.enabled}
-                >
-                  {model.label}
-                </MenuItem>
-              ),
-            )}
+            {providerModels[llm.modelType as ModelTypeType].models?.[
+              llm.provider
+            ]?.map((model: Model) => (
+              <MenuItem
+                key={model.name}
+                value={model.name}
+                disabled={!model.enabled}
+              >
+                {model.label}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
       </Stack>
@@ -236,5 +252,56 @@ const ConsentProvider = ({
         </DialogActions>
       </Dialog>
     </div>
+  );
+};
+
+export const LLMForm2 = ({
+  initialLLM,
+  control,
+  onLLMChange,
+  readonly,
+}: {
+  initialLLM: LLM;
+  onLLMChange: (e: any) => void;
+  control: any;
+  readonly: boolean | undefined;
+}) => {
+  const [llm, setLLM] = useState<LLM>(initialLLM);
+
+  console.log(`LLM ||| 3 >>>>>>>>> ${JSON.stringify(llm)}`);
+
+  return (
+    <>
+      <Stack spacing={2} mt={2}>
+        <FormProviderSelectInput
+          name="provider"
+          control={control}
+          label="Provider"
+          modelType={llm.modelType}
+          defaultValue={llm.provider}
+          // error={!!errors.version}
+          // helperText={errors.version?.message}
+          readonly={false}
+          onChange={(e) => {
+            setLLM((prev) => ({ ...prev, provider: e.target.value }));
+          }}
+        />
+
+        <FormModelSelectInput
+          name="model"
+          control={control}
+          label="Model"
+          provider={llm.provider}
+          modelType={llm.modelType}
+          defaultValue={llm.model}
+          // error={!!errors.version}
+          // helperText={errors.version?.message}
+          readonly={false}
+          onChange={(e) => {
+            setLLM((prev) => ({ ...prev, model: e.target.value }));
+          }}
+        />
+      </Stack>
+    </>
   );
 };
