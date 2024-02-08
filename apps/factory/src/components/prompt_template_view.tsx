@@ -76,7 +76,6 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const [promptOutput, setPromptOutput] = useState("");
   const [promptPerformance, setPromptPerformacne] = useState({});
   const [isOpen, setIsOpen] = useState(false);
-  const [packageData, setPackageData] = useState<pp>({} as pp);
   const handleOpen = () => setIsOpen(true);
   const [isLoadingState, setIsLoading] = useState(false);
   const [openShareModal, setOpenShareModal] = useState<boolean>(false);
@@ -122,16 +121,6 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   ]?.models[`${data?.llmProvider}`]?.find((mod) => mod.name === data?.model)
     ?.hasRole;
 
-  api.prompt.getPackage.useQuery(
-    {
-      id: data?.promptPackageId as string,
-    },
-    {
-      onSuccess(item) {
-        setPackageData(item);
-      },
-    },
-  );
   const handleVariablesChange = (k: string, v: string) => {
     setVariables((pvrs) => {
       // Step 2: Update the state
