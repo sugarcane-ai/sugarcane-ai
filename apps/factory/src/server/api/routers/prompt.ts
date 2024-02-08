@@ -43,6 +43,7 @@ import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
 import { Visibility } from "@mui/icons-material";
 import { JSONArray } from "superjson/dist/types";
 import { getTemplate } from "~/services/providers";
+import { getRole } from "~/validators/base";
 
 export const promptRouter = createTRPCRouter({
   getPackages: protectedProcedure
@@ -273,9 +274,17 @@ export const promptRouter = createTRPCRouter({
           },
         });
         if (forkedFrom) {
+          promptData =
+            getRole(
+              forkedFrom.llmModelType,
+              forkedFrom.llmProvider,
+              forkedFrom.llmModel,
+            ) !== getRole(input.moduleType, input.provider, input.model)
+              ? promptData
+              : (forkedFrom.promptData as PromptDataSchemaType);
+
           defaultTemplate.template = forkedFrom.template;
-          defaultTemplate.promptData =
-            forkedFrom.promptData as PromptDataSchemaType;
+          defaultTemplate.promptData = promptData as PromptDataSchemaType;
           defaultTemplate.llmProvider = provider || forkedFrom.llmProvider;
           defaultTemplate.llmModel = model || forkedFrom.llmModel;
           defaultTemplate.llmConfig = forkedFrom.llmConfig as JsonObject;
