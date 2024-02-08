@@ -1,25 +1,39 @@
-import { Box, Button, Menu, MenuItem } from "@mui/material";
+import { Box, Button, Icon, Menu, MenuItem, Typography } from "@mui/material";
 import { useRouter } from "next/router";
-import React from "react";
-import { FilterOrder, filterOrder } from "~/validators/prompt_package";
+import React, { useState } from "react";
+import { FilterOrder } from "~/validators/prompt_package";
+import DoneIcon from "@mui/icons-material/Done";
 
-type FilterDropdownButtonProps = {};
+export type MenuListItems = {
+  text: string;
+  order: FilterOrder;
+};
 
-const FilterDropdownButton: React.FC<FilterDropdownButtonProps> = () => {
+type FilterDropdownButtonProps = {
+  menuItems: MenuListItems[];
+};
+
+const FilterDropdownButton: React.FC<FilterDropdownButtonProps> = ({
+  menuItems,
+}) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [sortingState, setSortingState] = useState(menuItems[0]?.text);
   const router = useRouter();
   const open = Boolean(anchorEl);
-  const handleFilter = (order: FilterOrder) => {
+  const handleFilter = (menuListItem: MenuListItems) => {
+    setSortingState(menuListItem.text);
     setAnchorEl(null);
+    const order = menuListItem.order;
     router.push({
       query: { ...router.query, order },
     });
   };
 
   return (
-    <div style={{ paddingTop: "25px", paddingBottom: "5px" }}>
+    <div style={{ paddingTop: "10px", paddingBottom: "10px" }}>
       <Box
         sx={{
+          color: "white",
           display: "flex",
           alignItems: "center",
           textAlign: "center",
@@ -28,12 +42,15 @@ const FilterDropdownButton: React.FC<FilterDropdownButtonProps> = () => {
         <Button
           variant="outlined"
           size="small"
-          color="warning"
+          color={anchorEl != null ? "primary" : "inherit"}
           onClick={(event: React.MouseEvent<HTMLElement>) =>
             setAnchorEl(event.currentTarget)
           }
         >
-          Filter
+          Sort by :
+          <span style={{ fontWeight: "bold", paddingLeft: "8px" }}>
+            {sortingState}
+          </span>
         </Button>
       </Box>
       <Menu
@@ -42,40 +59,35 @@ const FilterDropdownButton: React.FC<FilterDropdownButtonProps> = () => {
         open={open}
         onClose={() => setAnchorEl(null)}
         PaperProps={{
-          elevation: 0,
+          elevation: 1,
           sx: {
+            width: "232px",
             overflow: "visible",
             filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-            mt: 1.5,
-            "& .MuiAvatar-root": {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1,
-            },
-            "&::before": {
-              content: '""',
-              display: "block",
-              position: "absolute",
-              top: 0,
-              right: 14,
-              width: 10,
-              height: 10,
-              bgcolor: "background.paper",
-              transform: "translateY(-50%) rotate(45deg)",
-              zIndex: 0,
-            },
+            mt: 1,
           },
         }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem onClick={() => handleFilter(filterOrder.Enum.desc)}>
-          Latest Packages
-        </MenuItem>
-        <MenuItem onClick={() => handleFilter(filterOrder.Enum.asc)}>
-          Oldest Packages
-        </MenuItem>
+        {menuItems.map((menuItem, index) => (
+          <MenuItem key={index} onClick={() => handleFilter(menuItem)}>
+            <Typography
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {menuItem.text === sortingState ? (
+                <DoneIcon sx={{ paddingRight: "10px" }} />
+              ) : (
+                <Box sx={{ paddingLeft: "25px" }} />
+              )}
+              {menuItem.text}
+            </Typography>
+          </MenuItem>
+        ))}
       </Menu>
     </div>
   );
