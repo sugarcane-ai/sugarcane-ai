@@ -23,7 +23,7 @@ const MarketplacePage: NextPage = () => {
           overflowY: "scroll",
         }}
       >
-        <Header headerName={`sugarhub`}></Header>
+        <Header headerName={`SugarHub`}></Header>
         <Container>
           <PublicPackages></PublicPackages>
         </Container>
