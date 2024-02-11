@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   LlmConfigSchema,
   PromptDataSchema,
@@ -8,6 +10,7 @@ import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 import OpenAIVendor from "~/services/vendors/openai_vendors";
 import { v4 as uuidv4 } from "uuid";
 import { PromptRoleEnum } from "~/validators/base";
+import { errorHandling } from "../vendors/base_vendor";
 export interface LLMConfig {
   max_tokens: number;
   temperature: number;
@@ -42,8 +45,14 @@ export async function run(
     const endTime = new Date();
     const latency: number = Number(endTime) - Number(startTime);
     return generateOutput(response, llmModelType, latency);
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
+    errorHandling({
+      code: error?.status,
+      message: error?.error?.message,
+      vendorCode: error?.status,
+      vendorMessage: error?.error?.message,
+    });
   }
 }
 

@@ -47,19 +47,23 @@ class BaseVendor {
   async makeApiCallWithRetry(
     prompt: string,
     dryRun: boolean,
-  ): Promise<{ response: Response; latency: number }> {
+  ): Promise<{ response: Response | null; latency: number }> {
     const requestOptions = this.createRequestOptions(prompt);
     const startTime = new Date();
 
     let response;
     if (!dryRun) {
       console.log(this.getUrl(), JSON.stringify(requestOptions));
-      response = await fetchWithRetry(
+      const fetchResult = await fetchWithRetry(
         this.getUrl(),
         requestOptions,
         this.maxRetries,
         this.retryDelay,
       );
+
+      if (fetchResult.data !== null) {
+        response = fetchResult.data;
+      }
     } else {
       response = this.createFakeResponse();
     }
@@ -78,24 +82,30 @@ export async function fetchWithRetry(
   options: RequestInit,
   maxRetries: number,
   retryDelay: number,
-) {
+): Promise<{ data: any; error: null } | { data: null; error: any }> {
   let retryCount = 0;
 
   while (retryCount < maxRetries) {
     try {
       const response = await fetch(url, options);
       if (response.ok) {
-        return response.json();
+        return { data: await response.json(), error: null };
       } else {
         console.error(
           `Status ${response.status} ${response.statusText}: ${JSON.stringify(
             await truncateObj(response.text()),
           )}`,
         );
-        throw new Error(`Non-200 response: ${JSON.stringify(response.text())}`);
+        errorHandling({
+          code: response.status,
+          message: response.statusText,
+          vendorCode: response.status,
+          vendorMessage: response.statusText,
+        });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(`Request failed: ${url}`, error);
+      errorHandling(error);
     }
 
     retryCount++;
@@ -104,7 +114,32 @@ export async function fetchWithRetry(
     }
   }
 
-  return null;
+  // Return a special case if maximum retries are reached
+  return {
+    data: null,
+    error: null,
+  };
 }
+
+interface ErrorResponse {
+  code: string | null | number;
+  message: string | null;
+  vendorCode: string | null | number;
+  vendorMessage: string | null;
+}
+
+export const errorHandling = ({
+  code,
+  message,
+  vendorCode,
+  vendorMessage,
+}: ErrorResponse): never => {
+  throw {
+    code,
+    message,
+    vendorCode,
+    vendorMessage,
+  };
+};
 
 export default BaseVendor;

@@ -212,38 +212,42 @@ function PromptVersion({
       data[`${item.type}${item.key}`] = item.value;
     }
 
-    const pl = await generateMutation.mutateAsync(
-      {
-        username: ns.username,
-        package: pp?.name || "",
-        template: pt?.name || "",
-        versionOrEnvironment: lpv.version || "",
-        isDevelopment: checked,
-        // llmModelType: pt?.modelType,
-        environment: promptEnvironment.Enum.DEV,
-        data: data,
-      } as GenerateInput,
-      {
-        onSuccess() {
-          setIsRunning(false);
+    try {
+      const pl = await generateMutation.mutateAsync(
+        {
+          username: ns.username,
+          package: pp?.name || "",
+          template: pt?.name || "",
+          versionOrEnvironment: lpv.version || "",
+          isDevelopment: checked,
+          // llmModelType: pt?.modelType,
+          environment: promptEnvironment.Enum.DEV,
+          data: data,
+        } as GenerateInput,
+        {
+          onSuccess() {
+            setIsRunning(false);
+          },
+          onError(error) {
+            setIsRunning(false);
+            console.log(error);
+          },
         },
-        onError() {
-          setIsRunning(false);
-        },
-      },
-    );
-
-    console.log(`pl >>>>>>>: ${JSON.stringify(pl)}`);
-    if (pl) {
-      setPl(pl);
-      setPromptOutput(pl.completion);
-      setPromptPerformacne({
-        latency: pl.latency,
-        prompt_tokens: pl.prompt_tokens,
-        completion_tokens: pl.completion_tokens,
-        total_tokens: pl.total_tokens,
-      });
-      setOutputLog(pl);
+      );
+      console.log(`pl >>>>>>>: ${JSON.stringify(pl)}`);
+      if (pl) {
+        setPl(pl);
+        setPromptOutput(pl.completion);
+        setPromptPerformacne({
+          latency: pl.latency,
+          prompt_tokens: pl.prompt_tokens,
+          completion_tokens: pl.completion_tokens,
+          total_tokens: pl.total_tokens,
+        });
+        setOutputLog(pl);
+      }
+    } catch (error: any) {
+      toast.error(error?.message);
     }
   };
 
