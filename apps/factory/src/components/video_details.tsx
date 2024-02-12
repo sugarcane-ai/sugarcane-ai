@@ -4,6 +4,10 @@ import { FaFolder } from "react-icons/fa";
 import { FaRegClock } from "react-icons/fa";
 import Markdown from "react-markdown";
 import { GetBlogOutput } from "~/validators/blog";
+import remarkGfm from "remark-gfm";
+import remarkAutolinkHeadings from "remark-autolink-headings";
+import ReactMarkdown from "react-markdown";
+import rehypeConcatCssStyle from "rehype-concat-css-style";
 
 type VideoDetailsProps = {
   blogData: GetBlogOutput;
@@ -45,7 +49,7 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ blogData }) => {
           >
             <FaFolder />
             <Typography sx={{ paddingLeft: 2, paddingRight: 2 }}>
-              {blogData?.tags?.toString()}
+              {blogData?.tags?.toString().split(",").join(", ")}
             </Typography>
           </Grid>
           <Grid
@@ -63,7 +67,9 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ blogData }) => {
           </Grid>
         </Grid>
         <Box sx={{ paddingTop: 2, paddingBottom: 2 }}>
-          <Markdown skipHtml={false}>{blogData?.description}</Markdown>
+          <ReactMarkdown skipHtml={false}>
+            {blogData?.description}
+          </ReactMarkdown>
         </Box>
       </Box>
     </>

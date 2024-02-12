@@ -40,6 +40,7 @@ export const blogRouter = createTRPCRouter({
         where: {
           publishedAt: {
             not: undefined,
+            lte: new Date(),
           },
         },
         orderBy: {

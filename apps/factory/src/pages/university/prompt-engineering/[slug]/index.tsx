@@ -31,7 +31,7 @@ const index: React.FC<indexProps> = () => {
             overflowY: "scroll",
           }}
         >
-          <Header headerName={`Sugarcane AI`}></Header>
+          <Header headerName={`Sugar University`}></Header>
           <Container>
             <VideoPlayer videoLink={blogData!.mediaUrl} />
             <VideoDetails blogData={blogData} />
