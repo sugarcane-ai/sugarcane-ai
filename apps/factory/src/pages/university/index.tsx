@@ -106,7 +106,7 @@ const BlogsPage: NextPage = () => {
                 >
                   <Card
                     sx={{
-                      backgroundColor: "var(--sugarhub-ternary-bg-color)",
+                      backgroundColor: "var(--sugarhub-bg-color)",
                       width: "350px",
                       maxHeight: "480px",
                       // border: 0,
