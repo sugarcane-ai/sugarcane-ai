@@ -1,15 +1,15 @@
-import { Box, Card, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import React from "react";
 import { FaFolder } from "react-icons/fa";
 import { FaRegClock } from "react-icons/fa";
 import Markdown from "react-markdown";
+import { GetBlogOutput } from "~/validators/blog";
 
-type VideoDetailsProps = {};
+type VideoDetailsProps = {
+  blogData: GetBlogOutput;
+};
 
-const VideoDetails: React.FC<VideoDetailsProps> = () => {
-  const markdown =
-    "*helllo* Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae possimus vero enim natus tenetur quasi aliquid, dolor obcaecati maxime ad dicta odit odio ratione ab numquam, minus similique optio rerum. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae possimus vero enim natus tenetur quasi aliquid, dolor obcaecati maxime ad dicta odit odio ratione ab numquam, minus similique optio rerum. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae possimus vero enim natus tenetur quasi aliquid, dolor obcaecati maxime ad dicta odit odio ratione ab numquam, minus similique optio rerum. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae possimus vero enim natus tenetur quasi aliquid, dolor obcaecati maxime ad dicta odit odio ratione ab numquam, minus similique optio rerum. ";
-
+const VideoDetails: React.FC<VideoDetailsProps> = ({ blogData }) => {
   return (
     <>
       <Box
@@ -21,8 +21,7 @@ const VideoDetails: React.FC<VideoDetailsProps> = () => {
         }}
       >
         <Typography sx={{ fontSize: 28, fontWeight: "bold", paddingTop: 3 }}>
-          Have a good coding Have a good codingHave a good codingHave a good
-          codingHave a good codingHave a good coding s
+          {blogData?.title}
         </Typography>
         <Grid
           container
@@ -46,8 +45,7 @@ const VideoDetails: React.FC<VideoDetailsProps> = () => {
           >
             <FaFolder />
             <Typography sx={{ paddingLeft: 2, paddingRight: 2 }}>
-              Topics, Topics, Topics,Topics, Topics, Topics, Topics, Topics,
-              Topics,{" "}
+              {blogData?.tags?.toString()}
             </Typography>
           </Grid>
           <Grid
@@ -58,12 +56,14 @@ const VideoDetails: React.FC<VideoDetailsProps> = () => {
           >
             <FaRegClock />
             <Typography sx={{ paddingLeft: 2, paddingRight: 2 }}>
-              11th Feb 2023{" "}
+              {blogData?.publishedAt
+                ? blogData?.publishedAt.toDateString()
+                : "Publish Date"}
             </Typography>
           </Grid>
         </Grid>
         <Box sx={{ paddingTop: 2, paddingBottom: 2 }}>
-          <Markdown skipHtml={false}>{markdown}</Markdown>
+          <Markdown skipHtml={false}>{blogData?.description}</Markdown>
         </Box>
       </Box>
     </>

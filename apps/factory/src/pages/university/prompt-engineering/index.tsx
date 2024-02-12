@@ -13,7 +13,7 @@ import { NextPage } from "next";
 import { api } from "~/utils/api";
 
 const BlogsPage: NextPage = () => {
-  const { data, isLoading, isError, error } = api.blog.getBlogs.useQuery();
+  const { data, isLoading, isError, error } = api.blog.getBlogs.useQuery({});
 
   if (isLoading) {
     return (
