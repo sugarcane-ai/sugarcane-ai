@@ -55,7 +55,7 @@ const index: React.FC<indexProps> = () => {
           overflowY: "scroll",
         }}
       >
-        <Header headerName={`SugarHub`}></Header>
+        <Header headerName={`Sugarcane AI`}></Header>
         <Container>
           <Box
             sx={{
