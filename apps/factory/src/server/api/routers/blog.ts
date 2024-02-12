@@ -56,7 +56,7 @@ export const blogRouter = createTRPCRouter({
       return blogs;
     }),
 
-  getBlog: protectedProcedure
+  getBlog: publicProcedure
     .input(getBlogInput)
     .output(getBlogOutput)
     .query(async ({ ctx, input }) => {
