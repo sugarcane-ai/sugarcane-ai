@@ -83,6 +83,7 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ blogData }) => {
               setOpenShareModal={setOpenShareModal}
               open={openShareModal}
               shareUrl={`${process.env.NEXT_PUBLIC_APP_URL}${router.asPath}`}
+              shareTitle={"Share Course"}
             />
           </Grid>
         </Grid>
