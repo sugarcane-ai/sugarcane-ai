@@ -674,7 +674,7 @@ function PromptVersion({
                             display: "flex",
                           }}
                         >
-                          <DownloadButtonBase64 base64image={promptOutput} />|
+                          <DownloadButtonBase64 logId={pl?.id} />|
                         </div>
                       ) : (
                         <div

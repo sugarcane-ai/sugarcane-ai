@@ -64,7 +64,12 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
             )}
           </Box>
         ) : (
-          <OutputTextAnimation output={output} modelType={modelType} />
+          pl && (
+            <OutputTextAnimation
+              output={pl.completion}
+              modelType={pl.llmModelType}
+            />
+          )
         )}
       </>
     );
@@ -74,7 +79,7 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
         className={`${
           cube ? "outputImage h-full w-full" : imgClassName
         } object-fill`}
-        src={output}
+        src={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/logs/${pl.id}/image.png?w=${w}&h=${h}`}
         alt="Image"
       />
     );

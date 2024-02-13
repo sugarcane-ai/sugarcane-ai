@@ -62,6 +62,7 @@ import {
   processLlmResponse,
 } from "~/validators/llm_respose";
 import { LogOutput } from "~/validators/prompt_log";
+import Gallery from "./gallery";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -131,21 +132,43 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
         id: logId,
       },
       {
-        onSuccess(item: LogOutput) {
-          if (item !== null) {
-            setPromptOutput(
-              processLlmResponse(item?.llmResponse as LlmResponse) as string,
-            );
-          }
+        onSuccess(item) {
+          handlePromptOutput(item);
         },
       },
     );
   }
 
+  const { data: imagesData, refetch: refetchImageData } =
+    api.log.getLogs.useQuery({
+      promptPackageId: data?.promptPackageId,
+      promptTemplateId: data?.templateId,
+      perPage: 10,
+      environment: undefined,
+      llmModel: undefined,
+      llmProvider: undefined,
+      version: data?.version,
+    });
+
   const haveroleUserAssistant = providerModels[
     `${data?.modelType as keyof typeof providerModels}`
   ]?.models[`${data?.llmProvider}`]?.find((mod) => mod.name === data?.model)
     ?.hasRole;
+
+  const handlePromptOutput = (pl: any) => {
+    if (pl !== null) {
+      setPl(pl);
+      setPromptOutput(
+        processLlmResponse(pl?.llmResponse as LlmResponse) as string,
+      );
+      setPromptPerformacne({
+        latency: pl.latency,
+        prompt_tokens: pl.prompt_tokens,
+        completion_tokens: pl.completion_tokens,
+        total_tokens: pl.total_tokens,
+      });
+    }
+  };
 
   const handleVariablesChange = (k: string, v: string) => {
     setVariables((pvrs) => {
@@ -185,6 +208,9 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
         data: data,
       } as GenerateInput,
       {
+        onSuccess() {
+          refetchImageData();
+        },
         onSettled(lPl: any, error) {
           let lr = lPl?.llmResponse as LlmResponse;
           setIsLoading(false);
@@ -196,19 +222,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     );
 
     console.log(`pl >>>>>>>: ${JSON.stringify(pl)}`);
-    if (pl) {
-      setPl(pl);
-      setPromptOutput(
-        processLlmResponse(pl?.llmResponse as LlmResponse) as string,
-      );
-
-      setPromptPerformacne({
-        latency: pl.latency,
-        prompt_tokens: pl.prompt_tokens,
-        completion_tokens: pl.completion_tokens,
-        total_tokens: pl.total_tokens,
-      });
-    }
+    handlePromptOutput(pl);
   };
 
   const handleChange = () => {
@@ -227,7 +241,11 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const shareUrl =
     `${process.env.NEXT_PUBLIC_APP_URL}/${username}/${packageName}/${template}/${versionOrEnvironment}` +
     (openShareModal === "imageshare" ? `?logId=${pl?.id}` : "");
-  const imageUrl = `${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/og`;
+  const imageUrl =
+    `${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/` +
+    (openShareModal === "imageshare"
+      ? `logs/${pl?.id}?w=${1200}&h=${630}`
+      : "og.png");
 
   const loadingButtonClass = {
     "&:hover ": {
@@ -498,7 +516,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                                     </IconButton>
                                   </Tooltip>
                                   <DownloadButtonBase64
-                                    base64image={promptOutput}
+                                    logId={pl?.id as string}
                                   />
                                 </>
                               )}
@@ -536,6 +554,18 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                 </>
               )}
             </div>
+            <Box sx={{ margin: "1rem" }}>
+              <Typography
+                sx={{
+                  color: "var(--sugarhub-text-color)",
+                  textAlign: "center",
+                  fontSize: { xs: "2rem", sm: "2rem", lg: "2rem" },
+                }}
+              >
+                Gallery
+              </Typography>
+              <Gallery imagesData={imagesData} />
+            </Box>
           </Container>
         </Box>
         <Footer />
