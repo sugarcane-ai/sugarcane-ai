@@ -10,7 +10,7 @@ import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 import OpenAIVendor from "~/services/vendors/openai_vendors";
 import { v4 as uuidv4 } from "uuid";
 import { PromptRoleEnum } from "~/validators/base";
-import { errorHandling } from "../vendors/base_vendor";
+import { errorHandling } from "../vendors/error_handling";
 export interface LLMConfig {
   max_tokens: number;
   temperature: number;

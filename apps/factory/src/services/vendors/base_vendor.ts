@@ -1,6 +1,7 @@
 import { GPTResponseType } from "~/validators/openaiResponse";
 import { fakeResponse } from "../llm_response/fake_response";
 import { logLLMResponse, truncateObj } from "~/utils/log";
+import { errorHandling, ErrorResponse } from "./error_handling";
 
 class BaseVendor {
   private endpoint: string;
@@ -82,7 +83,7 @@ export async function fetchWithRetry(
   options: RequestInit,
   maxRetries: number,
   retryDelay: number,
-): Promise<{ data: any; error: null } | { data: null; error: any }> {
+): Promise<{ data: any | null; error: ErrorResponse | null }> {
   let retryCount = 0;
 
   while (retryCount < maxRetries) {
@@ -96,16 +97,18 @@ export async function fetchWithRetry(
             await truncateObj(response.text()),
           )}`,
         );
-        errorHandling({
+        const errorResponse: ErrorResponse = {
           code: response.status,
           message: response.statusText,
           vendorCode: response.status,
           vendorMessage: response.statusText,
-        });
+        };
+        errorHandling(errorResponse);
+        return { data: null, error: errorResponse };
       }
     } catch (error: any) {
       console.error(`Request failed: ${url}`, error);
-      errorHandling(error);
+      errorHandling(error as ErrorResponse);
     }
 
     retryCount++;
@@ -119,50 +122,6 @@ export async function fetchWithRetry(
     data: null,
     error: null,
   };
-}
-
-export interface ErrorResponse {
-  code: string | null | number;
-  message: string | null;
-  vendorCode: string | null | number;
-  vendorMessage: string | null;
-}
-
-export function errorHandling({
-  code,
-  message,
-  vendorCode,
-  vendorMessage,
-}: ErrorResponse) {
-  if (vendorCode) {
-    if (vendorCode && /^[4]/.test(vendorCode.toString())) {
-      const clientError = {
-        code: "CLIENT_ERROR",
-        message: "Client error occurred.",
-        vendorCode,
-        vendorMessage: vendorMessage || "Unknown client error.",
-      };
-      throw clientError;
-    } else if (vendorCode && /^[5]/.test(vendorCode.toString())) {
-      const serverError = {
-        code: "SERVER_ERROR",
-        message: "Server error occurred.",
-        vendorCode,
-        vendorMessage: vendorMessage || "Unknown server error.",
-      };
-      throw serverError;
-    } else if (vendorCode === null) {
-      const internalError = {
-        code: "INTERNAL_ERROR",
-        message: "Internal server error occurred.",
-        vendorCode: null,
-        vendorMessage: null,
-      };
-      throw internalError;
-    }
-  }
-
-  return { code, message, vendorCode, vendorMessage };
 }
 
 export default BaseVendor;
