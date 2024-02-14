@@ -19,11 +19,8 @@ export async function run(
   dryRun: boolean = false,
 ) {
   let client = new DeepInfraVendor("prompthero", "openjourney");
-  const { response, latency } = await client.makeApiCallWithRetry(
-    prompt,
-    dryRun,
-  );
-  return generateOutput(response, llmModelType, latency);
+  const lr = await client.makeApiCallWithRetry(prompt, dryRun);
+  return lr;
 }
 
 const open_Journey: PromptDataSchemaType = {

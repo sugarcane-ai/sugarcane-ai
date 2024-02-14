@@ -125,3 +125,5 @@ export const logRouter = createTRPCRouter({
       return pL;
     }),
 });
+
+// {"data":{"completion":"This is fake respoonse generated for testing purposes", "v": "1"},"error":null}

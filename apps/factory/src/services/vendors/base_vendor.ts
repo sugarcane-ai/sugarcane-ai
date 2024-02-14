@@ -1,7 +1,12 @@
 import { GPTResponseType } from "~/validators/openaiResponse";
 import { fakeResponse } from "../llm_response/fake_response";
 import { logLLMResponse, truncateObj } from "~/utils/log";
-import { errorHandling, ErrorResponse } from "./error_handling";
+import { ErrorResponse, errorCodes } from "./error_handling";
+import {
+  RunResponse,
+  LlmResponse,
+  PerformanceMetrics,
+} from "~/validators/llm_respose";
 
 class BaseVendor {
   private endpoint: string;
@@ -29,6 +34,10 @@ class BaseVendor {
     return myHeaders;
   }
 
+  protected parseResponse(response: any, latency: number): PerformanceMetrics {
+    throw "To be implemented";
+  }
+
   protected createRequestOptions(prompt: string): RequestInit {
     const formdata = new FormData();
     formdata.append("prompt", `${prompt}`);
@@ -48,10 +57,9 @@ class BaseVendor {
   async makeApiCallWithRetry(
     prompt: string,
     dryRun: boolean,
-  ): Promise<{ response: Response | null; latency: number }> {
+  ): Promise<RunResponse> {
     const requestOptions = this.createRequestOptions(prompt);
     const startTime = new Date();
-
     let response;
     if (!dryRun) {
       console.log(this.getUrl(), JSON.stringify(requestOptions));
@@ -62,9 +70,7 @@ class BaseVendor {
         this.retryDelay,
       );
 
-      if (fetchResult.data !== null) {
-        response = fetchResult.data;
-      }
+      response = fetchResult;
     } else {
       response = this.createFakeResponse();
     }
@@ -72,9 +78,11 @@ class BaseVendor {
     const endTime = new Date();
     const latency: number = endTime.getTime() - startTime.getTime();
 
+    let { lr, performance }: any = this.parseResponse(response, latency);
+
     logLLMResponse(this.constructor.name, response);
 
-    return { response, latency };
+    return { response: lr, performance };
   }
 }
 
@@ -83,32 +91,24 @@ export async function fetchWithRetry(
   options: RequestInit,
   maxRetries: number,
   retryDelay: number,
-): Promise<{ data: any | null; error: ErrorResponse | null }> {
+) {
   let retryCount = 0;
 
   while (retryCount < maxRetries) {
     try {
       const response = await fetch(url, options);
       if (response.ok) {
-        return { data: await response.json(), error: null };
+        return response.json();
       } else {
         console.error(
           `Status ${response.status} ${response.statusText}: ${JSON.stringify(
             await truncateObj(response.text()),
           )}`,
         );
-        const errorResponse: ErrorResponse = {
-          code: response.status,
-          message: response.statusText,
-          vendorCode: response.status,
-          vendorMessage: response.statusText,
-        };
-        errorHandling(errorResponse);
-        return { data: null, error: errorResponse };
+        return response;
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error(`Request failed: ${url}`, error);
-      errorHandling(error as ErrorResponse);
     }
 
     retryCount++;
@@ -117,11 +117,7 @@ export async function fetchWithRetry(
     }
   }
 
-  // Return a special case if maximum retries are reached
-  return {
-    data: null,
-    error: null,
-  };
+  return null;
 }
 
 export default BaseVendor;

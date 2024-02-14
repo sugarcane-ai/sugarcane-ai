@@ -2,15 +2,24 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   LlmConfigSchema,
-  PromptDataSchema,
   PromptDataSchemaType,
 } from "~/validators/prompt_version";
-import { generateOutput } from "../llm_response/response";
-import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
+import {
+  ModelTypeType,
+  ModelTypeSchema,
+} from "~/generated/prisma-client-zod.ts";
 import OpenAIVendor from "~/services/vendors/openai_vendors";
 import { v4 as uuidv4 } from "uuid";
 import { PromptRoleEnum } from "~/validators/base";
-import { errorHandling } from "../vendors/error_handling";
+import { errorCodes, ErrorResponse } from "../vendors/error_handling";
+
+import {
+  RunResponse,
+  getTextResponseV1,
+  getImageResponseV1,
+  LlmResponse,
+} from "~/validators/llm_respose";
+
 export interface LLMConfig {
   max_tokens: number;
   temperature: number;
@@ -33,26 +42,45 @@ export async function run(
   llmConfig: LlmConfigSchema,
   llmModelType: ModelTypeType,
   dryRun: boolean = false,
-) {
+): Promise<RunResponse> {
   try {
     // Capture the start time
     const startTime = new Date();
-    let response;
+    let response: any;
     const client = new OpenAIVendor(llm_model);
     response = await client.main(prompt, dryRun);
 
     // Capture the end time
     const endTime = new Date();
     const latency: number = Number(endTime) - Number(startTime);
-    return generateOutput(response, llmModelType, latency);
+    let lr: LlmResponse;
+    if (llmModelType !== ModelTypeSchema.Enum.TEXT2IMAGE) {
+      if (response?.choices?.length > 0) {
+        lr = getTextResponseV1(response?.choices[0]?.text);
+      }
+    } else {
+      if (response?.images?.length > 0) {
+        lr = getImageResponseV1(response?.images[0]);
+      }
+    }
+    return {
+      response: lr,
+      performance: { latency: latency || 0, ...response?.usage },
+    };
   } catch (error: any) {
     console.log(error);
-    errorHandling({
-      code: error?.status,
-      message: error?.error?.message,
+    const responseCode = error?.status;
+    const errorDetails = errorCodes[responseCode];
+    const errorResponse: ErrorResponse = {
+      code: parseInt(responseCode),
+      message: errorDetails?.message || `Unknown Error: ${responseCode}`,
       vendorCode: error?.status,
-      vendorMessage: error?.error?.message,
-    });
+      vendorMessage: error?.error?.message || `Unknown Error: ${responseCode}`,
+    };
+    return {
+      response: { data: null, error: errorResponse },
+      performance: {},
+    };
   }
 }
 

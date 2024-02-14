@@ -211,43 +211,38 @@ function PromptVersion({
     for (const item of pvrs) {
       data[`${item.type}${item.key}`] = item.value;
     }
-
-    try {
-      const pl = await generateMutation.mutateAsync(
-        {
-          username: ns.username,
-          package: pp?.name || "",
-          template: pt?.name || "",
-          versionOrEnvironment: lpv.version || "",
-          isDevelopment: checked,
-          // llmModelType: pt?.modelType,
-          environment: promptEnvironment.Enum.DEV,
-          data: data,
-        } as GenerateInput,
-        {
-          onSuccess() {
-            setIsRunning(false);
-          },
-          onError(error) {
-            setIsRunning(false);
-            console.log(error);
-          },
+    const pl = await generateMutation.mutateAsync(
+      {
+        username: ns.username,
+        package: pp?.name || "",
+        template: pt?.name || "",
+        versionOrEnvironment: lpv.version || "",
+        isDevelopment: checked,
+        // llmModelType: pt?.modelType,
+        environment: promptEnvironment.Enum.DEV,
+        data: data,
+      } as GenerateInput,
+      {
+        onSettled(lPl, error) {
+          setIsRunning(false);
+          if (lPl?.llmResponse?.error) {
+            toast.error(lPl?.llmResponse.error?.message as string);
+          }
         },
-      );
-      console.log(`pl >>>>>>>: ${JSON.stringify(pl)}`);
-      if (pl) {
-        setPl(pl);
-        setPromptOutput(pl.completion);
-        setPromptPerformacne({
-          latency: pl.latency,
-          prompt_tokens: pl.prompt_tokens,
-          completion_tokens: pl.completion_tokens,
-          total_tokens: pl.total_tokens,
-        });
-        setOutputLog(pl);
-      }
-    } catch (error: any) {
-      toast.error(error?.message);
+      },
+    );
+    console.log(`pl >>>>>>>: ${JSON.stringify(pl)}`);
+
+    if (pl) {
+      setPl(pl);
+      setPromptOutput(pl.llmResponse?.data?.completion);
+      setPromptPerformacne({
+        latency: pl.latency,
+        prompt_tokens: pl?.prompt_tokens,
+        completion_tokens: pl?.completion_tokens,
+        total_tokens: pl?.total_tokens,
+      });
+      setOutputLog(pl);
     }
   };
 
@@ -549,18 +544,18 @@ function PromptVersion({
             color="success"
             variant="outlined"
             onClick={handleRun}
-            disabled={
-              getRole(llm.provider, llm.model) !== 0
-                ? promptInputs.length > 0 &&
-                  !promptInputs.some(
-                    (input: { id: string; role: string; content: string }) =>
-                      input.content.length === 0,
-                  )
-                  ? pvrs.some((v) => v.value.length === 0)
-                  : true
-                : template.length <= 10 ||
-                  pvrs.some((v) => v.value.length === 0)
-            }
+            // disabled={
+            //   getRole(llm.provider, llm.model) !== 0
+            //     ? promptInputs.length > 0 &&
+            //       !promptInputs.some(
+            //         (input: { id: string; role: string; content: string }) =>
+            //           input.content.length === 0,
+            //       )
+            //       ? pvrs.some((v) => v.value.length === 0)
+            //       : true
+            //     : template.length <= 10 ||
+            //       pvrs.some((v) => v.value.length === 0)
+            // }
             loadingPosition="start"
             startIcon={<PlayArrowIcon />}
             loading={isRunning}

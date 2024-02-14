@@ -1,6 +1,14 @@
 import BaseVendor from "~/services/vendors/base_vendor";
 import { fakeResponse } from "~/services/llm_response/fake_response";
 import KeyManager from "~/services/vendors/keys_manager";
+import {
+  LlmResponse,
+  PerformanceMetrics,
+  getTextResponseV1,
+  getImageResponseV1,
+  RunResponse,
+} from "~/validators/llm_respose";
+import { ErrorResponse, errorCodes } from "./error_handling";
 
 class DeepInfraVendor extends BaseVendor {
   private provider: string;
@@ -60,6 +68,36 @@ class DeepInfraVendor extends BaseVendor {
       headers: this.createHeaders(),
       body: JSON.stringify({ input: prompt }),
     };
+  }
+
+  protected parseResponse(response: any, latency: number): RunResponse {
+    let lr: LlmResponse;
+    let performance: PerformanceMetrics =
+      {
+        latency: latency || 0,
+        total_tokens: response.num_input_tokens + response.num_tokens || 0,
+        prompt_tokens: response.num_input_tokens || 0,
+        completion_tokens: response.num_tokens || 0,
+      } || {};
+
+    if (response?.results?.length > 0) {
+      lr = getTextResponseV1(response.results[0]?.generated_text);
+    } else if (response?.images?.length > 0) {
+      lr = getImageResponseV1(response.images[0]);
+    } else {
+      const responseCode = response.status;
+      const errorDetails = errorCodes[responseCode];
+      const errorResponse: ErrorResponse = {
+        code: responseCode,
+        message: errorDetails?.message || `Unknown Error: ${responseCode}`,
+        vendorCode: response.status,
+        vendorMessage: response.statusText || `Unknown Error: ${responseCode}`,
+      };
+
+      lr = { data: null, error: errorResponse };
+    }
+
+    return { lr, performance };
   }
 }
 

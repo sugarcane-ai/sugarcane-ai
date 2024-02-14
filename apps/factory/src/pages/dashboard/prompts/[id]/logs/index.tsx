@@ -32,6 +32,7 @@ import PromotOutputLog from "~/components/prompt_output_log";
 import { providerModels } from "~/validators/base";
 import { PromptView } from "~/components/prompt_view_arrow";
 import DownloadButtonBase64 from "~/components/download_button_base64";
+import { getCompletionResponse } from "~/validators/llm_respose";
 
 interface PromptLogTableProps {
   logModeMax: boolean;
@@ -226,16 +227,22 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                   >
                     <PromptCompletion
                       modelType={log.llmModelType}
-                      output={log.completion}
+                      output={getCompletionResponse(log?.llmResponse?.data)}
                       tokens={log.completion_tokens}
                       imgClassName={"h-42 w-96 object-contain"}
                       textAnimation={false}
                     />
                     {log.llmModelType !== ModelTypeSchema.Enum.TEXT2TEXT ? (
-                      <DownloadButtonBase64 base64image={log.completion} />
+                      <DownloadButtonBase64
+                        base64image={getCompletionResponse(
+                          log?.llmResponse?.data,
+                        )}
+                      />
                     ) : (
                       <CopyToClipboardButton
-                        textToCopy={log.completion}
+                        textToCopy={getCompletionResponse(
+                          log?.llmResponse?.data,
+                        )}
                         textToDisplay={"Copy"}
                       />
                     )}

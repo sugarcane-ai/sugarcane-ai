@@ -55,6 +55,8 @@ import CopyToClipboardButton from "./copy_button";
 import AddIcon from "@mui/icons-material/Add";
 import DownloadButtonBase64 from "./download_button_base64";
 import LikeButton from "./marketplace/like_button";
+import toast from "react-hot-toast";
+import { getCompletionResponse } from "~/validators/llm_respose";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -126,7 +128,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
       {
         onSuccess(item) {
           if (item !== null) {
-            setPromptOutput(item.completion);
+            setPromptOutput(getCompletionResponse(item?.llmResponse?.data));
           }
         },
       },
@@ -176,11 +178,11 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
         data: data,
       } as GenerateInput,
       {
-        onSuccess() {
+        onSettled(lPl, error) {
           setIsLoading(false);
-        },
-        onError() {
-          setIsLoading(false);
+          if (lPl?.llmResponse?.error) {
+            toast.error(lPl?.llmResponse.error?.message as string);
+          }
         },
       },
     );
@@ -188,7 +190,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     console.log(`pl >>>>>>>: ${JSON.stringify(pl)}`);
     if (pl) {
       setPl(pl);
-      setPromptOutput(pl.completion);
+      setPromptOutput(pl?.llmResponse?.data?.completion);
       setPromptPerformacne({
         latency: pl.latency,
         prompt_tokens: pl.prompt_tokens,

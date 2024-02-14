@@ -29,11 +29,9 @@ async function runXylem(
   dryRun: boolean,
 ) {
   const client = new XylemVendor("WizardCoder", llmModel);
-  const { response, latency } = await client.makeApiCallWithRetry(
-    prompt,
-    dryRun,
-  );
-  return generateOutput(response, llmModelType, latency);
+  const lr = await client.makeApiCallWithRetry(prompt, dryRun);
+
+  return lr;
 }
 
 const WizardCoder_34B: PromptDataSchemaType = {

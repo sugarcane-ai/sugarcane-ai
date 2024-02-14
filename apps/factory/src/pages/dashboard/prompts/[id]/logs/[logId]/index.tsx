@@ -24,6 +24,7 @@ import {
 import DownloadButtonImg from "~/components/download_button_img";
 import CopyToClipboardButton from "~/components/copy_button";
 import DownloadButtonBase64 from "~/components/download_button_base64";
+import { getCompletionResponse } from "~/validators/llm_respose";
 
 const LogShow: NextPageWithLayout = () => {
   const router = useRouter();
@@ -89,10 +90,16 @@ const LogShow: NextPageWithLayout = () => {
                   <Box>
                     <Typography>Completion</Typography>
                     {data.llmModelType === ModelTypeSchema.Enum.TEXT2IMAGE ? (
-                      <DownloadButtonBase64 base64image={data?.completion} />
+                      <DownloadButtonBase64
+                        base64image={getCompletionResponse(
+                          data?.llmResponse.data,
+                        )}
+                      />
                     ) : (
                       <CopyToClipboardButton
-                        textToCopy={data?.completion}
+                        textToCopy={getCompletionResponse(
+                          data?.llmResponse.data,
+                        )}
                         textToDisplay={"Copy"}
                       />
                     )}
@@ -101,7 +108,7 @@ const LogShow: NextPageWithLayout = () => {
                 <TableCell>
                   <PromptCompletion
                     modelType={data?.llmModelType}
-                    output={data?.completion}
+                    output={getCompletionResponse(data?.llmResponse.data)}
                     tokens={data?.completion_tokens}
                     imgClassName={"h-48 w-96 object-contain"}
                     textAnimation={false}
