@@ -2,7 +2,6 @@ import {
   LlmConfigSchema,
   PromptDataSchemaType,
 } from "~/validators/prompt_version";
-import { generateOutput } from "../llm_response/response";
 import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 import DeepInfraVendor from "../vendors/deepinfra_vendor";
 import StabilityAIVendor from "../vendors/stabilityai_vendor";

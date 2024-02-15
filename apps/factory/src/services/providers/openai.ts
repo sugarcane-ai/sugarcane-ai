@@ -11,7 +11,7 @@ import {
 import OpenAIVendor from "~/services/vendors/openai_vendors";
 import { v4 as uuidv4 } from "uuid";
 import { PromptRoleEnum } from "~/validators/base";
-import { errorCodes, ErrorResponse } from "../vendors/error_handling";
+import { errorCodes, LlmErrorResponse } from "../vendors/error_handling";
 
 import {
   RunResponse,
@@ -53,7 +53,7 @@ export async function run(
     // Capture the end time
     const endTime = new Date();
     const latency: number = Number(endTime) - Number(startTime);
-    let lr: LlmResponse | undefined;
+    let lr: LlmResponse | null = null;
     if (llmModelType !== ModelTypeSchema.Enum.TEXT2IMAGE) {
       if (response?.choices?.length > 0) {
         lr = getTextResponseV1(response?.choices[0]?.text);
@@ -71,7 +71,7 @@ export async function run(
     console.log(error);
     const responseCode = error?.status;
     const errorDetails = errorCodes[responseCode];
-    const errorResponse: ErrorResponse = {
+    const errorResponse: LlmErrorResponse = {
       code: parseInt(responseCode),
       message: errorDetails?.message || `Unknown Error: ${responseCode}`,
       vendorCode: error?.status,

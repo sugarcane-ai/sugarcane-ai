@@ -7,7 +7,7 @@ export enum ResponseType {
   VIDEO = 4,
 }
 
-export const ErrorResponseSchema = z.object({
+export const llmLlmErrorResponseSchema = z.object({
   code: z.number(),
   message: z.string().nullable(),
   vendorCode: z.number().nullable(),
@@ -38,16 +38,25 @@ export const codeResponseV1 = z.object({
   t: z.literal(ResponseType.CODE),
 });
 
-export const llmResponseDataSchema = z.union([
-  textResponseV1,
-  imageResponseV1,
-  imageResponseV2,
-  codeResponseV1,
-]);
+export const llmResponseDataSchema = z
+  .union([textResponseV1, imageResponseV1, codeResponseV1])
+  .transform((data) => {
+    if (data.t === ResponseType.TEXT) {
+      return { ...textResponseV1.parse(data), v: 1 };
+    } else if (data.t === ResponseType.IMAGE && data.v === 1) {
+      return { ...imageResponseV1.parse(data), v: 1 };
+    } else if (data.t === ResponseType.IMAGE && data.v === 2) {
+      return { ...imageResponseV2.parse(data), v: 2 };
+    } else if (data.t === ResponseType.CODE) {
+      return { ...codeResponseV1.parse(data), v: 1 };
+    } else {
+      throw new Error("Invalid response type");
+    }
+  });
 
 export const llmResponseSchema = z.object({
   data: llmResponseDataSchema.nullable(),
-  error: ErrorResponseSchema.nullable(),
+  error: llmLlmErrorResponseSchema.nullable(),
 });
 
 export const performanceMetrics = z.object({});
@@ -56,6 +65,15 @@ export const runResponseSchema = z.object({
   response: llmResponseSchema.nullable(),
   performance: performanceMetrics.nullable(),
 });
+
+export const getLlmErrorResponseV1 = function (
+  errorResponse: LlmErrorResponse,
+): LlmResponse {
+  return {
+    data: null,
+    error: errorResponse,
+  };
+};
 
 export const getTextResponseV1 = function (text: string): LlmResponse {
   return {
@@ -106,17 +124,29 @@ export const getCompletionResponse = function (data: any): string {
   return data?.completion ?? data?.base64 ?? data?.url ?? "";
 };
 
-export const processLlmResponse = (llmResponse: LlmResponse) => {
-  if (llmResponse) {
-    let lr = llmResponse as LlmResponse;
-    let llrImage = lr.data as ImageResponseV1;
-    let llrText = lr.data as TextResponseV1;
-    return llrText?.completion || llrImage?.base64;
+export const processLlmResponse = (llmResponse: LlmResponse): string | null => {
+  if (!llmResponse || Object.keys(llmResponse).length === 0) {
+    return null;
   }
+  const lr = llmResponseSchema.parse(llmResponse);
+  if (lr?.data) {
+    if (lr.data.t == ResponseType.TEXT || lr.data.t == ResponseType.CODE) {
+      return lr.data.completion;
+    }
+    if (lr.data.t == ResponseType.IMAGE) {
+      if (lr.data.v == 2) {
+        return (lr.data as ImageResponseV2).url;
+      }
+      if (lr.data.v == 1) {
+        return (lr.data as ImageResponseV1).base64;
+      }
+    }
+  }
+
   return null;
 };
 
-export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;
+export type LlmErrorResponse = z.infer<typeof llmLlmErrorResponseSchema>;
 export type LlmResponse = z.infer<typeof llmResponseSchema>;
 export type RunResponse = z.infer<typeof runResponseSchema>;
 export type PerformanceMetrics = z.infer<typeof performanceMetrics>;
@@ -124,4 +154,4 @@ export type TextResponseV1 = z.infer<typeof textResponseV1>;
 export type CodeResponseV1 = z.infer<typeof codeResponseV1>;
 export type ImageResponseV1 = z.infer<typeof imageResponseV1>;
 export type ImageResponseV2 = z.infer<typeof imageResponseV2>;
-export type LlmResponseDataSchema = z.infer<typeof llmResponseDataSchema>;
+// export type LlmResponseData = z.infer<typeof llmResponseDataSchema>;

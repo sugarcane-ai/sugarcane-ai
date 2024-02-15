@@ -41,7 +41,7 @@ const PromptLlmResponse: React.FC<PromptLlmResponseProps> = ({
           cube={cube}
         />
       ) : (
-        <LlmErrorResponse
+        <LlmLlmErrorResponse
           pl={pl}
           imgClassName={imgClassName}
           textAnimation={textAnimation}
@@ -120,7 +120,7 @@ const LlmDataResponse: React.FC<PromptLlmResponseProps> = ({
   }
 };
 
-const LlmErrorResponse: React.FC<PromptLlmResponseProps> = ({ pl }) => {
+const LlmLlmErrorResponse: React.FC<PromptLlmResponseProps> = ({ pl }) => {
   let lr = pl?.llmResponse as LlmResponse;
   return (
     <Typography variant="body2" color="error">

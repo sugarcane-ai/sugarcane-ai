@@ -2,7 +2,7 @@ import BaseVendor from "~/services/vendors/base_vendor";
 import { fetchWithRetry } from "~/services/vendors/base_vendor";
 import { logLLMResponse } from "~/utils/log";
 import {
-  ErrorResponse,
+  LlmErrorResponse,
   LlmResponse,
   PerformanceMetrics,
   RunResponse,
@@ -99,11 +99,7 @@ class XylemVendor extends BaseVendor {
   }
 
   protected parseResponse(response: any, latency: number): RunResponse {
-    console.log("parseResponsexyle");
-    console.log("parseResponsexyle");
-    console.log(response);
-    console.log("parseResponsexyle");
-    let lr: LlmResponse;
+    let lr: LlmResponse | null = null;
     let performance: PerformanceMetrics;
     if (response?.choices?.length > 0) {
       let responseMessage = response?.choices[0];
@@ -121,7 +117,7 @@ class XylemVendor extends BaseVendor {
     } else {
       const responseCode = response.status;
       const errorDetails = errorCodes[responseCode];
-      const errorResponse: ErrorResponse = {
+      const errorResponse: LlmErrorResponse = {
         code: responseCode,
         message: errorDetails?.message || `Unknown Error: ${responseCode}`,
         vendorCode: response.status,
@@ -132,7 +128,7 @@ class XylemVendor extends BaseVendor {
       performance = {};
     }
 
-    return { lr, performance };
+    return { response: lr, performance: performance };
   }
 }
 

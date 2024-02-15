@@ -243,7 +243,9 @@ function PromptVersion({
 
     if (pl) {
       setPl(pl);
-      setPromptOutput(processLlmResponse(pl?.llmResponse) as string);
+      setPromptOutput(
+        processLlmResponse(pl?.llmResponse as LlmResponse) as string,
+      );
       setPromptPerformacne({
         latency: pl.latency,
         prompt_tokens: pl?.prompt_tokens,

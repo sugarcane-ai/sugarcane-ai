@@ -5,7 +5,6 @@ import {
   ModelTypeSchema,
   PromptRunModesSchema,
 } from "~/generated/prisma-client-zod.ts";
-import { llmResponseSchema, LlmResponse } from "./llm_respose";
 import { InputJsonValue } from "~/generated/prisma-client-zod.ts";
 
 export const getPromptInput = z.object({

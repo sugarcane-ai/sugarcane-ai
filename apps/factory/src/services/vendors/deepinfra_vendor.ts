@@ -7,8 +7,9 @@ import {
   getTextResponseV1,
   getImageResponseV1,
   RunResponse,
+  getLlmErrorResponseV1,
 } from "~/validators/llm_respose";
-import { ErrorResponse, errorCodes } from "./error_handling";
+import { LlmErrorResponse, errorCodes } from "./error_handling";
 
 class DeepInfraVendor extends BaseVendor {
   private provider: string;
@@ -71,34 +72,53 @@ class DeepInfraVendor extends BaseVendor {
   }
 
   protected parseResponse(response: any, latency: number): RunResponse {
-    let lr: LlmResponse;
-    let performance: PerformanceMetrics =
-      {
+    let lr: LlmResponse | null = null;
+    try {
+      if (response?.results?.length > 0) {
+        lr = getTextResponseV1(response.results[0]?.generated_text);
+      } else if (response?.images?.length > 0) {
+        lr = getImageResponseV1(response.images[0]);
+      } else {
+        throw new DeepInfraError("Unhandled response format");
+      }
+
+      const performance: PerformanceMetrics = {
         latency: latency || 0,
-        total_tokens: response.num_input_tokens + response.num_tokens || 0,
+        total_tokens:
+          (response.num_input_tokens || 0) + (response.num_tokens || 0),
         prompt_tokens: response.num_input_tokens || 0,
         completion_tokens: response.num_tokens || 0,
-      } || {};
-
-    if (response?.results?.length > 0) {
-      lr = getTextResponseV1(response.results[0]?.generated_text);
-    } else if (response?.images?.length > 0) {
-      lr = getImageResponseV1(response.images[0]);
-    } else {
-      const responseCode = response.status;
-      const errorDetails = errorCodes[responseCode];
-      const errorResponse: ErrorResponse = {
-        code: responseCode,
-        message: errorDetails?.message || `Unknown Error: ${responseCode}`,
-        vendorCode: response.status,
-        vendorMessage: response.statusText || `Unknown Error: ${responseCode}`,
       };
 
-      lr = { data: null, error: errorResponse };
-    }
+      return { response: lr, performance };
+    } catch (error) {
+      if (error instanceof DeepInfraError) {
+        const responseCode = response?.status || 500;
+        const errorDetails = errorCodes[responseCode];
+        const errorMessage = error.message || "Unknown error";
+        const errorResponse: LlmErrorResponse = {
+          code: responseCode,
+          message: errorDetails?.message || errorMessage,
+          vendorCode: responseCode,
+          vendorMessage: errorDetails?.message || errorMessage,
+        };
 
-    return { lr, performance };
+        lr = getLlmErrorResponseV1(errorResponse);
+
+        return { response: lr, performance: { latency: latency || 0 } };
+      } else {
+        throw error; // Re-throw other exceptions
+      }
+    }
   }
 }
 
 export default DeepInfraVendor;
+
+class DeepInfraError extends Error {
+  constructor(message?: string) {
+    super(message);
+    Object.setPrototypeOf(this, new.target.prototype);
+    this.name = DeepInfraError.name;
+  }
+}

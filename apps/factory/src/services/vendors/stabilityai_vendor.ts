@@ -2,7 +2,7 @@ import BaseVendor from "~/services/vendors/base_vendor";
 import { fakeResponse } from "~/services/llm_response/fake_response";
 import KeyManager from "~/services/vendors/keys_manager";
 import {
-  ErrorResponse,
+  LlmErrorResponse,
   LlmResponse,
   PerformanceMetrics,
   RunResponse,
@@ -90,7 +90,7 @@ class StabilityAIVendor extends BaseVendor {
   }
 
   protected parseResponse(response: any, latency: number): RunResponse {
-    let lr: LlmResponse;
+    let lr: LlmResponse | null = null;
     let performance: PerformanceMetrics;
     if (response?.artifacts?.length > 0) {
       const image = response.artifacts[0]?.base64;
@@ -107,7 +107,7 @@ class StabilityAIVendor extends BaseVendor {
     } else {
       const responseCode = response.status;
       const errorDetails = errorCodes[responseCode];
-      const errorResponse: ErrorResponse = {
+      const errorResponse: LlmErrorResponse = {
         code: responseCode,
         message: errorDetails?.message || `Unknown Error: ${responseCode}`,
         vendorCode: response.status,
@@ -118,7 +118,7 @@ class StabilityAIVendor extends BaseVendor {
       performance = {};
     }
 
-    return { lr, performance };
+    return { response: lr, performance };
   }
 }
 

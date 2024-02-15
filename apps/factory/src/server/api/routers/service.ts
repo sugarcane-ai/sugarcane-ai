@@ -14,7 +14,7 @@ import {
   PromptRunModesSchema,
 } from "~/generated/prisma-client-zod.ts";
 import { env } from "~/env.mjs";
-import { llmResponseSchema, ErrorResponse } from "~/validators/llm_respose";
+import { llmResponseSchema, LlmErrorResponse } from "~/validators/llm_respose";
 
 export const serviceRouter = createTRPCRouter({
   generate: publicProcedure
@@ -39,7 +39,7 @@ export const serviceRouter = createTRPCRouter({
           ? (env.DEMO_USER_ID as string)
           : (ctx.jwt?.id as string);
       let pl;
-      let errorResponse: ErrorResponse | null = null;
+      let errorResponse: LlmErrorResponse | null = null;
 
       if (pv && userId && userId != "") {
         const modelType: ModelTypeType = pv.llmModelType;
@@ -76,6 +76,12 @@ export const serviceRouter = createTRPCRouter({
           input.isDevelopment,
         );
 
+        console.log(
+          `llm response >>>> ${JSON.stringify(rr.response, null, 2)}`,
+        );
+        console.log(
+          `llm performance >>>> ${JSON.stringify(rr.performance, null, 2)}`,
+        );
         try {
           pl = await ctx.prisma.promptLog.create({
             data: {

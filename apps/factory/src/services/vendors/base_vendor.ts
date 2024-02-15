@@ -1,12 +1,7 @@
 import { GPTResponseType } from "~/validators/openaiResponse";
 import { fakeResponse } from "../llm_response/fake_response";
 import { logLLMResponse, truncateObj } from "~/utils/log";
-import { ErrorResponse, errorCodes } from "./error_handling";
-import {
-  RunResponse,
-  LlmResponse,
-  PerformanceMetrics,
-} from "~/validators/llm_respose";
+import { RunResponse } from "~/validators/llm_respose";
 
 class BaseVendor {
   private endpoint: string;
@@ -34,7 +29,7 @@ class BaseVendor {
     return myHeaders;
   }
 
-  protected parseResponse(response: any, latency: number): PerformanceMetrics {
+  protected parseResponse(response: any, latency: number): RunResponse {
     throw "To be implemented";
   }
 
@@ -78,11 +73,10 @@ class BaseVendor {
     const endTime = new Date();
     const latency: number = endTime.getTime() - startTime.getTime();
 
-    let { lr, performance }: any = this.parseResponse(response, latency);
+    const rr = this.parseResponse(response, latency);
+    logLLMResponse(this.constructor.name, rr.response);
 
-    logLLMResponse(this.constructor.name, response);
-
-    return { response: lr, performance };
+    return rr;
   }
 }
 

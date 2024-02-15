@@ -6,11 +6,9 @@ import {
   Container,
   Box,
   Stack,
-  Button,
   Checkbox,
   Grid,
   Typography,
-  Dialog,
   IconButton,
   Tooltip,
   CircularProgress,
@@ -135,7 +133,9 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
       {
         onSuccess(item: LogOutput) {
           if (item !== null) {
-            setPromptOutput(processLlmResponse(item?.llmResponse));
+            setPromptOutput(
+              processLlmResponse(item?.llmResponse as LlmResponse) as string,
+            );
           }
         },
       },
@@ -189,7 +189,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
           let lr = lPl?.llmResponse as LlmResponse;
           setIsLoading(false);
           if (lr?.error) {
-            toast.error(lr.error?.message as string);
+            toast.error(lr.error?.message as string, { duration: 10000 });
           }
         },
       },
@@ -198,7 +198,10 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     console.log(`pl >>>>>>>: ${JSON.stringify(pl)}`);
     if (pl) {
       setPl(pl);
-      setPromptOutput(processLlmResponse(pl?.llmResponse));
+      setPromptOutput(
+        processLlmResponse(pl?.llmResponse as LlmResponse) as string,
+      );
+
       setPromptPerformacne({
         latency: pl.latency,
         prompt_tokens: pl.prompt_tokens,

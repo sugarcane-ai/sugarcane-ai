@@ -1,4 +1,4 @@
-export interface ErrorResponse {
+export interface LlmErrorResponse {
   code: number;
   message: string | null;
   vendorCode: number | null;
