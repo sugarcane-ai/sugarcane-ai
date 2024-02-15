@@ -28,7 +28,7 @@ export const serviceRouter = createTRPCRouter({
     })
     .input(generateInput)
     .use(promptMiddleware)
-    // TODO:fix this
+    // FIXME:
     // .output(generateOutput)
     .mutation(async ({ ctx, input }) => {
       // const userId = input.userId;

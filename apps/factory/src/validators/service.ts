@@ -5,7 +5,8 @@ import {
   ModelTypeSchema,
   PromptRunModesSchema,
 } from "~/generated/prisma-client-zod.ts";
-import { llmResponseSchema, llmResponse } from "./llm_respose";
+import { llmResponseSchema, LlmResponse } from "./llm_respose";
+import { InputJsonValue } from "~/generated/prisma-client-zod.ts";
 
 export const getPromptInput = z.object({
   environment: promptEnvironment.optional(),
@@ -80,7 +81,8 @@ export const logSchema = z.object({
   latency: z.number(),
   prompt_tokens: z.number(),
   completion_tokens: z.number(),
-  llmResponse: llmResponseSchema,
+  // llmResponse: llmResponseSchema,
+  llmResponse: InputJsonValue.nullable(),
   total_tokens: z.number(),
 
   labelledState: LabelledStateSchema,

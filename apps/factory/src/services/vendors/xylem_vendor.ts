@@ -6,6 +6,7 @@ import {
   LlmResponse,
   PerformanceMetrics,
   RunResponse,
+  getCodeResponseV1,
   getTextResponseV1,
 } from "~/validators/llm_respose";
 import { GPTResponseType } from "~/validators/openaiResponse";
@@ -106,7 +107,7 @@ class XylemVendor extends BaseVendor {
     let performance: PerformanceMetrics;
     if (response?.choices?.length > 0) {
       let responseMessage = response?.choices[0];
-      lr = getTextResponseV1(
+      lr = getCodeResponseV1(
         responseMessage.text
           ? responseMessage.text
           : responseMessage.message.content,

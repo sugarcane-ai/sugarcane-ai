@@ -2,13 +2,12 @@ import {
   ModelTypeSchema,
   ModelTypeType,
 } from "~/generated/prisma-client-zod.ts";
-import { llmResponse } from "~/validators/llm_respose";
 
 export function generateOutput(
   response: any,
   llmModelType: ModelTypeType,
   latency: number,
-): llmResponse {
+) {
   if (llmModelType !== ModelTypeSchema.Enum.TEXT2IMAGE) {
     if (response?.choices?.length > 0) {
       return {

@@ -45,7 +45,7 @@ const logSchema = z.object({
   prompt: z.string(),
   version: z.string(),
   completion: z.string().nullable(),
-  llmResponse: llmResponseSchema,
+  llmResponse: InputJsonValue.nullable(),
   llmProvider: z.string(),
   llmModel: z.string(),
   llmConfig: InputJsonValue.nullable(),

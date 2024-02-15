@@ -53,7 +53,7 @@ export async function run(
     // Capture the end time
     const endTime = new Date();
     const latency: number = Number(endTime) - Number(startTime);
-    let lr: LlmResponse;
+    let lr: LlmResponse | undefined;
     if (llmModelType !== ModelTypeSchema.Enum.TEXT2IMAGE) {
       if (response?.choices?.length > 0) {
         lr = getTextResponseV1(response?.choices[0]?.text);

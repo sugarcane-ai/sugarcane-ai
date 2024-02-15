@@ -10,6 +10,7 @@ import {
 export const logRouter = createTRPCRouter({
   getLogs: protectedProcedure
     .input(getLogsInput)
+    // TODO:fix this
     .output(logListOutput)
     .query(async ({ ctx, input }) => {
       const {
@@ -83,6 +84,7 @@ export const logRouter = createTRPCRouter({
 
   getLog: protectedProcedure
     .input(getLogInput)
+    // TODO:fix this
     .output(logOutput)
     .query(async ({ ctx, input }) => {
       const { id } = input;
