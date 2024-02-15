@@ -231,9 +231,7 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                   >
                     {log?.completion && (
                       <PromptCompletion
-                        modelType={log?.llmModelType}
-                        output={log?.completion}
-                        tokens={log?.completion_tokens}
+                        pl={log}
                         imgClassName={"h-32 w-32 object-contain"}
                         textAnimation={false}
                       />

@@ -245,9 +245,9 @@ function PromptVersion({
 
     if (pl) {
       setPl(pl);
-      setPromptOutput(
-        processLlmResponse(pl?.llmResponse as LlmResponse) as string,
-      );
+      // setPromptOutput(
+      //   processLlmResponse(pl?.llmResponse as LlmResponse) as string,
+      // );
       setPromptPerformacne({
         latency: pl.latency,
         prompt_tokens: pl?.prompt_tokens,
@@ -672,7 +672,10 @@ function PromptVersion({
                             display: "flex",
                           }}
                         >
-                          <DownloadButtonBase64 base64image={pl.completion} />|
+                          <DownloadButtonBase64
+                            base64image={pl.completion as string}
+                          />
+                          |
                         </div>
                       ) : (
                         <div
@@ -683,7 +686,7 @@ function PromptVersion({
                           }}
                         >
                           <CopyToClipboardButton
-                            textToCopy={pl.completion}
+                            textToCopy={pl.completion as string}
                             textToDisplay={"Copy"}
                           />
                           |

@@ -62,7 +62,7 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
           </Box>
         ) : (
           <OutputTextAnimation
-            output={pl.completion}
+            output={pl.completion as string}
             modelType={pl.llmModelType}
           />
         )}

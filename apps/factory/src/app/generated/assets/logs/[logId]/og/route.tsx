@@ -2,6 +2,8 @@ import { prisma } from "~/server/db";
 import { ImageResponse, type NextRequest } from "next/server";
 import { env } from "~/env.mjs";
 import { resizeBase64Image } from "~/utils/images";
+import { ResponseType } from "openai/_shims/auto/types";
+import { LlmResponse, processLlmResponse } from "~/validators/llm_respose";
 
 export async function GET(
   req: NextRequest,
@@ -27,7 +29,11 @@ export async function GET(
   const w = parseInt(searchParams.get("w") || defaultWidth);
   const h = parseInt(searchParams.get("h") || w.toString());
 
-  const b64resized = await resizeBase64Image(pl?.completion, w, h, 50);
+  const base64Image =
+    pl?.completion ||
+    (processLlmResponse(pl?.llmResponse as LlmResponse) as string);
+
+  const b64resized = await resizeBase64Image(base64Image, w, h, 50);
   return ogImageResponse(b64resized);
 }
 
