@@ -106,6 +106,16 @@ export const getCompletionResponse = function (data: any): string {
   return data?.completion ?? data?.base64 ?? data?.url ?? "";
 };
 
+export const processLlmResponse = (llmResponse: LlmResponse) => {
+  if (llmResponse) {
+    let lr = llmResponse as LlmResponse;
+    let llrImage = lr.data as ImageResponseV1;
+    let llrText = lr.data as TextResponseV1;
+    return llrText?.completion || llrImage?.base64;
+  }
+  return null;
+};
+
 export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;
 export type LlmResponse = z.infer<typeof llmResponseSchema>;
 export type RunResponse = z.infer<typeof runResponseSchema>;

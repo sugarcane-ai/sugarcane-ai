@@ -62,7 +62,13 @@ import {
 import DownloadButtonBase64 from "./download_button_base64";
 import { getTemplate } from "~/services/providers";
 import CircularProgress from "@mui/material/CircularProgress";
-import { LlmResponse, getCompletionResponse } from "~/validators/llm_respose";
+import {
+  LlmResponse,
+  getCompletionResponse,
+  ImageResponseV1,
+  TextResponseV1,
+  processLlmResponse,
+} from "~/validators/llm_respose";
 
 function PromptVersion({
   ns,
@@ -107,7 +113,6 @@ function PromptVersion({
   const [checked, setChecked] = useState(isDev);
   const [pl, setPl] = useState<GenerateOutput>(null);
   const [promptOutput, setPromptOutput] = useState("");
-  const [promptLlmOutput, setPromptLlmOutput] = useState<LlmResponse>();
   const [promptPerformance, setPromptPerformacne] = useState({});
   const [pvrs, setVariables] = useState<PromptVariableProps[]>(
     getUniqueJsonArray(getVariables(lpv?.template || ""), "key"),
@@ -238,8 +243,7 @@ function PromptVersion({
 
     if (pl) {
       setPl(pl);
-      setPromptOutput(pl?.completion as string);
-      setPromptLlmOutput(pl?.llmResponse as LlmResponse);
+      setPromptOutput(processLlmResponse(pl?.llmResponse) as string);
       setPromptPerformacne({
         latency: pl.latency,
         prompt_tokens: pl?.prompt_tokens,

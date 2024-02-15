@@ -56,7 +56,13 @@ import AddIcon from "@mui/icons-material/Add";
 import DownloadButtonBase64 from "./download_button_base64";
 import LikeButton from "./marketplace/like_button";
 import toast from "react-hot-toast";
-import { LlmResponse, getCompletionResponse } from "~/validators/llm_respose";
+import {
+  ImageResponseV1,
+  LlmResponse,
+  TextResponseV1,
+  getCompletionResponse,
+  processLlmResponse,
+} from "~/validators/llm_respose";
 import { LogOutput } from "~/validators/prompt_log";
 
 interface PromptTemplateViewProps {
@@ -77,7 +83,6 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const [pvrs, setVariables] = useState<PromptVariableProps[]>();
   const [pl, setPl] = useState<GenerateOutput>(null);
   const [promptOutput, setPromptOutput] = useState("");
-  const [promptLlmOutput, setPromptLlmOutput] = useState<LlmResponse>();
   const [promptPerformance, setPromptPerformacne] = useState({});
   const [isOpen, setIsOpen] = useState(false);
   const handleOpen = () => setIsOpen(true);
@@ -130,8 +135,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
       {
         onSuccess(item: LogOutput) {
           if (item !== null) {
-            setPromptOutput(item?.completion as string);
-            setPromptLlmOutput(item?.llmResponse as LlmResponse);
+            setPromptOutput(processLlmResponse(item?.llmResponse));
           }
         },
       },
@@ -194,8 +198,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     console.log(`pl >>>>>>>: ${JSON.stringify(pl)}`);
     if (pl) {
       setPl(pl);
-      setPromptOutput(pl?.completion as string);
-      setPromptLlmOutput(pl?.llmResponse as LlmResponse);
+      setPromptOutput(processLlmResponse(pl?.llmResponse));
       setPromptPerformacne({
         latency: pl.latency,
         prompt_tokens: pl.prompt_tokens,
