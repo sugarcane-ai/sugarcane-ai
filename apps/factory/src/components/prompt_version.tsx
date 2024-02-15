@@ -420,7 +420,7 @@ function PromptVersion({
         ></Box>
         <Grid container spacing={2}>
           {/* add all the code from promptEditor here */}
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={8}>
             <Box>
               {getRole(llm.provider, llm.model) === 0 ? (
                 <>
@@ -517,7 +517,7 @@ function PromptVersion({
               )}
             </Box>
           </Grid>
-          <Grid item xs={12} md={6} sx={{ p: 1 }}>
+          <Grid item xs={12} md={4} sx={{ p: 1 }}>
             <PromptVariables
               vars={pvrs}
               onChange={handleVariablesChange}
