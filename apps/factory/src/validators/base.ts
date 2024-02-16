@@ -123,6 +123,12 @@ export const providerModels: ProviderModels = {
           enabled: true,
           hasRole: 0,
         },
+        {
+          name: "sdxl1.0",
+          label: "Stable Diffusion XL 1.0",
+          enabled: true,
+          hasRole: 0,
+        },
       ],
       openai: [
         {
