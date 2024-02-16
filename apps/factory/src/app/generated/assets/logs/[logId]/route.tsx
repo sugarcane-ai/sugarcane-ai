@@ -4,6 +4,7 @@ import { env } from "~/env.mjs";
 import { resizeBase64Image } from "~/utils/images";
 import { LlmResponse, processLlmResponse } from "~/validators/llm_respose";
 import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
+import { response404 } from "~/services/api_helpers";
 
 export async function GET(
   req: NextRequest,
@@ -19,9 +20,7 @@ export async function GET(
 
   // If log not found
   if (!pl) {
-    return new Response(`Not Found`, {
-      status: 404,
-    });
+    response404();
   }
 
   // Generate the image response
@@ -38,7 +37,7 @@ export async function GET(
   if (base64Image) {
     b64resized = await resizeBase64Image(base64Image, w, h, 50);
   } else {
-    throw "base64Image is null";
+    response404();
   }
 
   const options = {
