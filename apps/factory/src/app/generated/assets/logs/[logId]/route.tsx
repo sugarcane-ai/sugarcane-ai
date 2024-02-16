@@ -3,6 +3,7 @@ import { ImageResponse, type NextRequest } from "next/server";
 import { env } from "~/env.mjs";
 import { resizeBase64Image } from "~/utils/images";
 import { LlmResponse, processLlmResponse } from "~/validators/llm_respose";
+import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
 
 export async function GET(
   req: NextRequest,
@@ -12,6 +13,7 @@ export async function GET(
   const pl = await prisma.promptLog.findFirst({
     where: {
       id: params.logId,
+      llmModelType: ModelTypeSchema.Enum.TEXT2IMAGE,
     },
   });
 
@@ -32,7 +34,12 @@ export async function GET(
     pl?.completion ||
     (processLlmResponse(pl?.llmResponse as LlmResponse) as string);
 
-  const b64resized = await resizeBase64Image(base64Image, w, h, 50);
+  let b64resized;
+  if (base64Image) {
+    b64resized = await resizeBase64Image(base64Image, w, h, 50);
+  } else {
+    throw "base64Image is null";
+  }
 
   const options = {
     width: w,

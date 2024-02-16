@@ -19,7 +19,7 @@ export async function run(
   llmModelType: ModelTypeType,
   dryRun: boolean = false,
 ) {
-  if (llmModel === "sdxl1.0") {
+  if (process.env.SDXL_VENDOR === "sdxl") {
     return run_segmind(prompt, llmModelType, dryRun);
   } else {
     return run_si(prompt, llmModelType, dryRun);
@@ -68,13 +68,6 @@ const sdxl: PromptDataSchemaType = {
   data: [],
 };
 
-const sdxl1: PromptDataSchemaType = {
-  v: 1,
-  p: "mistral",
-  data: [],
-};
-
 export const template = {
   sdxl: sdxl,
-  "sdxl1.0": sdxl1,
 };
