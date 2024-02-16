@@ -20,7 +20,7 @@ export async function GET(
 
   // If log not found
   if (!pl) {
-    response404();
+    return response404();
   }
 
   // Generate the image response
@@ -37,7 +37,7 @@ export async function GET(
   if (base64Image) {
     b64resized = await resizeBase64Image(base64Image, w, h, 50);
   } else {
-    response404();
+    return response404();
   }
 
   const options = {
