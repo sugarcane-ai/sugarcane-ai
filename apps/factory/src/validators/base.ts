@@ -224,3 +224,13 @@ export const getDefaultLLM = (modelType: ModelTypeType): LLM => {
     model: providerModels[modelType].defaultModel,
   };
 };
+
+export const getRole = (
+  modelType: ModelTypeType,
+  providerName: string,
+  modelName: string,
+) => {
+  return providerModels[`${modelType as keyof typeof providerModels}`].models[
+    `${providerName}`
+  ]?.find((mod) => mod.name === modelName)?.hasRole;
+};
