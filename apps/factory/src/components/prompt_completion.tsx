@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Typography from "@mui/material/Typography";
 import {
   ModelTypeType,
@@ -8,7 +8,7 @@ import OutputTextAnimation from "./output_text_animation";
 import { Box } from "@mui/material";
 import { LogSchema } from "~/validators/prompt_log";
 import { LlmResponse, TextResponseV1 } from "~/validators/llm_respose";
-import { ImageFullView } from "./image_gallery";
+
 interface PromptCompletionProps {
   pl: LogSchema;
   imgClassName?: string;
@@ -22,7 +22,6 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
   textAnimation,
   cube,
 }) => {
-  const [logId, setLogId] = useState("");
   let lr = pl?.llmResponse as LlmResponse;
   if (pl?.llmModelType !== ModelTypeSchema.Enum.TEXT2IMAGE) {
     return (
@@ -75,18 +74,13 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
     const w = cube ? 1024 : 128;
     const h = cube ? 1024 : 128;
     return (
-      <>
-        <img
-          onClick={() => setLogId(pl.id)}
-          className={`${
-            cube ? "outputImage h-full w-full" : imgClassName
-          } object-fill`}
-          src={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/logs/${pl.id}/image.png?w=${w}&h=${h}`}
-          alt="Image"
-          style={{ cursor: "pointer" }}
-        />
-        <ImageFullView open={logId} setOpen={setLogId} />
-      </>
+      <img
+        className={`${
+          cube ? "outputImage h-full w-full" : imgClassName
+        } object-fill`}
+        src={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/logs/${pl.id}/image.png?w=${w}&h=${h}`}
+        alt="Image"
+      />
     );
   }
 };

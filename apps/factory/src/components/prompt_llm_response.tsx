@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Typography from "@mui/material/Typography";
 import OutputTextAnimation from "./output_text_animation";
 import { Box } from "@mui/material";
@@ -15,7 +15,6 @@ import {
 } from "~/generated/prisma-client-zod.ts";
 import DownloadButtonBase64 from "./download_button_base64";
 import CopyToClipboardButton from "./copy_button";
-import { ImageFullView } from "./image_gallery";
 
 interface PromptLlmResponseProps {
   pl: LogOutput;
@@ -59,7 +58,6 @@ const LlmDataResponse: React.FC<PromptLlmResponseProps> = ({
   textAnimation,
   cube,
 }) => {
-  const [logId, setLogId] = useState("");
   let lr = pl?.llmResponse as LlmResponse;
   if (lr?.data?.t === ResponseType.TEXT || lr.data?.t === ResponseType.CODE) {
     return (
@@ -110,21 +108,14 @@ const LlmDataResponse: React.FC<PromptLlmResponseProps> = ({
     );
   } else if (lr.data?.t === ResponseType.IMAGE) {
     let llr = lr.data as ImageResponseV1;
-    const w = cube ? 1024 : 128;
-    const h = cube ? 1024 : 128;
     return (
-      <>
-        <img
-          onClick={() => setLogId(pl?.id as string)}
-          className={`${
-            cube ? "outputImage h-full w-full" : imgClassName
-          } object-fill`}
-          src={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/logs/${pl?.id}/image.png?w=${w}&h=${h}`}
-          alt="Image"
-          style={{ cursor: "pointer" }}
-        />
-        <ImageFullView open={logId} setOpen={setLogId} />
-      </>
+      <img
+        className={`${
+          cube ? "outputImage h-full w-full" : imgClassName
+        } object-fill`}
+        src={llr?.base64}
+        alt="Image"
+      />
     );
   }
 };
