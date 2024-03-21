@@ -145,6 +145,18 @@ export function CreateVersion({
     setLLM(llm);
   };
 
+  useEffect(() => {
+    setLLM({
+      modelType: pt?.modelType as ModelTypeType,
+      provider:
+        forkedFrom?.llmProvider ||
+        providerModels[pt?.modelType as ModelTypeType].defaultProvider,
+      model:
+        forkedFrom?.llmModel ||
+        providerModels[pt?.modelType as ModelTypeType].defaultModel,
+    });
+  }, [forkedFrom]);
+
   return (
     <>
       <Grid component="span">
