@@ -38,6 +38,28 @@ export type GetPromptInput = z.infer<typeof getPromptInput>;
 //     // .strict()
 // export type GetPromptInput2 = z.infer<typeof getPromptInput2>;
 
+const skillParameterSchema = z.object({
+  type: z.string(),
+  description: z.string(),
+});
+
+const skillDefinitionSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  parameters: z.object({
+    type: z.string(),
+    properties: z.record(skillParameterSchema),
+    required: z.array(z.string()),
+  }),
+});
+
+export const skillSchema = z.object({
+  type: z.literal("function"),
+  function: skillDefinitionSchema,
+});
+
+export const skillsSchema = z.array(skillSchema).default([]);
+
 export const getPromptOutput = z
   .object({
     version: z.string().optional(),
@@ -57,17 +79,33 @@ export const getPromptOutput = z
   .or(z.null());
 export type GetPromptOutput = z.infer<typeof getPromptOutput>;
 
+export const messageRoleEnum = z.enum(["user", "assistant", "system", "tool"]);
+export const messageSchema = z.object({
+  role: messageRoleEnum,
+  content: z.string(),
+});
+export const messagesSchema = z.array(messageSchema).default([]);
+
+export const skillChoiceEnum = z.enum(["auto", "none"]);
+
+const skillChoices = z.enum(["auto", "none"]).default("none");
+
 export const generateInput = z
   .object({
     // Template Data
-    data: z.record(z.any()),
+    variables: z.record(z.any()),
+    messages: messagesSchema,
     attachments: z.record(z.any()).optional(),
+    skills: skillsSchema.default([]),
+    skillChoice: skillChoices,
     // promptDataVariables: z.record(z.any()),
     isDevelopment: z.boolean().default(false),
   })
   .merge(getPromptInput)
   .strict();
 export type GenerateInput = z.infer<typeof generateInput>;
+
+export type SkillChoicesType = z.infer<typeof skillChoices>;
 
 export const logSchema = z.object({
   id: z.string(),
@@ -97,3 +135,7 @@ export const logSchema = z.object({
 export const generateOutput = logSchema.or(z.null());
 export type LogSchema = z.infer<typeof logSchema>;
 export type GenerateOutput = z.infer<typeof generateOutput>;
+export type SkillSchema = z.infer<typeof skillSchema>;
+export type skillsSchema = z.infer<typeof skillsSchema>;
+export type MessageSchema = z.infer<typeof messageSchema>;
+export type MessagesSchema = z.infer<typeof messagesSchema>;

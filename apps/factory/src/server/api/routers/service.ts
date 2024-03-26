@@ -3,23 +3,31 @@ import {
   promptMiddleware,
   publicProcedure,
 } from "~/server/api/trpc";
-import { generateInput, generateOutput } from "~/validators/service";
+import {
+  GenerateOutput,
+  skillsSchema,
+  generateInput,
+  generateOutput,
+  MessagesSchema,
+  SkillChoicesType,
+} from "~/validators/service";
 import {
   generateLLmConfig,
   generatePrompt,
+  generatePromptFromJson,
   hasImageModels,
 } from "~/utils/template";
 import { promptEnvironment } from "~/validators/base";
-import { LlmProvider } from "~/services/llm_providers";
+import { LlmGateway } from "~/services/llm_gateways";
 import { providerModels } from "~/validators/base";
 import {
   ModelTypeType,
-  ModelTypeSchema,
   PromptRunModesSchema,
 } from "~/generated/prisma-client-zod.ts";
 import { env } from "~/env.mjs";
 import { llmResponseSchema, LlmErrorResponse } from "~/validators/llm_respose";
 import { getEditorVersion } from "~/utils/template";
+import { Prompt, PromptDataType } from "~/validators/prompt_version";
 
 export const serviceRouter = createTRPCRouter({
   generate: publicProcedure
@@ -33,8 +41,7 @@ export const serviceRouter = createTRPCRouter({
     })
     .input(generateInput)
     .use(promptMiddleware)
-    // FIXME:
-    // .output(generateOutput)
+    .output(generateOutput)
     .mutation(async ({ ctx, input }) => {
       // const userId = input.userId;
       let [pv, pt] = await getPv(ctx, input);
@@ -49,33 +56,40 @@ export const serviceRouter = createTRPCRouter({
       if (pv && userId && userId != "") {
         const modelType: ModelTypeType = pv.llmModelType;
         console.log(`data >>>> ${JSON.stringify(input)}`);
-        let prompt = "";
+        let prompt: Prompt = "";
         if (hasImageModels(modelType)) {
-          prompt = generatePrompt(pv.template, input.data || {});
+          prompt = generatePrompt(pv.template, input.variables || {});
         } else {
           // here decide whether to take template data or promptData
           if (getEditorVersion(modelType, pv.llmProvider, pv.llmModel)) {
-            prompt = generatePrompt(
-              JSON.stringify(pv.promptData.data),
-              input.data || {},
-            );
+            // console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
+            prompt = generatePromptFromJson(
+              pv.promptData.data,
+              input.variables || {},
+            ) as PromptDataType;
+            // console.log(prompt);
+            // console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
           } else {
-            prompt = generatePrompt(pv.template, input.data || {});
+            prompt = generatePrompt(pv.template, input.variables || {});
           }
         }
 
-        console.log(`prompt >>>> ${prompt}`);
+        console.log(`prompt >>>> ${JSON.stringify(prompt, null, 2)}`);
 
         const llmConfig = generateLLmConfig(pv.llmConfig);
-        const rr = await LlmProvider(
+
+        const rr = await LlmGateway({
           prompt,
-          pv.llmModel,
-          pv.llmProvider,
-          llmConfig,
-          pv.llmModelType,
-          input.isDevelopment,
-          input.attachments,
-        );
+          messages: input.messages!,
+          skills: input.skills!,
+          skillChoice: input.skillChoice as SkillChoicesType,
+          llmModel: pv.llmModel,
+          llmProvider: pv.llmProvider,
+          llmConfig: llmConfig,
+          llmModelType: pv.llmModelType,
+          isDevelopment: input.isDevelopment,
+          attachments: input.attachments,
+        });
 
         console.log(
           `llm response >>>> ${JSON.stringify(rr.response, null, 2)}`,
@@ -95,7 +109,7 @@ export const serviceRouter = createTRPCRouter({
               environment: input.environment,
 
               version: pv.version,
-              prompt: prompt,
+              prompt: JSON.stringify(prompt),
               // completion: rr.data?.completion as string,
               llmResponse: rr.response,
 
@@ -117,7 +131,7 @@ export const serviceRouter = createTRPCRouter({
         }
       }
 
-      return pl;
+      return pl as GenerateOutput;
     }),
 });
 
