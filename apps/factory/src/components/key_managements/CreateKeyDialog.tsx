@@ -13,7 +13,7 @@ import { AddCircle } from "@mui/icons-material";
 import { api } from "~/utils/api";
 import toast from "react-hot-toast";
 import { randomBytes } from "crypto";
-import { KeyOutput } from "~/validators/key_management";
+import { KeyOutput } from "~/validators/api_key";
 
 type FormValues = {
   name: string;
@@ -49,7 +49,7 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({
     setOpen(true);
   };
 
-  const createKeyMutation = api.keyManagment.createKey.useMutation();
+  const createKeyMutation = api.apiKey.createKey.useMutation();
 
   const handleFormSubmit = (data: FormValues) => {
     const apiKey = generateApiKey();

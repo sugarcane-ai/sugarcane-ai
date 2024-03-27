@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const createKeyInput = z.object({
   name: z.string(),
+  isActive: z.boolean().default(true),
   apiKey: z.string(),
   userId: z.string(),
   lastUsedAt: z.date().optional().nullable(),
@@ -23,6 +24,7 @@ export const getKeysInput = z
 export const keySchema = z.object({
   id: z.string(),
   name: z.string(),
+  isActive: z.boolean().default(true),
   apiKey: z.string(),
   userId: z.string(),
   createdAt: z.coerce.date(),
@@ -32,7 +34,8 @@ export const keySchema = z.object({
 
 export const updateKeyInput = z.object({
   id: z.string(),
-  name: z.string().optional(),
+  name: z.string(),
+  isActive: z.boolean().default(true),
   apiKey: z.string(),
   userId: z.string(),
   lastUsedAt: z.date().nullable(),

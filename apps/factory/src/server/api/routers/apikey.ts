@@ -6,9 +6,9 @@ import {
   keyOutput,
   keyListOutput,
   updateKeyInput,
-} from "~/validators/key_management";
+} from "~/validators/api_key";
 
-export const keyManagmentRouter = createTRPCRouter({
+export const apiKeyRouter = createTRPCRouter({
   createKey: protectedProcedure
     .input(createKeyInput)
     .output(keyOutput)
@@ -17,7 +17,7 @@ export const keyManagmentRouter = createTRPCRouter({
 
       console.log(`create keys -------------- ${JSON.stringify(input)}`);
 
-      const key = await ctx.prisma.keyManagement.create({
+      const key = await ctx.prisma.apiKey.create({
         data: {
           name: input.name,
           apiKey: input.apiKey,
@@ -38,7 +38,7 @@ export const keyManagmentRouter = createTRPCRouter({
         id: input.id,
       };
 
-      const key = await ctx.prisma.keyManagement.findFirst({
+      const key = await ctx.prisma.apiKey.findFirst({
         where: query,
       });
 
@@ -51,7 +51,7 @@ export const keyManagmentRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const userId = ctx.jwt?.id as string;
 
-      const keys = await ctx.prisma.keyManagement.findMany({
+      const keys = await ctx.prisma.apiKey.findMany({
         where: {
           userId: userId,
         },
@@ -67,7 +67,7 @@ export const keyManagmentRouter = createTRPCRouter({
         name: input.name,
         apiKey: input.apiKey,
       };
-      const key = await ctx.prisma.keyManagement.update({
+      const key = await ctx.prisma.apiKey.update({
         where: {
           id: input.id,
         },
@@ -88,7 +88,7 @@ export const keyManagmentRouter = createTRPCRouter({
   //       id: input.id,
   //     };
 
-  //     const key = await ctx.prisma.keyManagement.delete({
+  //     const key = await ctx.prisma.apiKey.delete({
   //       where: query,
   //     });
 

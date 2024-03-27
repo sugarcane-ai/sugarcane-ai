@@ -22,14 +22,14 @@ import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
 import TimeAgo from "react-timeago";
 import CreateKeyDialog from "~/components/key_managements/CreateKeyDialog";
-import { KeyListOutput, KeyOutput } from "~/validators/key_management";
+import { KeyListOutput, KeyOutput } from "~/validators/api_key";
 
 const ApiKeys = () => {
   const [keysList, setKeysList] = useState<KeyListOutput>([]);
   const { data: sessionData } = useSession();
   const ns = sessionData?.user;
 
-  const { data: getKeys } = api.keyManagment.getKeys.useQuery(
+  const { data: getKeys } = api.apiKey.getKeys.useQuery(
     {
       userId: ns?.id as string,
     },

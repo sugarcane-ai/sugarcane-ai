@@ -262,15 +262,24 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
 
   let keydata;
   if (opts.ctx.apiKey) {
-    keydata = await opts.ctx.prisma.keyManagement.findFirst({
+    keydata = await opts.ctx.prisma.apiKey.findFirst({
       where: {
         apiKey: opts.ctx.apiKey,
+        isActive: true,
       },
       select: { userId: true },
     });
+    if (!keydata) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Invalid API Key",
+      });
+    }
+    opts.input.userId = keydata?.userId as string;
+    opts.ctx.jwt = {
+      id: keydata?.userId as string,
+    };
   }
-
-  opts.input.userId = keydata?.userId as string;
 
   console.log(`promptMiddleware in ------------ ${JSON.stringify(opts.input)}`);
 
