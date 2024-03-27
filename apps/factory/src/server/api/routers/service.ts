@@ -133,7 +133,6 @@ export const serviceRouter = createTRPCRouter({
       }
 
       return pl as GenerateOutput;
-      return pl as GenerateOutput;
     }),
 });
 

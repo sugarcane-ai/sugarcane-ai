@@ -288,6 +288,7 @@ model ApiKey {
   name       String
   apiKey     String    @unique
   lastUsedAt DateTime?
+  isActive   Boolean   @default(true)
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt @map("updated_at")
 }
