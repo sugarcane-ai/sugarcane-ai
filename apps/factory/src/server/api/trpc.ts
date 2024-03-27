@@ -52,6 +52,7 @@ interface CreateContextOptions {
   jwt: NullableJwt;
   prisma: PrismaClient;
   runMode: PromptRunModesType;
+  apiKey: string;
 }
 
 /**
@@ -70,6 +71,7 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
     jwt: opts.jwt,
     runMode: opts.runMode,
     prisma,
+    apiKey: opts.apiKey,
   };
 };
 
@@ -86,6 +88,8 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const runMode: PromptRunModesType =
     (res.getHeader("x-run-mode") as PromptRunModesType) ||
     PromptRunModesSchema.Enum.LOGGEDIN_ONLY;
+
+  const apiKey = req.headers.authorization?.split(" ")[1] as string;
 
   const requestId = uuid();
   res.setHeader("x-request-id", requestId);
@@ -110,6 +114,7 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
     prisma,
     jwt: token,
     runMode: runMode,
+    apiKey,
   });
 };
 
@@ -254,6 +259,18 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
   //     message: 'Not allowed',
   //   });
   // }
+
+  let keydata;
+  if (opts.ctx.apiKey) {
+    keydata = await opts.ctx.prisma.keyManagement.findFirst({
+      where: {
+        apiKey: opts.ctx.apiKey,
+      },
+      select: { userId: true },
+    });
+  }
+
+  opts.input.userId = keydata?.userId as string;
 
   console.log(`promptMiddleware in ------------ ${JSON.stringify(opts.input)}`);
 
