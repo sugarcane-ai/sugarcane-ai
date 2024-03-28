@@ -6,6 +6,7 @@ import {
   PromptRunModesSchema,
 } from "~/generated/prisma-client-zod.ts";
 import { InputJsonValue } from "~/generated/prisma-client-zod.ts";
+import { templateVariablesSchema } from "./prompt_log";
 
 export const getPromptInput = z.object({
   environment: promptEnvironment.optional(),
@@ -121,6 +122,7 @@ export const logSchema = z.object({
   completion_tokens: z.number(),
   // llmResponse: llmResponseSchema,
   llmResponse: InputJsonValue.nullable(),
+  promptVariables: templateVariablesSchema.nullable(),
   total_tokens: z.number(),
 
   labelledState: LabelledStateSchema,

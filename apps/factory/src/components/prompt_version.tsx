@@ -78,7 +78,7 @@ import DownloadButtonBase64 from "./download_button_base64";
 import { getTemplate, getDefaults } from "~/services/providers";
 import { FileObject } from "~/utils/images";
 import { hasImageModels } from "~/utils/template";
-import { LogSchema } from "~/validators/prompt_log";
+import { LogSchema, TemplateVariablesType } from "~/validators/prompt_log";
 import CircularProgress from "@mui/material/CircularProgress";
 import {
   LlmResponse,
@@ -322,7 +322,7 @@ function PromptVersion({
     return () => {
       clearTimeout(saveTimer);
     };
-  }, [template, isDirty]);
+  }, [template, isDirty, pvrs]);
 
   // if current and nextProvide will be same i will not do anything other wise i will call getTemplate fumction
 
@@ -346,6 +346,7 @@ function PromptVersion({
       llmProvider: llm.provider,
       llmModel: llm.model,
       llmConfig: llmConfig,
+      variables: pvrs as TemplateVariablesType,
     });
     setIsLLMChanged(false);
     setIsDirty(false);
