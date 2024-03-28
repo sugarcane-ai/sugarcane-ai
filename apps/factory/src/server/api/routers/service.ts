@@ -30,6 +30,7 @@ import { env } from "~/env.mjs";
 import { llmResponseSchema, LlmErrorResponse } from "~/validators/llm_respose";
 import { getEditorVersion } from "~/utils/template";
 import { Prompt, PromptDataType } from "~/validators/prompt_version";
+import { lookupEmbedding } from "./embedding";
 
 export const serviceRouter = createTRPCRouter({
   generate: publicProcedure
@@ -59,6 +60,39 @@ export const serviceRouter = createTRPCRouter({
       if (pv && userId && userId != "") {
         const modelType: ModelTypeType = pv.llmModelType;
         console.log(`data >>>> ${JSON.stringify(input)}`);
+
+        // TODO
+        // 1. Semantic Caching
+
+        let userQuery: null | string = null;
+        // 2. Build Prompt
+        // 2.0 Extract user query
+        if (input.messages?.length > 0) {
+          const lastMessage = input.messages[input.messages?.length - 1];
+          userQuery = lastMessage?.content as string;
+        }
+
+        // 2. Build Prompt
+        // 2.1 Gather Embedding Data
+        let embeddingVariables: any = {
+          $CHAT_HISTORY: [],
+        };
+
+        if (input.scope && userQuery) {
+          const matches = await lookupEmbedding(userId, userQuery, input.scope);
+
+          if (matches.length > 0) {
+            embeddingVariables["$PAGE_CONTEXT"] = matches[0]?.doc;
+          }
+        }
+
+        // 2.2 Build variables
+        const templateVariables = {
+          ...input.variables, //#
+          ...embeddingVariables, //$
+        };
+
+        // 2.3 Generate Prompt using template
         let prompt: Prompt = "";
         if (hasImageModels(modelType)) {
           prompt = generatePrompt(pv.template, input.variables || {});
@@ -68,17 +102,19 @@ export const serviceRouter = createTRPCRouter({
             // console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
             prompt = generatePromptFromJson(
               pv.promptData.data,
-              input.variables || {},
+              templateVariables,
             ) as PromptDataType;
             // console.log(prompt);
             // console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
           } else {
-            prompt = generatePrompt(pv.template, input.variables || {});
+            prompt = generatePrompt(pv.template, templateVariables);
           }
         }
 
         console.log(`prompt >>>> ${JSON.stringify(prompt, null, 2)}`);
 
+        // 3. Get LLM Response
+        // 3.1 Get LLM Config
         const llmConfig = generateLLmConfig(pv.llmConfig);
 
         // Set ChatId if chatIs is not available create one
@@ -115,6 +151,9 @@ export const serviceRouter = createTRPCRouter({
           input.messages = [...transformedMessages, input.chat?.message || {}];
         }
 
+        // debugger;
+
+        // 3.1 Generate LLM Response
         const rr = await LlmGateway({
           prompt,
           messages: input.messages!,
@@ -134,6 +173,9 @@ export const serviceRouter = createTRPCRouter({
         console.log(
           `llm performance >>>> ${JSON.stringify(rr.performance, null, 2)}`,
         );
+
+        // 4. Prompt Log
+        // 4.1 Save prompt data to database
 
         if (input.chat?.message && copilotId) {
           try {
