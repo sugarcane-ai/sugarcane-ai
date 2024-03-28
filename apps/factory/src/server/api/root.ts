@@ -7,6 +7,7 @@ import { versionRouter } from "./routers/versions";
 import { cubeRouter } from "./routers/cube";
 import { likeRouter } from "./routers/likes";
 import { blogRouter } from "./routers/blog";
+import { embeddingRouter } from "./routers/embedding";
 
 // export const runtime = 'nodejs';
 
@@ -24,6 +25,7 @@ export const appRouter = createTRPCRouter({
   cube: cubeRouter,
   like: likeRouter,
   blog: blogRouter,
+  embedding: embeddingRouter,
 });
 
 // export type definition of API

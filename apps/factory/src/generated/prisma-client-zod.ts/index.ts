@@ -74,6 +74,8 @@ export const LikeUserScalarFieldEnumSchema = z.enum(['id','userId','likeId','cre
 
 export const BlogScalarFieldEnumSchema = z.enum(['id','title','description','slug','tags','publishedAt','mediaUrl','mediaType','previewImage','createdAt','updatedAt']);
 
+export const EmbeddingScalarFieldEnumSchema = z.enum(['id','userId','projectId','scope1','scope2','clientUserId','identifier','chunk','doc','strategy','createdAt','updatedAt']);
+
 export const SortOrderSchema = z.enum(['asc','desc']);
 
 export const JsonNullValueInputSchema = z.enum(['JsonNull',]);
@@ -357,3 +359,24 @@ export const BlogSchema = z.object({
 })
 
 export type Blog = z.infer<typeof BlogSchema>
+
+/////////////////////////////////////////
+// EMBEDDING SCHEMA
+/////////////////////////////////////////
+
+export const EmbeddingSchema = z.object({
+  id: z.string(),
+  userId: z.string(),
+  projectId: z.string(),
+  scope1: z.string().nullable(),
+  scope2: z.string().nullable(),
+  clientUserId: z.string().nullable(),
+  identifier: z.string(),
+  chunk: z.string(),
+  doc: z.string(),
+  strategy: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type Embedding = z.infer<typeof EmbeddingSchema>

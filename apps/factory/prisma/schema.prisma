@@ -281,3 +281,27 @@ model Blog {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt @map("updated_at")
 }
+
+model Embedding {
+  id         String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId     String
+
+
+  projectId    String
+  scope1        String?
+  scope2        String?
+  clientUserId String?
+  
+
+  identifier   String
+  chunk       String
+  doc         String
+  embedding  Unsupported("vector(1536)")
+  strategy   String
+  
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt @default(now()) @map("updated_at")
+
+
+  @@unique([userId, projectId, identifier, chunk])
+}
