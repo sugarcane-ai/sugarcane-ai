@@ -19,10 +19,10 @@ export interface LLMConfig {
 
 export async function run(
   prompt: string,
-  llmModel: string,
   messages: MessagesSchema,
   skills: skillsSchema,
   skillChoice: SkillChoicesType,
+  llmModel: string,
   llmConfig: LlmConfigSchema,
   llmModelType: ModelTypeType,
   dryRun: boolean = false,
