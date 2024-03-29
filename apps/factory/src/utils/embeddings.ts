@@ -32,23 +32,22 @@ function jsonToString(jsonObj: any): string {
   return cleanString;
 }
 
+function removeJsonAttributes(jsonStr: string): string {
+  // Define regex pattern to match JSON-specific attributes
+  const pattern: RegExp = /["{}]+/g;
+  // Remove JSON-specific attributes from JSON string
+  let cleanedJson: string = jsonStr.replace(pattern, "");
+  // Remove extra spaces and new lines, keep one space between words
+  cleanedJson = cleanedJson.replace(/\s+/g, " ");
+  return cleanedJson;
+}
+
 // Function to remove URLs from JSON string
 function removeUrlsFromJson(jsonStr: string): string {
   // Define regex pattern to match URLs
   const urlPattern: RegExp = /https?:\/\/(?:[-\w.]|(?:%[\da-fA-F]{2}))+/g;
   // Remove URLs from JSON string
   const cleanedJson: string = jsonStr.replace(urlPattern, "");
-  return cleanedJson;
-}
-
-// Function to remove JSON attributes from string
-function removeJsonAttributes(jsonStr: string): string {
-  // Define regex pattern to match JSON-specific attributes
-  const pattern: RegExp = /["{},:]+/g;
-  // Remove JSON-specific attributes from JSON string
-  let cleanedJson: string = jsonStr.replace(pattern, "");
-  // Remove extra spaces and new lines, keep one space between words
-  cleanedJson = cleanedJson.replace(/\s+/g, " ");
   return cleanedJson;
 }
 

@@ -6,6 +6,7 @@ import {
   PromptRunModesSchema,
 } from "~/generated/prisma-client-zod.ts";
 import { InputJsonValue } from "~/generated/prisma-client-zod.ts";
+import { embeddingScopeSchema } from "./embedding";
 
 export const getPromptInput = z.object({
   environment: promptEnvironment.optional(),
@@ -88,7 +89,7 @@ export const messagesSchema = z.array(messageSchema).default([]);
 
 export const skillChoiceEnum = z.enum(["auto", "none"]);
 
-const skillChoices = z.enum(["auto", "none"]).default("none");
+const skillChoices = z.enum(["auto", "none"]).default("auto");
 
 export const generateInput = z
   .object({
@@ -98,6 +99,7 @@ export const generateInput = z
     attachments: z.record(z.any()).optional(),
     skills: skillsSchema.default([]),
     skillChoice: skillChoices,
+    scope: embeddingScopeSchema.optional(),
     // promptDataVariables: z.record(z.any()),
     isDevelopment: z.boolean().default(false),
   })

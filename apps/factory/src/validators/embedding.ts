@@ -21,8 +21,7 @@ export const createEmbeddingInput = z.object({
 export type CreateEmbeddingInput = z.infer<typeof createEmbeddingInput>;
 
 export const createEmbeddingOutput = z.object({
-  id: z.string(),
-  payload: z.record(z.any()),
+  count: z.number(),
   strategy: stringOpt,
 });
 // .strict()
@@ -36,15 +35,15 @@ export const getEmbeddingInput = z.object({
 // .strict()
 export type GetEmbeddingInput = z.infer<typeof getEmbeddingInput>;
 
-export const getEmbeddingOutput = z.array(
-  z.object({
-    id: z.string(),
-    projectId: z.string(),
-    identifier: z.string(),
-    chunk: z.string(),
-    doc: z.string(),
-    similarity: z.number(),
-  }),
-);
-// .strict()
-export type GetEmbeddingOutput = z.infer<typeof getEmbeddingOutput>;
+export const EmbeddingSchema = z.object({
+  id: z.string(),
+  projectId: z.string(),
+  identifier: z.string(),
+  chunk: z.string(),
+  doc: z.string(),
+  similarity: z.number(),
+});
+export type EmbeddingSchema = z.infer<typeof EmbeddingSchema>;
+
+export const EmbeddingsSchema = z.array(EmbeddingSchema);
+export type EmbeddingsSchema = z.infer<typeof EmbeddingsSchema>;
