@@ -588,6 +588,7 @@ function PromptVersion({
                                             : "block"
                                         }`,
                                       }}
+                                      disabled={lpv.publishedAt ? true : false}
                                       onClick={() => deletePrompt(ind)}
                                     >
                                       <RemoveCircleIcon />
@@ -599,6 +600,9 @@ function PromptVersion({
                                           sx={{
                                             padding: "1rem",
                                           }}
+                                          disabled={
+                                            lpv.publishedAt ? true : false
+                                          }
                                         >
                                           <AddIcon />
                                         </Button>
