@@ -35,7 +35,7 @@ export const apiKeyRouter = createTRPCRouter({
 
       const query = {
         userId: ctx.jwt?.id as string,
-        id: userId,
+        id: input.id,
       };
 
       const key = await ctx.prisma.apiKey.findFirst({
