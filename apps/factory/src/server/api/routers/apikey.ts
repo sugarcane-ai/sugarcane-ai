@@ -35,7 +35,7 @@ export const apiKeyRouter = createTRPCRouter({
 
       const query = {
         userId: ctx.jwt?.id as string,
-        id: input.id,
+        id: userId,
       };
 
       const key = await ctx.prisma.apiKey.findFirst({
@@ -65,7 +65,6 @@ export const apiKeyRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const data = {
         name: input.name,
-        apiKey: input.apiKey,
       };
       const key = await ctx.prisma.apiKey.update({
         where: {

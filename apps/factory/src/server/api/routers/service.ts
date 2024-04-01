@@ -43,7 +43,6 @@ export const serviceRouter = createTRPCRouter({
     .input(generateInput)
     .use(promptMiddleware)
     .output(generateOutput)
-    .output(generateOutput)
     .mutation(async ({ ctx, input }) => {
       // const userId = input.userId;
       let [pv, pt] = await getPv(ctx, input);

@@ -86,7 +86,7 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({
       apiKey += characters.charAt(randomIndex);
     }
 
-    return `sk-${apiKey}`;
+    return `pk-${apiKey}`;
   }
 
   return (

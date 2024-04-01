@@ -223,8 +223,12 @@ function checkUserAuth(ctx: CreateContextOptions) {
 }
 
 /** Reusable middleware that enforces users are logged in before running the procedure. */
-const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
+const enforceUserIsAuthed = t.middleware(async ({ ctx, next }) => {
   checkUserAuth(ctx);
+  const userId = await fetchUserIdFromApiKey(ctx);
+  if (userId) {
+    ctx.jwt = { id: userId };
+  }
 
   return next({
     ctx: {
@@ -246,6 +250,27 @@ const conditionalUserIsAuthed = t.middleware(({ ctx, next }) => {
   });
 });
 
+const fetchUserIdFromApiKey = async (ctx: any) => {
+  let keydata;
+  if (ctx.apiKey) {
+    keydata = await ctx.prisma.apiKey.findFirst({
+      where: {
+        apiKey: ctx.apiKey,
+        isActive: true,
+      },
+      select: { userId: true },
+    });
+    if (!keydata) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Invalid API Key",
+      });
+    }
+
+    return keydata?.userId;
+  }
+};
+
 export const promptMiddleware = experimental_standaloneMiddleware<{
   // ctx: { session: NullableSession; prisma: PrismaClient }; // defaults to 'object' if not defined
   ctx: CreateContextOptions;
@@ -260,26 +285,34 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
   //   });
   // }
 
-  let keydata;
-  if (opts.ctx.apiKey) {
-    keydata = await opts.ctx.prisma.apiKey.findFirst({
-      where: {
-        apiKey: opts.ctx.apiKey,
-        isActive: true,
-      },
-      select: { userId: true },
-    });
-    if (!keydata) {
-      throw new TRPCError({
-        code: "UNAUTHORIZED",
-        message: "Invalid API Key",
-      });
-    }
-    opts.input.userId = keydata?.userId as string;
-    opts.ctx.jwt = {
-      id: keydata?.userId as string,
-    };
-  }
+  const userId = await fetchUserIdFromApiKey(opts.ctx);
+
+  // let keydata;
+  // if (opts.ctx.apiKey) {
+  //   keydata = await opts.ctx.prisma.apiKey.findFirst({
+  //     where: {
+  //       apiKey: opts.ctx.apiKey,
+  //       isActive: true,
+  //     },
+  //     select: { userId: true },
+  //   });
+  //   if (!keydata) {
+  //     throw new TRPCError({
+  //       code: "UNAUTHORIZED",
+  //       message: "Invalid API Key",
+  //     });
+  //   }
+  //   opts.input.userId = keydata?.userId as string;
+  //   opts.ctx.jwt = {
+  //     id: keydata?.userId as string,
+  //   };
+  // }
+  console.log(`userId in ------------ ${userId}`);
+  opts.input.userId = userId;
+
+  opts.ctx.jwt = {
+    id: userId,
+  };
 
   console.log(`promptMiddleware in ------------ ${JSON.stringify(opts.input)}`);
 
