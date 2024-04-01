@@ -97,7 +97,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const { data: pv, isLoading } = api.cube.getPrompt.useQuery(
     {
       username: username,
-      package: packageName,
+      packageName: packageName,
       template: template,
       versionOrEnvironment: versionOrEnvironment?.toUpperCase(),
     },
@@ -185,7 +185,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     const pl = await generateMutation.mutateAsync(
       {
         username: username,
-        package: packageName || "",
+        packageName: packageName || "",
         template: template || "",
         versionOrEnvironment: versionOrEnvironment?.toUpperCase() || "",
         isDevelopment: checked,

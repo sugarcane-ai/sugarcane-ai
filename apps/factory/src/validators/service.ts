@@ -13,7 +13,7 @@ export const getPromptInput = z.object({
 
   // Prompt Template identitication
   username: z.string(),
-  package: z.string(),
+  packageName: z.string(),
   template: z.string(),
   version: z.string().optional(),
   versionOrEnvironment: z.string().default(promptEnvironment.Enum.RELEASE),

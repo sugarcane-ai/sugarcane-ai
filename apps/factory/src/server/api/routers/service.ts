@@ -35,7 +35,7 @@ export const serviceRouter = createTRPCRouter({
     .meta({
       openapi: {
         method: "POST",
-        path: "/{username}/{package}/{template}/{versionOrEnvironment}/generate",
+        path: "/{username}/{packageName}/{template}/{versionOrEnvironment}/generate",
         tags: ["prompts"],
         summary: "Generate prompt completion",
       },
