@@ -120,13 +120,13 @@ export const MediaTypeSchema = z.enum(['IMAGE','VIDEO']);
 
 export type MediaTypeType = `${z.infer<typeof MediaTypeSchema>}`
 
-export const EntityTypesSchema = z.enum(['PromptPackage','PromptTemplate','PromptVersion']);
-
-export type EntityTypesType = `${z.infer<typeof EntityTypesSchema>}`
-
 export const StatusStateSchema = z.enum(['PRODUCTION','STAGING','SANDBOX']);
 
 export type StatusStateType = `${z.infer<typeof StatusStateSchema>}`
+
+export const EntityTypesSchema = z.enum(['PromptPackage','PromptTemplate','PromptVersion']);
+
+export type EntityTypesType = `${z.infer<typeof EntityTypesSchema>}`
 
 /////////////////////////////////////////
 // MODELS

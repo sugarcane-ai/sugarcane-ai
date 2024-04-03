@@ -23,14 +23,22 @@ export const copilotRouter = createTRPCRouter({
       );
 
       const userId = ctx.jwt?.id as string;
-
-      const copilot = await ctx.prisma.copilot.create({
-        data: {
-          ...input,
-          settings: input.settings || {},
-        },
-      });
-      return copilot as CopilotOutput;
+      try {
+        const copilot = await ctx.prisma.copilot.create({
+          data: {
+            ...input,
+            userId: userId,
+            settings: input.settings || {},
+          },
+        });
+        return copilot as CopilotOutput;
+      } catch (error: any) {
+        if (error.code === "P2002" && error.meta?.target.includes("name")) {
+          const errorMessage = { error: { name: "Name already exist" } };
+          throw new Error(JSON.stringify(errorMessage));
+        }
+        throw new Error("Something went wrong");
+      }
     }),
 
   getCopilots: protectedProcedure

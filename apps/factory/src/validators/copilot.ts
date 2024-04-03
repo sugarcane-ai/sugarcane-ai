@@ -3,17 +3,33 @@ import {
   InputJsonValue,
   StatusStateSchema,
 } from "~/generated/prisma-client-zod.ts";
+import { RESERVED_NAMES } from "./reserved_names";
 
 export const createCopilotInput = z
   .object({
-    name: z.string(),
+    name: z
+      .string()
+      .min(3, {
+        message: "Name must be at least 3 characters long.",
+      })
+      .max(30, {
+        message: "Name must be at most 30 characters long.",
+      })
+      .regex(/^[a-z0-9-]+$/, {
+        message:
+          "Name must only contain lowercase letters, numbers, and hyphen.",
+      })
+      .transform((value) => value.toLowerCase())
+      .refine((value) => !RESERVED_NAMES.includes(value), {
+        message: "This name is reserved.",
+      }),
     description: z.string().optional(),
-    copilotType: z.string(),
+    copilotType: z.string().default("Text2Text"),
     settings: InputJsonValue.nullable(),
-    userId: z.string(),
-    status: StatusStateSchema,
+    status: StatusStateSchema.default("PRODUCTION"),
   })
-  .strict();
+  .strict()
+  .required();
 
 export const getCopilotInput = z
   .object({
@@ -24,19 +40,21 @@ export const getCopilotInput = z
 
 export const getCopilotsInput = z
   .object({
-    userId: z.string(),
+    userId: z.string().optional(),
   })
   .strict();
 
 export const updateCopilotInput = createCopilotInput
   .extend({
     id: z.string(),
+    userId: z.string(),
   })
   .strict();
 
 export const copilotSchema = createCopilotInput
   .extend({
     id: z.string(),
+    userId: z.string(),
     createdAt: z.date(),
     updatedAt: z.date(),
   })

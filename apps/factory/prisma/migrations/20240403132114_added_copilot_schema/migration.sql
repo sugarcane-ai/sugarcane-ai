@@ -43,3 +43,6 @@ CREATE TABLE "Message" (
 
     CONSTRAINT "Message_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Copilot_userId_name_key" ON "Copilot"("userId", "name");
