@@ -76,6 +76,12 @@ export const BlogScalarFieldEnumSchema = z.enum(['id','title','description','slu
 
 export const ApiKeyScalarFieldEnumSchema = z.enum(['id','userId','name','apiKey','lastUsedAt','isActive','createdAt','updatedAt']);
 
+export const ChatScalarFieldEnumSchema = z.enum(['id','userId','copilotId','messageCount','createdAt','updatedAt']);
+
+export const CopilotScalarFieldEnumSchema = z.enum(['id','name','description','copilotType','settings','userId','status','createdAt','updatedAt']);
+
+export const MessageScalarFieldEnumSchema = z.enum(['id','userId','copilotId','logId','content','role','chatId','createdAt','metadata','updatedAt']);
+
 export const SortOrderSchema = z.enum(['asc','desc']);
 
 export const JsonNullValueInputSchema = z.enum(['JsonNull',]);
@@ -117,6 +123,10 @@ export type MediaTypeType = `${z.infer<typeof MediaTypeSchema>}`
 export const EntityTypesSchema = z.enum(['PromptPackage','PromptTemplate','PromptVersion']);
 
 export type EntityTypesType = `${z.infer<typeof EntityTypesSchema>}`
+
+export const StatusStateSchema = z.enum(['PRODUCTION','STAGING','SANDBOX']);
+
+export type StatusStateType = `${z.infer<typeof StatusStateSchema>}`
 
 /////////////////////////////////////////
 // MODELS
@@ -378,3 +388,55 @@ export const ApiKeySchema = z.object({
 })
 
 export type ApiKey = z.infer<typeof ApiKeySchema>
+
+/////////////////////////////////////////
+// CHAT SCHEMA
+/////////////////////////////////////////
+
+export const ChatSchema = z.object({
+  id: z.string().uuid(),
+  userId: z.string(),
+  copilotId: z.string(),
+  messageCount: z.number().int(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type Chat = z.infer<typeof ChatSchema>
+
+/////////////////////////////////////////
+// COPILOT SCHEMA
+/////////////////////////////////////////
+
+export const CopilotSchema = z.object({
+  status: StatusStateSchema,
+  id: z.string().uuid(),
+  name: z.string(),
+  description: z.string().nullable(),
+  copilotType: z.string(),
+  settings: InputJsonValue,
+  userId: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type Copilot = z.infer<typeof CopilotSchema>
+
+/////////////////////////////////////////
+// MESSAGE SCHEMA
+/////////////////////////////////////////
+
+export const MessageSchema = z.object({
+  id: z.string().uuid(),
+  userId: z.string(),
+  copilotId: z.string(),
+  logId: z.string().nullable(),
+  content: z.string(),
+  role: z.string(),
+  chatId: z.string(),
+  createdAt: z.coerce.date(),
+  metadata: InputJsonValue,
+  updatedAt: z.coerce.date(),
+})
+
+export type Message = z.infer<typeof MessageSchema>
