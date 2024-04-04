@@ -1,8 +1,8 @@
+import React from "react";
 import { Box, Typography } from "@mui/material";
 import { useRouter } from "next/router";
-import React from "react";
 import { getLayout } from "~/app/layout";
-import LabelIcons from "~/components/label_icon";
+
 import { NextPageWithLayout } from "~/pages/_app";
 import { api } from "~/utils/api";
 
@@ -10,6 +10,10 @@ const CopilotShow: NextPageWithLayout = () => {
   const router = useRouter();
   const copilotId = router.query.id as string;
   const { data: copilot } = api.copilot.getCopilot.useQuery({ id: copilotId });
+
+  const { data: copilotKey } = api.apiKey.getCopilotKey.useQuery({
+    copilotId: copilot?.id as string,
+  });
 
   return (
     <>
@@ -35,7 +39,7 @@ const CopilotShow: NextPageWithLayout = () => {
             component="span"
             sx={{ mt: 1, mb: 4, flex: 1 }}
           >
-            Token: {copilot?.id}
+            Token: {copilotKey?.apiKey}
           </Typography>
         </Box>
       )}

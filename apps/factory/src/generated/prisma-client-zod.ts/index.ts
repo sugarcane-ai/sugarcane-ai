@@ -74,11 +74,11 @@ export const LikeUserScalarFieldEnumSchema = z.enum(['id','userId','likeId','cre
 
 export const BlogScalarFieldEnumSchema = z.enum(['id','title','description','slug','tags','publishedAt','mediaUrl','mediaType','previewImage','createdAt','updatedAt']);
 
-export const ApiKeyScalarFieldEnumSchema = z.enum(['id','userId','name','apiKey','lastUsedAt','isActive','createdAt','updatedAt']);
-
-export const ChatScalarFieldEnumSchema = z.enum(['id','userId','copilotId','messageCount','createdAt','updatedAt']);
+export const ApiKeyScalarFieldEnumSchema = z.enum(['id','userId','copilotId','name','apiKey','lastUsedAt','isActive','createdAt','updatedAt']);
 
 export const CopilotScalarFieldEnumSchema = z.enum(['id','name','description','copilotType','settings','userId','status','createdAt','updatedAt']);
+
+export const ChatScalarFieldEnumSchema = z.enum(['id','userId','copilotId','messageCount','createdAt','updatedAt']);
 
 export const MessageScalarFieldEnumSchema = z.enum(['id','userId','copilotId','logId','content','role','chatId','createdAt','metadata','updatedAt']);
 
@@ -379,6 +379,7 @@ export type Blog = z.infer<typeof BlogSchema>
 export const ApiKeySchema = z.object({
   id: z.string().uuid(),
   userId: z.string(),
+  copilotId: z.string().nullable(),
   name: z.string(),
   apiKey: z.string(),
   lastUsedAt: z.coerce.date().nullable(),
@@ -388,21 +389,6 @@ export const ApiKeySchema = z.object({
 })
 
 export type ApiKey = z.infer<typeof ApiKeySchema>
-
-/////////////////////////////////////////
-// CHAT SCHEMA
-/////////////////////////////////////////
-
-export const ChatSchema = z.object({
-  id: z.string().uuid(),
-  userId: z.string(),
-  copilotId: z.string(),
-  messageCount: z.number().int(),
-  createdAt: z.coerce.date(),
-  updatedAt: z.coerce.date(),
-})
-
-export type Chat = z.infer<typeof ChatSchema>
 
 /////////////////////////////////////////
 // COPILOT SCHEMA
@@ -421,6 +407,21 @@ export const CopilotSchema = z.object({
 })
 
 export type Copilot = z.infer<typeof CopilotSchema>
+
+/////////////////////////////////////////
+// CHAT SCHEMA
+/////////////////////////////////////////
+
+export const ChatSchema = z.object({
+  id: z.string().uuid(),
+  userId: z.string(),
+  copilotId: z.string(),
+  messageCount: z.number().int(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type Chat = z.infer<typeof ChatSchema>
 
 /////////////////////////////////////////
 // MESSAGE SCHEMA

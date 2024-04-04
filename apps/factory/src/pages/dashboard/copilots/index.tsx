@@ -9,17 +9,44 @@ import { api } from "~/utils/api";
 import toast from "react-hot-toast";
 import { CopilotListOutput, CopilotOutput } from "~/validators/copilot";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
+import { generateApiKey } from "~/components/key_managements/CreateKeyDialog";
 
 const CopilotHome = () => {
   const [status, setStatus] = useState("");
+  const [apiKey, setApiKey] = useState("");
   const [customError, setCustomError] = useState({});
   const [copilots, setCopilots] = useState<CopilotListOutput>([]);
   const router = useRouter();
+  const { data: sessionData } = useSession();
+  const ns = sessionData?.user;
 
   const handleCopilotCreationSuccess = (createdCopilot: CopilotOutput) => {
     setStatus("success");
     toast.success("Copilot created successfully");
     router.push("/dashboard/copilots/" + createdCopilot?.id);
+  };
+
+  const apiKeyMutation = api.apiKey.createKey.useMutation();
+
+  const createApiKey = (copilot: CopilotOutput) => {
+    const apiKey = generateApiKey();
+    apiKeyMutation.mutate(
+      {
+        name: copilot?.name as string,
+        apiKey: apiKey,
+        userId: ns?.id as string,
+        copilotId: copilot?.id,
+      },
+      {
+        onSuccess(response: any) {
+          setApiKey(response.apiKey);
+        },
+        onError(error) {
+          console.error(error);
+        },
+      },
+    );
   };
 
   const mutation = api.copilot.createCopilot.useMutation({
@@ -29,6 +56,7 @@ const CopilotHome = () => {
     },
     onSuccess: (createdCopilot) => {
       if (createdCopilot !== null) {
+        createApiKey(createdCopilot);
         setCustomError({});
         handleCopilotCreationSuccess(createdCopilot);
       } else {

@@ -293,6 +293,7 @@ model Blog {
 model ApiKey {
   id         String    @id @default(uuid())
   userId     String
+  copilotId  String?
   name       String
   apiKey     String    @unique
   lastUsedAt DateTime?
