@@ -11,6 +11,7 @@ import {
   getCopilotsInput,
   CopilotListOutput,
   updateCopilotInput,
+  getCopilotInput,
 } from "~/validators/copilot";
 
 export const copilotRouter = createTRPCRouter({
@@ -54,6 +55,21 @@ export const copilotRouter = createTRPCRouter({
       });
 
       return copilots as CopilotListOutput;
+    }),
+
+  getCopilot: protectedProcedure
+    .input(getCopilotInput)
+    .output(copilotOutput)
+    .query(async ({ ctx, input }) => {
+      console.log(`copilot input -------------- ${JSON.stringify(input)}`);
+
+      const copilot = await ctx.prisma.copilot.findFirst({
+        where: {
+          id: input.id,
+        },
+      });
+
+      return copilot as CopilotOutput;
     }),
 
   updateCopilot: protectedProcedure

@@ -8,19 +8,18 @@ import { CreateCopilot } from "~/components/create_copilot";
 import { api } from "~/utils/api";
 import toast from "react-hot-toast";
 import { CopilotListOutput, CopilotOutput } from "~/validators/copilot";
+import { useRouter } from "next/router";
 
 const CopilotHome = () => {
   const [status, setStatus] = useState("");
   const [customError, setCustomError] = useState({});
   const [copilots, setCopilots] = useState<CopilotListOutput>([]);
+  const router = useRouter();
 
   const handleCopilotCreationSuccess = (createdCopilot: CopilotOutput) => {
     setStatus("success");
     toast.success("Copilot created successfully");
-    setTimeout(() => {
-      setStatus("");
-    }, 3000);
-    setCustomError({});
+    router.push("/dashboard/copilots/" + createdCopilot?.id);
   };
 
   const mutation = api.copilot.createCopilot.useMutation({
@@ -101,7 +100,7 @@ const Copilots = ({
       {copilots.map((copilot, index) => (
         <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
           <Card title={`${copilot?.description}`}>
-            <CardActionArea href={``}>
+            <CardActionArea href={`/dashboard/copilots/${copilot?.id}`}>
               <CardHeader
                 title={copilot?.name}
                 action={
