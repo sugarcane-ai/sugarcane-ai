@@ -35,15 +35,15 @@ export const getEmbeddingInput = z.object({
 // .strict()
 export type GetEmbeddingInput = z.infer<typeof getEmbeddingInput>;
 
-export const EmbeddingSchema = z.object({
+export const embeddingSchema = z.object({
   id: z.string(),
-  projectId: z.string(),
+  copilotId: copilotId,
   identifier: z.string(),
   chunk: z.string(),
   doc: z.string(),
   similarity: z.number(),
 });
-export type EmbeddingSchema = z.infer<typeof EmbeddingSchema>;
+export type EmbeddingSchema = z.infer<typeof embeddingSchema>;
 
-export const EmbeddingsSchema = z.array(EmbeddingSchema);
-export type EmbeddingsSchema = z.infer<typeof EmbeddingsSchema>;
+export const embeddingsSchema = z.array(embeddingSchema);
+export type EmbeddingsType = z.infer<typeof embeddingsSchema>;

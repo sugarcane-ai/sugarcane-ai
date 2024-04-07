@@ -79,7 +79,13 @@ export const serviceRouter = createTRPCRouter({
         };
 
         if (input.scope && userQuery) {
-          const matches = await lookupEmbedding(userId, userQuery, input.scope);
+          const copilotId = "123s";
+          const matches = await lookupEmbedding(
+            userId,
+            copilotId,
+            userQuery,
+            input.scope,
+          );
 
           if (matches.length > 0) {
             embeddingVariables["$PAGE_CONTEXT"] = matches[0]?.doc;

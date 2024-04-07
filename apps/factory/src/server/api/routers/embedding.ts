@@ -4,12 +4,13 @@ import { createDocsFromJson, createEmbeddings } from "~/utils/embeddings";
 import {
   CreateEmbeddingOutput,
   EmbeddingScopeType,
-  EmbeddingsSchema,
+  EmbeddingsType,
   createEmbeddingInput,
   createEmbeddingOutput,
+  embeddingsSchema,
   getEmbeddingInput,
 } from "~/validators/embedding";
-import { UserId } from "~/validators/base";
+import { CopilotId, UserId } from "~/validators/base";
 
 export const embeddingRouter = createTRPCRouter({
   createOrUpdate: protectedProcedure
@@ -108,7 +109,7 @@ export const embeddingRouter = createTRPCRouter({
       },
     })
     .input(getEmbeddingInput)
-    .output(EmbeddingsSchema)
+    .output(embeddingsSchema)
     .mutation(async ({ ctx, input }) => {
       // Break the json in to multiple small documents
       const userId = ctx.jwt?.id as string;
@@ -124,21 +125,86 @@ export const embeddingRouter = createTRPCRouter({
 
 // EXPLAIN ANALYZE SELECT * FROM "Embedding" ORDER BY "Embedding"."embedding" <-> '[3,1,2]' LIMIT 5;
 
-export const lookupEmbedding = async (
+export const lookupEmbeddingx = async (
   userId: UserId,
   userQuery: string,
   scope: EmbeddingScopeType,
-): Promise<EmbeddingsSchema> => {
+): Promise<EmbeddingsType> => {
   const embeddings = await createEmbeddings([userQuery]);
   const userQueryEmbed = JSON.stringify(embeddings[0]);
 
   const matches =
     // await prisma.$queryRaw`SELECT doc, embedding <#> ${userQueryEmbed}::vector as similarity FROM "Embedding" ORDER BY "Embedding"."embedding" <#> ${userQueryEmbed}::vector LIMIT 5`;
-    await prisma.$queryRaw`SELECT "id", "copilotId", "groupId", "chunk", "doc", (embedding <#> ${userQueryEmbed}::vector) * -1 as similarity FROM "Embedding" ORDER BY similarity DESC LIMIT 5`;
+    await prisma.$queryRaw`SELECT "id", "chunk", "doc", (embedding <#> ${userQueryEmbed}::vector) * -1 as similarity FROM "Embedding" ORDER BY similarity DESC LIMIT 5`;
 
   console.debug(matches);
 
-  return matches as EmbeddingsSchema;
+  return matches as EmbeddingsType;
+};
+
+export const lookupEmbedding = async (
+  userId: UserId,
+  copilotId: CopilotId,
+  userQuery: string,
+  scope: EmbeddingScopeType,
+): Promise<EmbeddingsType> => {
+  const embeddings = await createEmbeddings([userQuery]);
+  const userQueryEmbed = JSON.stringify(embeddings[0]);
+
+  // Start building the WHERE clause
+  let whereClauses = [
+    ["userId", userId],
+    ["copilotId", copilotId],
+    ["clientUserId", scope.clientUserId],
+    ["groupId", scope.groupId],
+    ["scope1", scope.scope1],
+    ["scope2", scope.scope2],
+  ].filter((k) => k[1] && k[1] !== "");
+
+  // for (const [key, value] of Object.entries(scope)) {
+  //   if (value) {
+  //     whereClauses.push(`"${key}" = '${value}'`);
+  //   }
+  // }
+
+  // Join the individual WHERE clauses with 'AND'
+  // const whereClause = whereClauses.join(" AND ");
+
+  // const whereCondtion = whereClauses
+  //   .map((c) => `"${c[0]}" = "${c[1]}"`)
+  //   .join(" AND ");
+
+  scope.scope1 = "todos";
+  scope.scope2 = "component";
+
+  const scope1 = "scope1";
+
+  // Build the query string
+  const matches = await prisma.$queryRaw`
+    SELECT "id", "chunk", "doc", (embedding <#> ${userQueryEmbed}::vector) * -1 as similarity 
+    FROM "Embedding" 
+      WHERE "userId" = ${userId}
+        AND "clientUserId" = ${scope.clientUserId} 
+        AND "groupId" = ${scope.groupId}
+        AND (
+          CASE 
+            WHEN ${scope.scope1} <> '' THEN "scope1" = ${scope.scope1}
+            ELSE TRUE
+          END
+        )
+        AND (
+          CASE 
+            WHEN ${scope.scope2} <> '' THEN "scope2" = ${scope.scope2}
+            ELSE TRUE
+          END
+        )
+        AND "copilotId" = ${copilotId}
+    ORDER BY similarity DESC
+    LIMIT 5
+  `;
+  console.debug(matches);
+
+  return matches as EmbeddingsType;
 };
 
 // const similaritySearchFromEmb = async (
