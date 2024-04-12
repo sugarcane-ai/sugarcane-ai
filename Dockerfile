@@ -68,7 +68,7 @@ RUN npm install sharp npm install
 
 USER root
 
-RUN ln -s /app/apps/${PROJECT_NAME}/server.js /app/server.js && ln -s /app/apps/${PROJECT_NAME}/.env /app/.env
+# RUN ln -s /app/apps/${PROJECT_NAME}/server.js /app/server.js && ln -s /app/apps/${PROJECT_NAME}/.env /app/.env
 
 EXPOSE $PORT
 
