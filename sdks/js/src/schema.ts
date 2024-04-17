@@ -11,6 +11,8 @@ export const copilotSylePositionSchema = z.enum([
   "top-right",
   "bottom-left",
   "bottom-right",
+  "top-center",
+  "bottom-center",
 ]);
 export type CopilotStylePositionType = z.infer<
   typeof copilotSylePositionSchema
