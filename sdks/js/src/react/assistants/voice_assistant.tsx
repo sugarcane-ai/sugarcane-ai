@@ -349,12 +349,15 @@ export const VoiceAssistant = ({
               {!isprocessing && (
                 <Spinner
                   style={{
-                    position: "relative",
-                    top: "-9px",
-                    left: "-9px",
+                    position: "absolute",
+                    bottom: "6px",
+                    left: "66px",
+                    // top: "-12px",
+                    // left: "-12px",
+                    opacity: "0.4",
                   }}
-                  size={"85"}
-                  color={currentStyle?.voiceButton.color}
+                  size={"48"}
+                  color={currentStyle?.voiceButton.bgColor}
                 />
               )}
               {!isprocessing && (

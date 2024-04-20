@@ -1,72 +1,39 @@
 import React from "react";
 
-const Spinner2 = ({ color = "#000", size = 50 }) => {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 100 100"
-      preserveAspectRatio="xMidYMid"
-      style={{ background: "none" }}
-    >
-      <circle
-        cx="50"
-        cy="50"
-        r="40"
-        stroke={color}
-        strokeWidth="10"
-        fill="none"
-        strokeLinecap="round"
-      >
-        <animate
-          attributeName="stroke-dashoffset"
-          dur="2s"
-          repeatCount="indefinite"
-          from="0"
-          to="502"
-        />
-        <animate
-          attributeName="stroke-dasharray"
-          dur="2s"
-          repeatCount="indefinite"
-          values="150.6 100.4;1 250;150.6 100.4"
-        />
-      </circle>
-    </svg>
-  );
-};
-
 export interface SpinnerProps {
   size?: string;
   className?: string;
   color?: string;
   width?: string;
   height?: string;
-  style?: any;
+  style?: React.CSSProperties;
 }
 
-const Spinner: React.FC<SpinnerProps & {}> = ({
+const Spinner: React.FC<SpinnerProps> = ({
   className,
-  color,
-  size = 25,
+  color = "#000",
+  size = "60",
   width,
   height,
   style,
 }): React.ReactElement => {
+  color = "red";
   const newWidth = width ?? size;
   const newHeight = height ?? size;
   return (
     <svg
-      width={size}
-      height={size}
-      viewBox="0 0 100 100"
-      preserveAspectRatio="xMidYMid"
+      width={newWidth}
+      height={newHeight}
+      viewBox={`0 0 ${newWidth} ${newWidth}`}
+      // preserveAspectRatio="xMidYMid"
       style={{ background: "none", ...style }}
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
     >
       <circle
-        cx="50"
-        cy="50"
-        r="40"
+        cx="24"
+        cy="24"
+        r="20"
         stroke={color}
         strokeWidth="10"
         fill="none"
@@ -76,8 +43,8 @@ const Spinner: React.FC<SpinnerProps & {}> = ({
           attributeName="stroke-dashoffset"
           dur="2s"
           repeatCount="indefinite"
-          from="0"
-          to="502"
+          from="502" // Reverse direction
+          to="0" // Reverse direction
           fill={color}
         />
         <animate
