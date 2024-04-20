@@ -124,6 +124,16 @@ export const VoiceAssistant = ({
 
   useEffect(() => {
     void checkIfAudioPermissionGranted();
+    // Check if microphone permission is granted
+    // navigator.mediaDevices
+    //   .getUserMedia({ audio: true })
+    //   .then(() => {
+    //     setIspermissiongranted(true);
+    //   })
+    //   .catch(() => {
+    //     setIspermissiongranted(false);
+    //   });
+
     setButtonName(id ?? (position as string));
   }, []);
 
@@ -335,7 +345,24 @@ export const VoiceAssistant = ({
               ispermissiongranted={ispermissiongranted.toString()}
               isprocessing={isprocessing.toString()}
               islistening={islistening.toString()}
-            ></VoiceButton>
+            >
+              <Mic
+                color={currentStyle?.voiceButton.color}
+                size={currentStyle?.voiceButton?.iconSize}
+              />
+              {isprocessing && (
+                <Spinner
+                  style={{
+                    position: "absolute",
+                    bottom: "-6px",
+                    left: "54px",
+                    opacity: "0.4",
+                  }}
+                  size={"72"}
+                  color={currentStyle?.voiceButton.bgColor}
+                />
+              )}
+            </VoiceButton>
             {(currentStyle.keyboardButton.position === "right" ||
               keyboardPostion === "right") &&
               keyboardPosition()}
