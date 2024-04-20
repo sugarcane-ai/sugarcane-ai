@@ -191,6 +191,29 @@ export const VoiceButton = styled.button<CopilotVoiceButtonPropsType>`
         : button?.bgColor};
   }
 `;
+// export const Spinner = styled.div`
+//   // Spinner
+//   box-sizing: border-box;
+//   display: inline-block;
+//   @keyframes lds-dual-ring {
+//     0% {
+//       transform: rotate(0deg);
+//     }
+//     100% {
+//       transform: rotate(360deg);
+//     }
+//   }
+
+//   box-sizing: border-box;
+//   content: " ";
+//   display: block;
+//   width: 64px;
+//   height: 64px;
+//   border-radius: 50%;
+//   border: 6.4px solid currentColor;
+//   border-color: currentColor transparent currentColor transparent;
+//   animation: lds-dual-ring 1.2s linear infinite;
+// `;
 
 export const KeyboardButton = styled.button<CopilotKeyboardButtonPropsType>`
   position: relative;

@@ -29,6 +29,7 @@ import {
 } from "../assistants/base_assistant";
 import Mic from "../icons/mic";
 import Keyboard from "../icons/keyboard";
+import Spinner from "../icons/spinner";
 
 export const VoiceAssistant = ({
   id = null,
@@ -297,6 +298,8 @@ export const VoiceAssistant = ({
       scope2,
       groupId,
     };
+
+    setIsprocessing(true);
     const aiResponse = await textToAction(
       promptTemplate as string,
       input,
@@ -343,16 +346,29 @@ export const VoiceAssistant = ({
               isprocessing={isprocessing.toString()}
               islistening={islistening.toString()}
             >
-              <Mic
-                color={currentStyle?.voiceButton.color}
-                size={currentStyle?.voiceButton?.iconSize}
-              />
+              {!isprocessing && (
+                <Spinner
+                  style={{
+                    position: "relative",
+                    top: "-9px",
+                    left: "-9px",
+                  }}
+                  size={"85"}
+                  color={currentStyle?.voiceButton.color}
+                />
+              )}
+              {!isprocessing && (
+                <Mic
+                  color={currentStyle?.voiceButton.color}
+                  size={currentStyle?.voiceButton?.iconSize}
+                />
+              )}
             </VoiceButton>
             {(currentStyle.keyboardButton.position === "right" ||
               keyboardPostion === "right") &&
               keyboardPosition()}
 
-            {!hideToolTip && (
+            {false && !hideToolTip && (
               <ToolTipWindow
                 container={currentStyle?.container}
                 position={position as CopilotStylePositionType}
