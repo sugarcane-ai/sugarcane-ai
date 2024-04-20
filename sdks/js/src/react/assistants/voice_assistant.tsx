@@ -371,7 +371,7 @@ export const VoiceAssistant = ({
               keyboardPostion === "right") &&
               keyboardPosition()}
 
-            {false && !hideToolTip && (
+            {!hideToolTip && (
               <ToolTipWindow
                 container={currentStyle?.container}
                 position={position as CopilotStylePositionType}
