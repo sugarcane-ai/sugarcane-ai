@@ -350,13 +350,13 @@ export const VoiceAssistant = ({
                 <Spinner
                   style={{
                     position: "absolute",
-                    bottom: "6px",
-                    left: "66px",
+                    bottom: "-6px",
+                    left: "54px",
                     // top: "-12px",
                     // left: "-12px",
                     opacity: "0.4",
                   }}
-                  size={"48"}
+                  size={"72"}
                   color={currentStyle?.voiceButton.bgColor}
                 />
               )}

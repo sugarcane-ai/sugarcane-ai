@@ -17,7 +17,6 @@ const Spinner: React.FC<SpinnerProps> = ({
   height,
   style,
 }): React.ReactElement => {
-  color = "red";
   const newWidth = width ?? size;
   const newHeight = height ?? size;
   return (
@@ -31,9 +30,9 @@ const Spinner: React.FC<SpinnerProps> = ({
       className={className}
     >
       <circle
-        cx="24"
-        cy="24"
-        r="20"
+        cx="36"
+        cy="36"
+        r="32"
         stroke={color}
         strokeWidth="10"
         fill="none"
