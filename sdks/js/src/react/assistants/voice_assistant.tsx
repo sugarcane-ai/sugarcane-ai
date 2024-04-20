@@ -346,7 +346,7 @@ export const VoiceAssistant = ({
               isprocessing={isprocessing.toString()}
               islistening={islistening.toString()}
             >
-              {!isprocessing && (
+              {isprocessing && (
                 <Spinner
                   style={{
                     position: "absolute",
@@ -360,12 +360,12 @@ export const VoiceAssistant = ({
                   color={currentStyle?.voiceButton.bgColor}
                 />
               )}
-              {!isprocessing && (
+              {
                 <Mic
                   color={currentStyle?.voiceButton.color}
                   size={currentStyle?.voiceButton?.iconSize}
                 />
-              )}
+              }
             </VoiceButton>
             {(currentStyle.keyboardButton.position === "right" ||
               keyboardPostion === "right") &&
