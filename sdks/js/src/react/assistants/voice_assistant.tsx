@@ -128,10 +128,10 @@ export const VoiceAssistant = ({
     ["bottom-center", "top-center"].includes(position) ||
     ["bottom-center", "top-center"].includes(currentStyle.container.position);
 
-  // const currentAiConfig = {
-  //   ...copilotAiDefaults,
-  //   ...config?.ai,
-  // };
+  const currentAiConfig = {
+    ...copilotAiDefaults,
+    ...config?.ai,
+  };
 
   DEV: console.log(currentAiConfig);
 
