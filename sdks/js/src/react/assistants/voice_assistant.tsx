@@ -64,8 +64,8 @@ export const VoiceAssistant = ({
   toolTipMessageStyle?: any;
   position?: CopilotStylePositionType;
   keyboardPostion?: CopilotSyleKeyboardPositionSchema;
-  actionsFn?: (() => any) | undefined;
-  actionCallbacksFn?: (() => any) | undefined;
+  actionsFn?: Function;
+  actionCallbacksFn?: Function;
 }) => {
   const [buttonId, setButtonName] = useState<string>(position as string);
   const [islistening, setIslistening] = useState(false);

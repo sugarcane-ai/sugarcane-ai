@@ -122,18 +122,14 @@ export const CopilotProvider = function ({
     actions: Array<Record<string, ActionDefinitionType>> = [],
     actionCallbacks: Array<Record<string, Function>> = [],
   ): Promise<string> {
-    console.log(uxActions);
-    console.log(actions);
-    console.log(actionCallbacks);
-    console.log(actionCallbacks);
     return await nativeTextoAction(
       promptTemplate,
       userQuery,
       promptVariables,
       scope,
       config,
-      uxActions,
-      uxActionCallbacks,
+      uxActions.concat(actions),
+      uxActionCallbacks.concat(actionCallbacks),
     );
   }
 
