@@ -33,7 +33,7 @@ import {
       );
     },
     render: function render() {
-      const el = document.getElementById("root");
+      const el = document.getElementById("copilot-one");
       el.addEventListener("click", function (e) {
         e.preventDefault();
       });
