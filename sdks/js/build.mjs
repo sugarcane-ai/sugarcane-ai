@@ -73,7 +73,7 @@ fs.writeFileSync("meta-js.json", JSON.stringify(jsVABuildResult.metafile));
 
 let jsBuildResult = await build({
   ...sharedConfig,
-  entryPoints: ["src/js/text_assistant.js"],
+  entryPoints: ["src/js/index.js"],
   outfile: `${outputDir}/js/copilot-one.min.js`,
   bundle: true,
   minify: true,
