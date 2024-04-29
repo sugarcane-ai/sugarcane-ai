@@ -1,7 +1,7 @@
 import React from "react";
-import { ChatMessage, Message } from "../base_styled";
+import { ChatMessage, Message as MessageStyled } from "../base_styled";
 
-const AssistantMessage = ({
+const Message = ({
   finalOutput,
   aiResponse,
   currentStyle,
@@ -19,26 +19,26 @@ const AssistantMessage = ({
       className="sugar-ai-chat-message"
     >
       {finalOutput && (
-        <Message
+        <MessageStyled
           theme={currentStyle?.theme}
           id={`sugar-ai-message-${buttonId}`}
           className="sugar-ai-message"
         >
           {finalOutput}
-        </Message>
+        </MessageStyled>
       )}
       {aiResponse && (
-        <Message
+        <MessageStyled
           theme={currentStyle?.theme}
           id={`sugar-ai-message-${buttonId}`}
           className="sugar-ai-message"
           role="assistant"
         >
           {aiResponse}
-        </Message>
+        </MessageStyled>
       )}
     </ChatMessage>
   );
 };
 
-export default AssistantMessage;
+export default Message;

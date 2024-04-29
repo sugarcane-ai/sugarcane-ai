@@ -1,7 +1,7 @@
 import React from "react";
 import { ToolTipContainer, TootTipMessage } from "../base_styled";
 
-const AssistantToolTip = ({
+const ToolTip = ({
   currentStyle,
   position,
   buttonId,
@@ -30,4 +30,4 @@ const AssistantToolTip = ({
   );
 };
 
-export default AssistantToolTip;
+export default ToolTip;

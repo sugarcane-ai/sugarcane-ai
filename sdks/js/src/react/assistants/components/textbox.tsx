@@ -1,8 +1,12 @@
 import Keyboard from "../../icons/keyboard";
 import Mic from "../../icons/mic";
-import { TextBox, TextBoxButton, TextBoxContainer } from "../base_styled";
+import {
+  TextBox as TextBoxStyled,
+  TextBoxButton,
+  TextBoxContainer,
+} from "../base_styled";
 
-const AssistantTextBox = ({
+const TextBox = ({
   currentStyle,
   position,
   buttonId,
@@ -19,7 +23,7 @@ const AssistantTextBox = ({
       id={`sugar-ai-text-box-container-${buttonId}`}
       className="sugar-ai-text-box-container"
     >
-      <TextBox
+      <TextBoxStyled
         type="text"
         placeholder={currentStyle?.keyboardButton?.placeholder}
         value={textMessage}
@@ -57,4 +61,4 @@ const AssistantTextBox = ({
   );
 };
 
-export default AssistantTextBox;
+export default TextBox;

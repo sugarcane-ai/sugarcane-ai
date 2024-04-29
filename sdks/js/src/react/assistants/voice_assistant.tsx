@@ -15,13 +15,13 @@ import { CopilotContainer, KeyboardEmptyContainer } from "./base_styled";
 import {
   shouldForwardProp,
   type BaseAssistantProps,
-} from "./components/assistant";
+} from "./components/schema";
 import { GlobalStyle } from "./reset_css";
-import AssistantKeyboard from "./components/assistant_keyboard";
-import AssistantMessage from "./components/assistant_message";
-import AssistantToolTip from "./components/assistant_tooltip";
-import AssistantTextBox from "./components/assistant_textbox";
-import AssistantVoice from "./components/assistant_voice";
+import Keyboard from "./components/keyboard";
+import Message from "./components/message";
+import ToolTip from "./components/tooltip";
+import TextBox from "./components/textbox";
+import Voice from "./components/voice";
 
 export const VoiceAssistant = ({
   id = null,
@@ -326,7 +326,7 @@ export const VoiceAssistant = ({
         {!hideVoiceButton && (
           <>
             {isUserEngaged && isLeftPositioned && (
-              <AssistantKeyboard
+              <Keyboard
                 style={keyboardButtonStyle}
                 currentStyle={currentStyle?.keyboardButton}
                 enableKeyboard={enableKeyboard}
@@ -335,7 +335,7 @@ export const VoiceAssistant = ({
             {isUserEngaged && isRightPositioned && isCenterPositioned && (
               <KeyboardEmptyContainer></KeyboardEmptyContainer>
             )}
-            <AssistantVoice
+            <Voice
               currentStyle={currentStyle}
               voiceButtonStyle={voiceButtonStyle}
               startListening={startListening}
@@ -348,14 +348,14 @@ export const VoiceAssistant = ({
               <KeyboardEmptyContainer></KeyboardEmptyContainer>
             )}
             {isUserEngaged && isRightPositioned && (
-              <AssistantKeyboard
+              <Keyboard
                 style={keyboardButtonStyle}
                 currentStyle={currentStyle?.keyboardButton}
                 enableKeyboard={enableKeyboard}
               />
             )}
             {!hideToolTip && !currentStyle.toolTip.disabled && (
-              <AssistantToolTip
+              <ToolTip
                 currentStyle={currentStyle}
                 position={position}
                 buttonId={buttonId}
@@ -368,7 +368,7 @@ export const VoiceAssistant = ({
         )}
 
         {(aiResponse || finalOutput || interimOutput) && (
-          <AssistantMessage
+          <Message
             finalOutput={interimOutput || finalOutput}
             aiResponse={aiResponse}
             currentStyle={currentStyle}
@@ -379,7 +379,7 @@ export const VoiceAssistant = ({
         )}
       </CopilotContainer>
       {hideVoiceButton && (
-        <AssistantTextBox
+        <TextBox
           currentStyle={currentStyle}
           position={position}
           buttonId={buttonId}

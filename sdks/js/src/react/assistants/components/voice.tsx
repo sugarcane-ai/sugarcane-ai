@@ -2,7 +2,7 @@ import Mic from "../../icons/mic";
 import Spinner from "../../icons/spinner";
 import { VoiceButton } from "../base_styled";
 
-const AssistantVoice = ({
+const Voice = ({
   currentStyle,
   voiceButtonStyle,
   startListening,
@@ -44,4 +44,4 @@ const AssistantVoice = ({
   );
 };
 
-export default AssistantVoice;
+export default Voice;

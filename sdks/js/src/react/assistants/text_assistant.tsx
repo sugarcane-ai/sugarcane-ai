@@ -13,14 +13,14 @@ import { StyleSheetManager } from "styled-components";
 
 import { CopilotContainer } from "./base_styled";
 import { GlobalStyle } from "./reset_css";
-import AssistantKeyboard from "./components/assistant_keyboard";
-import AssistantMessage from "./components/assistant_message";
-import AssistantToolTip from "./components/assistant_tooltip";
-import AssistantTextBox from "./components/assistant_textbox";
+import Keyboard from "./components/keyboard";
+import Message from "./components/message";
+import ToolTip from "./components/tooltip";
+import TextBox from "./components/textbox";
 import {
   shouldForwardProp,
   type BaseAssistantProps,
-} from "./components/assistant";
+} from "./components/schema";
 
 export const TextAssistant = ({
   id = null,
@@ -176,14 +176,14 @@ export const TextAssistant = ({
       >
         {!hideTextButton && (
           <>
-            <AssistantKeyboard
+            <Keyboard
               style={keyboardButtonStyle}
               currentStyle={currentStyle?.keyboardButton}
               enableKeyboard={enableKeyboard}
             />
 
             {!hideToolTip && !currentStyle.toolTip.disabled && (
-              <AssistantToolTip
+              <ToolTip
                 currentStyle={currentStyle}
                 position={position}
                 buttonId={buttonId}
@@ -196,7 +196,7 @@ export const TextAssistant = ({
         )}
 
         {(aiResponse || finalOutput) && (
-          <AssistantMessage
+          <Message
             finalOutput={finalOutput}
             aiResponse={aiResponse}
             currentStyle={currentStyle}
@@ -207,7 +207,7 @@ export const TextAssistant = ({
         )}
       </CopilotContainer>
       {hideTextButton && (
-        <AssistantTextBox
+        <TextBox
           currentStyle={currentStyle}
           position={position}
           buttonId={buttonId}
