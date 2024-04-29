@@ -17,7 +17,10 @@ import AssistantKeyboard from "./components/assistant_keyboard";
 import AssistantMessage from "./components/assistant_message";
 import AssistantToolTip from "./components/assistant_tooltip";
 import AssistantTextBox from "./components/assistant_textbox";
-import { type BaseAssistantProps } from "./components/assistant";
+import {
+  shouldForwardProp,
+  type BaseAssistantProps,
+} from "./components/assistant";
 
 export const TextAssistant = ({
   id = null,
@@ -102,7 +105,7 @@ export const TextAssistant = ({
 
   DEV: console.log(`config?.style ---> ${JSON.stringify(config?.style)}`);
 
-  DEV: console.log(`default Style ---> ${JSON.stringify(currentStyle)}`);
+  DEV: console.log(`current Style ---> ${JSON.stringify(currentStyle)}`);
 
   if (promptTemplate == null && config?.ai?.defaultPromptTemplate == null) {
     throw new Error(
@@ -127,9 +130,6 @@ export const TextAssistant = ({
   const enableKeyboard = () => {
     setHideTextButton(!hideTextButton);
   };
-
-  const shouldForwardProp = (prop: string) =>
-    prop !== "container" && prop !== "position";
 
   const processTextToText = async (input: string) => {
     const newScope: EmbeddingScopeWithUserType = {

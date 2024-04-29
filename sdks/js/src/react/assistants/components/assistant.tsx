@@ -24,3 +24,6 @@ export interface BaseAssistantProps {
   actionsFn?: Function;
   actionCallbacksFn?: Function;
 }
+
+export const shouldForwardProp = (prop: string) =>
+  prop !== "container" && prop !== "position";

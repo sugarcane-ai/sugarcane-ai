@@ -55,9 +55,9 @@ export const CopilotContainer = styled.div<{
 }>`
   position: fixed;
   ${({ container, position }) => {
-    const positions =
-      (position as CopilotStylePositionType) ||
-      (container?.position as CopilotStylePositionType);
+    const positions = position
+      ? (position as CopilotStylePositionType)
+      : (container?.position as CopilotStylePositionType);
 
     switch (positions) {
       case "top-left":

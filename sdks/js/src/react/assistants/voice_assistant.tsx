@@ -12,7 +12,10 @@ import root from "window-or-global";
 import { StyleSheetManager } from "styled-components";
 
 import { CopilotContainer, KeyboardEmptyContainer } from "./base_styled";
-import { type BaseAssistantProps } from "./components/assistant";
+import {
+  shouldForwardProp,
+  type BaseAssistantProps,
+} from "./components/assistant";
 import { GlobalStyle } from "./reset_css";
 import AssistantKeyboard from "./components/assistant_keyboard";
 import AssistantMessage from "./components/assistant_message";
@@ -116,7 +119,7 @@ export const VoiceAssistant = ({
 
   DEV: console.log(`config?.style ---> ${JSON.stringify(config?.style)}`);
 
-  DEV: console.log(`default Style ---> ${JSON.stringify(currentStyle)}`);
+  DEV: console.log(`current Style ---> ${JSON.stringify(currentStyle)}`);
 
   if (promptTemplate == null && config?.ai?.defaultPromptTemplate == null) {
     throw new Error(
@@ -129,16 +132,6 @@ export const VoiceAssistant = ({
 
   useEffect(() => {
     void checkIfAudioPermissionGranted();
-    // Check if microphone permission is granted
-    // navigator.mediaDevices
-    //   .getUserMedia({ audio: true })
-    //   .then(() => {
-    //     setIspermissiongranted(true);
-    //   })
-    //   .catch(() => {
-    //     setIspermissiongranted(false);
-    //   });
-
     setButtonName(id ?? (position as string));
     const timer = setTimeout(() => {
       setHideToolTip(false); // Hide the tooltip after 5000 ms (5 seconds)
@@ -281,9 +274,6 @@ export const VoiceAssistant = ({
   const enableKeyboard = () => {
     setHideVoiceButton(!hideVoiceButton);
   };
-
-  const shouldForwardProp = (prop: string) =>
-    prop !== "container" && prop !== "position";
 
   const processSpeechToText = async (
     input: string,
