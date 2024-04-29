@@ -1,5 +1,5 @@
 import React from "react";
-import { ToolTipContainer, TootTipMessage } from "../base_assistant";
+import { ToolTipContainer, TootTipMessage } from "../base_styled";
 
 const AssistantToolTip = ({
   currentStyle,

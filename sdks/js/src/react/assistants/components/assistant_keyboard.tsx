@@ -1,5 +1,5 @@
 import React from "react";
-import { KeyboardButton } from "../base_assistant";
+import { KeyboardButton } from "../base_styled";
 import Keyboard from "../../icons/keyboard";
 
 const AssistantKeyboard = ({ style, currentStyle, enableKeyboard }) => {

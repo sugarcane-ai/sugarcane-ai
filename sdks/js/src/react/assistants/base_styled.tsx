@@ -9,10 +9,6 @@ import {
   type MessageRoleType,
   messageRoleEnum,
   copilotStyleKeyboardButtonSchema,
-  type EmbeddingScopeType,
-  type PromptTemplateType,
-  type PromptVariablesType,
-  type CopilotSyleKeyboardPositionSchema,
 } from "../../schema";
 
 const copilotVoiceButtonProps = z.object({
@@ -347,22 +343,3 @@ export const KeyboardEmptyContainer = styled(KeyboardButton)`
   height: 0px;
   background: unset;
 `;
-
-export interface BaseAssistantProps {
-  id?: string | null;
-  promptTemplate?: PromptTemplateType | null;
-  promptVariables?: PromptVariablesType;
-  scope1?: EmbeddingScopeType["scope1"];
-  scope2?: EmbeddingScopeType["scope2"];
-  groupId?: EmbeddingScopeType["groupId"];
-  style?: any;
-  keyboardButtonStyle?: any;
-  messageStyle?: any;
-  voiceButtonStyle?: any;
-  toolTipContainerStyle?: any;
-  toolTipMessageStyle?: any;
-  position?: CopilotStylePositionType;
-  keyboardPostion?: CopilotSyleKeyboardPositionSchema;
-  actionsFn?: Function;
-  actionCallbacksFn?: Function;
-}

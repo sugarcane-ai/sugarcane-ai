@@ -1,5 +1,5 @@
 import React from "react";
-import { ChatMessage, Message } from "../base_assistant";
+import { ChatMessage, Message } from "../base_styled";
 
 const AssistantMessage = ({
   finalOutput,

@@ -1,6 +1,6 @@
 import Mic from "../../icons/mic";
 import Spinner from "../../icons/spinner";
-import { VoiceButton } from "../base_assistant";
+import { VoiceButton } from "../base_styled";
 
 const AssistantVoice = ({
   currentStyle,

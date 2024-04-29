@@ -11,14 +11,8 @@ import root from "window-or-global";
 
 import { StyleSheetManager } from "styled-components";
 
-import {
-  CopilotContainer,
-  VoiceButton,
-  KeyboardEmptyContainer,
-  type BaseAssistantProps,
-} from "../assistants/base_assistant";
-import Mic from "../icons/mic";
-import Spinner from "../icons/spinner";
+import { CopilotContainer, KeyboardEmptyContainer } from "./base_styled";
+import { type BaseAssistantProps } from "./components/assistant";
 import { GlobalStyle } from "./reset_css";
 import AssistantKeyboard from "./components/assistant_keyboard";
 import AssistantMessage from "./components/assistant_message";

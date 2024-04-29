@@ -11,15 +11,13 @@ import root from "window-or-global";
 
 import { StyleSheetManager } from "styled-components";
 
-import {
-  CopilotContainer,
-  type BaseAssistantProps,
-} from "../assistants/base_assistant";
+import { CopilotContainer } from "./base_styled";
 import { GlobalStyle } from "./reset_css";
 import AssistantKeyboard from "./components/assistant_keyboard";
 import AssistantMessage from "./components/assistant_message";
 import AssistantToolTip from "./components/assistant_tooltip";
 import AssistantTextBox from "./components/assistant_textbox";
+import { type BaseAssistantProps } from "./components/assistant";
 
 export const TextAssistant = ({
   id = null,

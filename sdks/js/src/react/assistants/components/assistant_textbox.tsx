@@ -1,6 +1,6 @@
 import Keyboard from "../../icons/keyboard";
 import Mic from "../../icons/mic";
-import { TextBox, TextBoxButton, TextBoxContainer } from "../base_assistant";
+import { TextBox, TextBoxButton, TextBoxContainer } from "../base_styled";
 
 const AssistantTextBox = ({
   currentStyle,
