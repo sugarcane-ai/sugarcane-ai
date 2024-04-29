@@ -69,16 +69,28 @@ console.log(
   }),
 );
 
-let jsBuildResult = await build({
+let jsVABuildResult = await build({
   ...sharedConfig,
-  entryPoints: ["src/js/index.js"],
-  outfile: `${outputDir}/js/copilot-one.min.js`,
+  entryPoints: ["src/js/voice_assistant.js"],
+  outfile: `${outputDir}/js/copilot-one-voice-assistant.min.js`,
   bundle: true,
   minify: true,
   platform: "browser",
   format: "iife",
 });
 
-fs.writeFileSync("meta-js.json", JSON.stringify(jsBuildResult.metafile));
+fs.writeFileSync("meta-js.json", JSON.stringify(jsVABuildResult.metafile));
+
+let jsTABuildResult = await build({
+  ...sharedConfig,
+  entryPoints: ["src/js/text_assistant.js"],
+  outfile: `${outputDir}/js/copilot-one-text-assistant.min.js`,
+  bundle: true,
+  minify: true,
+  platform: "browser",
+  format: "iife",
+});
+
+fs.writeFileSync("meta-js.json", JSON.stringify(jsTABuildResult.metafile));
 
 // jsBuildResult;
