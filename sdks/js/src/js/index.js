@@ -1,6 +1,12 @@
 import { createElement } from "react";
 import { createRoot } from "react-dom/client";
-import { register, unregister, CopilotProvider, TextAssistant } from "../index";
+import {
+  register,
+  unregister,
+  CopilotProvider,
+  TextAssistant,
+  VoiceAssistant,
+} from "../index";
 
 (function (win) {
   win.sai = win.sai || {
