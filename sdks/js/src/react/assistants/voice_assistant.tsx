@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from "react";
 import {
   type EmbeddingScopeWithUserType,
-  type EmbeddingScopeType,
-  type PromptTemplateType,
-  type PromptVariablesType,
   type CopilotStylePositionType,
   type CopilotSytleType,
   copilotStyleDefaults,
-  type CopilotSyleKeyboardPositionSchema,
   copilotAiDefaults,
 } from "../../schema";
 import { useCopilot } from "../CopilotContext";
@@ -18,20 +14,17 @@ import { StyleSheetManager } from "styled-components";
 import {
   CopilotContainer,
   VoiceButton,
-  ChatMessage,
-  Message,
-  ToolTipContainer,
-  TootTipMessage,
-  KeyboardButton,
-  TextBoxContainer,
-  TextBoxButton,
-  TextBox,
   KeyboardEmptyContainer,
+  type BaseAssistantProps,
 } from "../assistants/base_assistant";
 import Mic from "../icons/mic";
-import Keyboard from "../icons/keyboard";
 import Spinner from "../icons/spinner";
 import { GlobalStyle } from "./reset_css";
+import AssistantKeyboard from "./components/assistant_keyboard";
+import AssistantMessage from "./components/assistant_message";
+import AssistantToolTip from "./components/assistant_tooltip";
+import AssistantTextBox from "./components/assistant_textbox";
+import AssistantVoice from "./components/assistant_voice";
 
 export const VoiceAssistant = ({
   id = null,
@@ -50,24 +43,7 @@ export const VoiceAssistant = ({
   keyboardPostion = copilotStyleDefaults.keyboardButton.position,
   actionsFn,
   actionCallbacksFn,
-}: {
-  id: string | null;
-  promptTemplate: PromptTemplateType | null;
-  groupId?: EmbeddingScopeType["groupId"];
-  scope1?: EmbeddingScopeType["scope1"];
-  scope2?: EmbeddingScopeType["scope2"];
-  promptVariables?: PromptVariablesType;
-  style?: any;
-  voiceButtonStyle?: any;
-  keyboardButtonStyle?: any;
-  messageStyle?: any;
-  toolTipContainerStyle?: any;
-  toolTipMessageStyle?: any;
-  position?: CopilotStylePositionType;
-  keyboardPostion?: CopilotSyleKeyboardPositionSchema;
-  actionsFn?: Function;
-  actionCallbacksFn?: Function;
-}) => {
+}: BaseAssistantProps) => {
   const [buttonId, setButtonName] = useState<string>(position as string);
   const [islistening, setIslistening] = useState(false);
   const [hideToolTip, setHideToolTip] = useState(true);
@@ -315,23 +291,6 @@ export const VoiceAssistant = ({
   const shouldForwardProp = (prop: string) =>
     prop !== "container" && prop !== "position";
 
-  const keyboardPosition = () => {
-    return (
-      <KeyboardButton
-        className="sugar-ai-copilot-keyboard-button"
-        style={keyboardButtonStyle}
-        button={currentStyle?.keyboardButton}
-        onClick={enableKeyboard}
-      >
-        <Keyboard
-          width={"20"}
-          height={"14"}
-          color={currentStyle?.keyboardButton?.bgColor}
-        />
-      </KeyboardButton>
-    );
-  };
-
   const processSpeechToText = async (
     input: string,
     isSpeak: boolean = true,
@@ -382,125 +341,70 @@ export const VoiceAssistant = ({
       >
         {!hideVoiceButton && (
           <>
-            {isUserEngaged && isLeftPositioned && keyboardPosition()}
+            {isUserEngaged && isLeftPositioned && (
+              <AssistantKeyboard
+                style={keyboardButtonStyle}
+                currentStyle={currentStyle?.keyboardButton}
+                enableKeyboard={enableKeyboard}
+              />
+            )}
             {isUserEngaged && isRightPositioned && isCenterPositioned && (
               <KeyboardEmptyContainer></KeyboardEmptyContainer>
             )}
-            <VoiceButton
-              id={`sugar-ai-voice-button-${buttonId}`}
-              className="sugar-ai-copilot-voice-button"
-              style={voiceButtonStyle}
-              onClick={(e) => {
-                void startListening(e);
-              }}
-              button={currentStyle?.voiceButton}
-              ispermissiongranted={ispermissiongranted.toString()}
-              isprocessing={isprocessing.toString()}
-              islistening={islistening.toString()}
-            >
-              <Mic
-                color={currentStyle?.voiceButton.color}
-                size={currentStyle?.voiceButton?.iconSize}
-              />
-              {isprocessing && (
-                <Spinner
-                  style={{
-                    position: "absolute",
-                    bottom: "-6px",
-                    left: "54px",
-                    opacity: "0.4",
-                  }}
-                  size={"72"}
-                  color={currentStyle?.voiceButton.bgColor}
-                />
-              )}
-            </VoiceButton>
+            <AssistantVoice
+              currentStyle={currentStyle}
+              voiceButtonStyle={voiceButtonStyle}
+              startListening={startListening}
+              buttonId={buttonId}
+              ispermissiongranted={ispermissiongranted}
+              isprocessing={isprocessing}
+              islistening={islistening}
+            />
             {isUserEngaged && isLeftPositioned && isCenterPositioned && (
               <KeyboardEmptyContainer></KeyboardEmptyContainer>
             )}
-            {isUserEngaged && isRightPositioned && keyboardPosition()}
+            {isUserEngaged && isRightPositioned && (
+              <AssistantKeyboard
+                style={keyboardButtonStyle}
+                currentStyle={currentStyle?.keyboardButton}
+                enableKeyboard={enableKeyboard}
+              />
+            )}
             {!hideToolTip && !currentStyle.toolTip.disabled && (
-              <ToolTipContainer
-                container={currentStyle?.container}
-                config={currentStyle?.toolTip}
-                position={position as CopilotStylePositionType}
-                style={toolTipContainerStyle}
-                id={`sugar-ai-tool-tip-${buttonId}`}
-                className="sugar-ai-tool-tip"
-              >
-                <TootTipMessage
-                  theme={currentStyle?.theme}
-                  id={`sugar-ai-tool-tip-message-${buttonId}`}
-                  style={toolTipMessageStyle}
-                  className="sugar-ai-tool-tip-message"
-                >
-                  {tipMessage}
-                </TootTipMessage>
-              </ToolTipContainer>
+              <AssistantToolTip
+                currentStyle={currentStyle}
+                position={position}
+                buttonId={buttonId}
+                toolTipContainerStyle={toolTipContainerStyle}
+                toolTipMessageStyle={toolTipMessageStyle}
+                tipMessage={tipMessage}
+              />
             )}
           </>
         )}
 
         {(aiResponse || finalOutput || interimOutput) && (
-          <ChatMessage
-            container={currentStyle?.container}
-            position={position as CopilotStylePositionType}
-            style={messageStyle}
-            id={`sugar-ai-chat-message-${buttonId}`}
-            className="sugar-ai-chat-message"
-          >
-            {(interimOutput || finalOutput) && (
-              <Message
-                theme={currentStyle?.theme}
-                id={`sugar-ai-message-${buttonId}`}
-                className="sugar-ai-message"
-              >
-                {interimOutput || finalOutput}
-              </Message>
-            )}
-            {aiResponse && (
-              <Message
-                theme={currentStyle?.theme}
-                id={`sugar-ai-message-${buttonId}`}
-                className="sugar-ai-message"
-                role="assistant"
-              >
-                {aiResponse}
-              </Message>
-            )}
-          </ChatMessage>
+          <AssistantMessage
+            finalOutput={interimOutput || finalOutput}
+            aiResponse={aiResponse}
+            currentStyle={currentStyle}
+            position={position}
+            buttonId={buttonId}
+            messageStyle={messageStyle}
+          />
         )}
       </CopilotContainer>
       {hideVoiceButton && (
-        <TextBoxContainer
-          container={currentStyle?.container}
+        <AssistantTextBox
+          currentStyle={currentStyle}
           position={position}
-          id={`sugar-ai-text-box-container-${buttonId}`}
-          className="sugar-ai-text-box-container"
-        >
-          <TextBox
-            type="text"
-            placeholder={currentStyle?.keyboardButton?.placeholder}
-            value={textMessage}
-            color={currentStyle?.keyboardButton?.bgColor}
-            onChange={(e) => {
-              setTextMessage(e.target.value);
-            }}
-            onKeyUp={(e) => {
-              if (e.key === "Enter") void startSending();
-            }}
-            id={`sugar-ai-text-box-${buttonId}`}
-            className="sugar-ai-text-box"
-          />
-          <TextBoxButton onClick={enableKeyboard}>
-            <Mic
-              color={currentStyle?.keyboardButton?.bgColor}
-              size={currentStyle?.keyboardButton?.iconSize}
-              width={"26"}
-              height={"30"}
-            />
-          </TextBoxButton>
-        </TextBoxContainer>
+          buttonId={buttonId}
+          setTextMessage={setTextMessage}
+          textMessage={textMessage}
+          startSending={startSending}
+          enableKeyboard={enableKeyboard}
+          iskeyboard={false}
+        />
       )}
     </StyleSheetManager>
   );

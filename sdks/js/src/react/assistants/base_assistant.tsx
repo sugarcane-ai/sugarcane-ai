@@ -9,6 +9,10 @@ import {
   type MessageRoleType,
   messageRoleEnum,
   copilotStyleKeyboardButtonSchema,
+  type EmbeddingScopeType,
+  type PromptTemplateType,
+  type PromptVariablesType,
+  type CopilotSyleKeyboardPositionSchema,
 } from "../../schema";
 
 const copilotVoiceButtonProps = z.object({
@@ -317,7 +321,7 @@ export const TextBox = styled.input<{ color: string }>`
 `;
 
 // Styled button
-export const TextBoxButton = styled.button`
+export const TextBoxButton = styled.button<{ iskeyboard?: string }>`
   position: absolute;
   top: 5px;
   right: 0;
@@ -328,6 +332,12 @@ export const TextBoxButton = styled.button`
   cursor: pointer;
   outline: none;
   background: unset;
+  ${({ iskeyboard }) =>
+    iskeyboard === "true" &&
+    css`
+      top: 13px;
+      right: 5px;
+    `}
 `;
 
 // button, voice -> theme -> defaults
@@ -337,3 +347,22 @@ export const KeyboardEmptyContainer = styled(KeyboardButton)`
   height: 0px;
   background: unset;
 `;
+
+export interface BaseAssistantProps {
+  id?: string | null;
+  promptTemplate?: PromptTemplateType | null;
+  promptVariables?: PromptVariablesType;
+  scope1?: EmbeddingScopeType["scope1"];
+  scope2?: EmbeddingScopeType["scope2"];
+  groupId?: EmbeddingScopeType["groupId"];
+  style?: any;
+  keyboardButtonStyle?: any;
+  messageStyle?: any;
+  voiceButtonStyle?: any;
+  toolTipContainerStyle?: any;
+  toolTipMessageStyle?: any;
+  position?: CopilotStylePositionType;
+  keyboardPostion?: CopilotSyleKeyboardPositionSchema;
+  actionsFn?: Function;
+  actionCallbacksFn?: Function;
+}
