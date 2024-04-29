@@ -1,11 +1,6 @@
 import { createElement } from "react";
 import { createRoot } from "react-dom/client";
-import {
-  register,
-  unregister,
-  CopilotProvider,
-  VoiceAssistant,
-} from "../index";
+import { register, unregister, CopilotProvider, TextAssistant } from "../index";
 
 (function (win) {
   win.sai = win.sai || {
@@ -16,20 +11,43 @@ import {
     config: function (config) {
       this.config = config;
     },
+    assistants: [],
+    addAssistant: function (assistant, args) {
+      this.assistants.push({ type: assistant, options: args });
+    },
+    removeAssistant: function (assistantId) {
+      const index = this.assistants.findIndex(
+        (assistant) => assistant.options.id === assistantId,
+      );
+      if (index !== -1) {
+        this.assistants.splice(index, 1);
+      }
+    },
+    loadAssistant: function (assistantType) {
+      switch (assistantType) {
+        case "Voice":
+          return VoiceAssistant;
+        case "Text":
+          return TextAssistant;
+        default:
+          return null;
+      }
+    },
     App: function App() {
+      const assistantComponents = this.assistants.map(({ type, options }) =>
+        createElement(this.loadAssistant(type), {
+          key: type,
+          actionsFn: () => win.sai.actions,
+          actionCallbacksFn: () => win.sai.actionCallbacks,
+          ...options,
+        }),
+      );
       return createElement(
         CopilotProvider,
         {
           config: win.sai.config,
         },
-        createElement(VoiceAssistant, {
-          actionsFn: function () {
-            return win.sai.actions;
-          },
-          actionCallbacksFn: function () {
-            return win.sai.actionCallbacks;
-          },
-        }),
+        assistantComponents,
       );
     },
     render: function render() {
@@ -49,8 +67,9 @@ import {
       this.render();
     },
     processArgument: function processArgument(args) {
-      const fn = args[0];
-      const argsValue = Array.prototype.slice.call(args, 1);
+      // const fn = args[0];
+      // const argsValue = Array.prototype.slice.call(args, 1);
+      const [fn, ...argsValue] = args;
       if (fn === "register" || fn === "unregister") {
         win.sai[fn](...argsValue, win.sai.actions, win.sai.actionCallbacks);
       } else {
