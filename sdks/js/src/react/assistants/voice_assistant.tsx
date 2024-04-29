@@ -31,6 +31,7 @@ import {
 import Mic from "../icons/mic";
 import Keyboard from "../icons/keyboard";
 import Spinner from "../icons/spinner";
+import { GlobalStyle } from "./reset_css";
 
 export const VoiceAssistant = ({
   id = null,
@@ -371,6 +372,7 @@ export const VoiceAssistant = ({
 
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
+      <GlobalStyle />
       <CopilotContainer
         id={`sugar-ai-copilot-${buttonId}`}
         className="sugar-ai-copilot-container"
