@@ -20,7 +20,7 @@ export interface BaseAssistantProps {
   toolTipContainerStyle?: any;
   toolTipMessageStyle?: any;
   position?: CopilotStylePositionType;
-  keyboardPostion?: CopilotSyleKeyboardPositionSchema;
+  keyboardPosition?: CopilotSyleKeyboardPositionSchema;
   actionsFn?: Function;
   actionCallbacksFn?: Function;
 }

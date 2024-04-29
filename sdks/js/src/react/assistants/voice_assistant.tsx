@@ -37,7 +37,7 @@ export const VoiceAssistant = ({
   toolTipContainerStyle = {},
   toolTipMessageStyle = {},
   position = copilotStyleDefaults.container.position || "bottom-right",
-  keyboardPostion = copilotStyleDefaults.keyboardButton.position,
+  keyboardPosition = copilotStyleDefaults.keyboardButton.position,
   actionsFn,
   actionCallbacksFn,
 }: BaseAssistantProps) => {
@@ -94,10 +94,10 @@ export const VoiceAssistant = ({
 
   const isRightPositioned =
     currentStyle.keyboardButton.position === "right" ||
-    keyboardPostion === "right";
+    keyboardPosition === "right";
   const isLeftPositioned =
     currentStyle.keyboardButton.position === "left" &&
-    keyboardPostion === "left";
+    keyboardPosition === "left";
   const isCenterPositioned =
     ["bottom-center", "top-center"].includes(position) ||
     ["bottom-center", "top-center"].includes(currentStyle.container.position);
