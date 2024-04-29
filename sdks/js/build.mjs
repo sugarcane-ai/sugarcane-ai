@@ -79,7 +79,7 @@ let jsVABuildResult = await build({
   format: "iife",
 });
 
-fs.writeFileSync("meta-js.json", JSON.stringify(jsVABuildResult.metafile));
+fs.writeFileSync("meta-js-va.json", JSON.stringify(jsVABuildResult.metafile));
 
 let jsTABuildResult = await build({
   ...sharedConfig,
@@ -91,6 +91,6 @@ let jsTABuildResult = await build({
   format: "iife",
 });
 
-fs.writeFileSync("meta-js.json", JSON.stringify(jsTABuildResult.metafile));
+fs.writeFileSync("meta-js-ta.json", JSON.stringify(jsTABuildResult.metafile));
 
 // jsBuildResult;
