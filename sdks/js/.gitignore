@@ -26,4 +26,3 @@ dist-ssr
 tsconfig.tsbuildinfo
 meta.json
 meta-js.json
-meta-js-*.json

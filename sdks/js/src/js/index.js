@@ -52,7 +52,7 @@ import {
     // renderAssistant: renderAssistant,
     renderAssistant: function renderAssistant(containerId) {
       if (this.renderedAssistants.has(containerId)) {
-        console.log(
+        PROD: console.log(
           `Assistant for container '${containerId}' already rendered.`,
         );
         return;
@@ -60,7 +60,7 @@ import {
 
       const el = document.getElementById(containerId);
       if (!el) {
-        console.error(`Element with id '${containerId}' not found`);
+        PROD: console.error(`Element with id '${containerId}' not found`);
         return;
       }
 

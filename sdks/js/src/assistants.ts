@@ -43,7 +43,7 @@ export const App = (assistant, copilotConfig, actions, actionCallbacks) => {
       }),
     });
   } else {
-    console.error(
+    PROD: console.error(
       `Assistant '${assistantType}' not found in preDefinedAssistants`,
     );
     return null;
