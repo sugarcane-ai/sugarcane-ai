@@ -69,8 +69,6 @@ console.log(
   }),
 );
 
-fs.writeFileSync("meta-js.json", JSON.stringify(jsVABuildResult.metafile));
-
 let jsBuildResult = await build({
   ...sharedConfig,
   entryPoints: ["src/js/index.js"],

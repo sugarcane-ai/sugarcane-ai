@@ -3,77 +3,28 @@ import { createRoot } from "react-dom/client";
 import {
   register,
   unregister,
-  CopilotProvider,
-  TextAssistant,
-  VoiceAssistant,
+  addAssistant,
+  removeAssistant,
+  App,
 } from "../index";
 
 (function (win) {
-  win.sai = win.sai || {
+  var sai = (win.sai = win.sai || {
     register: register,
     unregister: unregister,
     actions: [],
     actionCallbacks: [],
-    config: function (config) {
-      this.config = config;
-    },
-    preDefinedAssistants: [VoiceAssistant, TextAssistant],
     assistants: [],
-    addAssistant: function (elementId, assistant, args) {
-      this.assistants.push({
-        elementId: elementId,
-        assistantType: assistant,
-        options: args,
-      });
+    renderedAssistants: new Set(),
+    addAssistant: function (containerId, assistant, assistantConfig) {
+      addAssistant(containerId, assistant, assistantConfig, sai.assistants);
+      this.renderAssistant(containerId);
     },
-    removeAssistant: function (assistantId) {
-      const index = this.assistants.findIndex(
-        (assistant) => assistant.options.id === assistantId,
-      );
-      if (index !== -1) {
-        this.assistants.splice(index, 1);
-      }
-    },
-    App: function App(assistant) {
-      const { assistantType, options } = assistant;
-      const assistantComponent = this.preDefinedAssistants.find(
-        (assistant) => assistant.name === assistantType,
-      );
-
-      if (assistantComponent) {
-        return createElement(
-          CopilotProvider,
-          {
-            config: this.config,
-          },
-          createElement(assistantComponent, {
-            actionsFn: () => this.actions,
-            actionCallbacksFn: () => this.actionCallbacks,
-            ...options,
-          }),
-        );
-      } else {
-        console.error(
-          `Assistant '${assistantType}' not found in preDefinedAssistants`,
-        );
-        return null;
-      }
-    },
-    render: function render() {
-      this.assistants.forEach((assistant) => {
-        const el = document.getElementById(assistant.elementId);
-        if (!el) {
-          console.error(`Element with id '${assistant.elementId}' not found.`);
-          return;
-        }
-
-        el.addEventListener("click", function (e) {
-          e.preventDefault();
-        });
-
-        const root = createRoot(el);
-        root.render(this.App(assistant));
-      });
+    removeAssistant: removeAssistant,
+    App: App,
+    config: null,
+    setConfig: function (config) {
+      this.config = config;
     },
     init: function init() {
       if (typeof win.saiData !== "undefined") {
@@ -81,17 +32,50 @@ import {
         win.saiData.forEach(this.processArgument);
         win.saiData.push = this.processArgument;
       }
-      this.render();
+      this.renderAllAssistants();
     },
     processArgument: function processArgument(args) {
       const [fn, ...argsValue] = args;
       if (fn === "register" || fn === "unregister") {
-        win.sai[fn](...argsValue, win.sai.actions, win.sai.actionCallbacks);
+        sai[fn](...argsValue, sai.actions, sai.actionCallbacks);
+      } else if (fn === "addAssistant" || fn === "removeAssistant") {
+        sai[fn](...argsValue, sai.assistants);
       } else {
-        win.sai[fn](...argsValue);
+        sai[fn](...argsValue);
       }
     },
-  };
+    renderAllAssistants: function renderAllAssistants() {
+      this.assistants.forEach((assistant) => {
+        this.renderAssistant(assistant.containerId);
+      });
+    },
+    // renderAssistant: renderAssistant,
+    renderAssistant: function renderAssistant(containerId) {
+      if (this.renderedAssistants.has(containerId)) {
+        console.log(
+          `Assistant for container '${containerId}' already rendered.`,
+        );
+        return;
+      }
 
-  win.sai.init();
+      const el = document.getElementById(containerId);
+      if (!el) {
+        console.error(`Element with id '${containerId}' not found`);
+        return;
+      }
+
+      const assistant = sai.assistants.find(
+        (assistant) => assistant.containerId === containerId,
+      );
+      if (assistant) {
+        const root = createRoot(el);
+        root.render(
+          this.App(assistant, sai.config, sai.actions, sai.actionCallbacks),
+        );
+        this.renderedAssistants.add(containerId);
+      }
+    },
+  });
+
+  sai.init();
 })(window);
