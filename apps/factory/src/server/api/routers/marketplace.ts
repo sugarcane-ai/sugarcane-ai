@@ -55,7 +55,7 @@ export const marketplaceRouter = createTRPCRouter({
           visibility: input?.visibility,
         },
         orderBy: {
-          updatedAt: "desc",
+          updatedAt: input?.filterOrder,
         },
         include: {
           User: true,
