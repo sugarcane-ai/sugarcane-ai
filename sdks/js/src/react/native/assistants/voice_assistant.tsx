@@ -10,11 +10,11 @@ import Tts from "react-native-tts";
 import {
   ViewChatMessage,
   ViewCopilotContainer,
-  ViewKeyboardButton,
   ViewMessage,
   ViewTextBox,
   ViewTextBoxButton,
   ViewTextBoxContainer,
+  ViewVoiceButton,
 } from "./base_styled";
 import Svg, { Path } from "react-native-svg";
 import {
@@ -33,6 +33,7 @@ const VoiceAssistant = ({
   promptVariables = {},
   scope = scopeDefaults,
   style = {},
+  voiceButtonStyle = {},
   keyboardButtonStyle = {},
   messageStyle = {},
   toolTipContainerStyle = {},
@@ -43,6 +44,7 @@ const VoiceAssistant = ({
   actionCallbacksFn,
 }: BaseAssistantProps) => {
   const [buttonId, setButtonName] = useState<string>(position as string);
+  const [islistening, setIslistening] = useState(false);
   const [hideToolTip, setHideToolTip] = useState(true);
   const [isprocessing, setIsprocessing] = useState(false);
   const [finalOutput, setFinalOutput] = useState<string>("");
@@ -88,6 +90,7 @@ const VoiceAssistant = ({
 
   const onSpeechStart = (e: any) => {
     console.log("onSpeechStart: ", e);
+    setIslistening(true);
   };
 
   const onSpeechRecognized = (e: SpeechRecognizedEvent) => {
@@ -96,6 +99,7 @@ const VoiceAssistant = ({
 
   const onSpeechEnd = (e: any) => {
     console.log("onSpeechEnd: ", e);
+    setIslistening(false);
   };
 
   const onSpeechError = (e: SpeechErrorEvent) => {
@@ -200,10 +204,12 @@ const VoiceAssistant = ({
         style={style}
       >
         {!hideTextButton && (
-          <ViewKeyboardButton
-            style={keyboardButtonStyle}
-            button={currentStyle?.keyboardButton}
+          <ViewVoiceButton
+            style={voiceButtonStyle}
+            button={currentStyle?.voiceButton}
             onPress={() => _startRecognizing()}
+            isprocessing={isprocessing.toString()}
+            islistening={islistening.toString()}
           >
             <Svg width={26} height={26} viewBox={`0 0 26 26`}>
               <Path
@@ -211,7 +217,7 @@ const VoiceAssistant = ({
                 fill={currentStyle.keyboardButton.color}
               />
             </Svg>
-          </ViewKeyboardButton>
+          </ViewVoiceButton>
         )}
 
         {(aiResponse || finalOutput) && (
