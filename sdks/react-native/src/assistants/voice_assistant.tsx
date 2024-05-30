@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Animated, Easing, Platform } from "react-native";
 import Voice, {
   type SpeechErrorEvent,
@@ -77,6 +77,9 @@ export const VoiceAssistant = ({
     promptTemplate = config?.ai?.defaultPromptTemplate;
   }
 
+  const timeout = useRef<ReturnType<typeof setTimeout>>();
+  const script = useRef<string | undefined>();
+
   useEffect(() => {
     Voice.onSpeechStart = onSpeechStart;
     Voice.onSpeechRecognized = onSpeechRecognized;
@@ -113,12 +116,33 @@ export const VoiceAssistant = ({
     setIsDisabled(false);
   };
 
+  const stop = useCallback(async () => {
+    try {
+      Voice.destroy();
+      const text = script.current as string;
+      setPartialOutput("");
+      setFinalOutput(text);
+      setIslistening(false);
+      await processTextToText(text);
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
+
   const onSpeechResults = async (e: SpeechResultsEvent) => {
     const text: string = e?.value?.[0] as string;
     console.log("onSpeechResults: ", text);
-    setPartialOutput("");
-    setFinalOutput(text);
-    await processTextToText(text);
+    script.current = text;
+    if (Platform.OS === "ios") {
+      clearTimeout(timeout.current);
+      timeout.current = setTimeout(() => {
+        if (script.current === text) {
+          stop();
+        }
+      }, 1000);
+    } else {
+      stop();
+    }
   };
 
   const onSpeechPartialResults = async (e: SpeechResultsEvent) => {
@@ -220,7 +244,7 @@ export const VoiceAssistant = ({
         }).start(() => {
           setIsFading(false);
         });
-      }, 5000);
+      }, 10000);
 
       return () => {
         clearTimeout(timer);
@@ -228,7 +252,12 @@ export const VoiceAssistant = ({
     }
   }, [isDisabled, fadeAnim]);
 
+  Tts.addEventListener("tts-start", async (event) => {
+    await Voice.cancel();
+  });
+
   Tts.addEventListener("tts-finish", (event) => {
+    console.log("tts-finish: ", event);
     setIsDisabled(false);
   });
 
@@ -245,6 +274,7 @@ export const VoiceAssistant = ({
     setAiResponse("");
     setIsTyping(false);
     setFinalOutput(newTextMessage);
+    console.log("startSending f0r processTextToText: ", newTextMessage);
     await processTextToText(newTextMessage);
   };
 
