@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { ActivityIndicator, Platform } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { ActivityIndicator, Animated, Easing, Platform } from "react-native";
 import Voice, {
   type SpeechErrorEvent,
   type SpeechRecognizedEvent,
@@ -48,6 +48,7 @@ export const VoiceAssistant = ({
 }: BaseAssistantProps) => {
   const [buttonId, setButtonName] = useState<string>(position as string);
   const [islistening, setIslistening] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
   const [hideToolTip, setHideToolTip] = useState(true);
   const [isprocessing, setIsprocessing] = useState(false);
   const [partialOutput, setPartialOutput] = useState<string>("");
@@ -56,6 +57,7 @@ export const VoiceAssistant = ({
   const [hideTextButton, setHideTextButton] = useState(false);
   const [textMessage, setTextMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [isFading, setIsFading] = useState(false);
 
   const { config, clientUserId, textToAction } = useCopilot();
 
@@ -101,10 +103,14 @@ export const VoiceAssistant = ({
   const onSpeechEnd = (e: any) => {
     console.log("onSpeechEnd: ", e);
     setIslistening(false);
+    setIsprocessing(false);
   };
 
   const onSpeechError = (e: SpeechErrorEvent) => {
     console.log("onSpeechError: ", e);
+    setIslistening(false);
+    setIsprocessing(false);
+    setIsDisabled(false);
   };
 
   const onSpeechResults = async (e: SpeechResultsEvent) => {
@@ -126,6 +132,7 @@ export const VoiceAssistant = ({
   const _startRecognizing = async () => {
     try {
       await Voice.start(currentAiConfig.lang ?? "en-US");
+      setIsDisabled(true);
       console.log("called start");
       setTextMessage("");
       setAiResponse("");
@@ -181,15 +188,49 @@ export const VoiceAssistant = ({
         speak(aiResponse);
       }
       if (currentAiConfig.successResponse === aiResponse) {
+        setIsDisabled(false);
         RNSystemSounds.play(
           Platform.select({
-            android: currentAiConfig.successSound.android,
-            ios: currentAiConfig.successSound.ios,
+            android:
+              currentAiConfig?.successSound?.android ??
+              RNSystemSounds.AndroidSoundIDs.TONE_PROP_BEEP,
+            ios:
+              currentAiConfig?.successSound?.ios ??
+              RNSystemSounds.iOSSoundIDs.Headset_AnswerCall,
           }),
         );
       }
     }
   };
+
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    if (!isDisabled) {
+      fadeAnim.setValue(1);
+      setIsFading(false);
+
+      const timer = setTimeout(() => {
+        setIsFading(true);
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 3000,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }).start(() => {
+          setIsFading(false);
+        });
+      }, 5000);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [isDisabled, fadeAnim]);
+
+  Tts.addEventListener("tts-finish", (event) => {
+    setIsDisabled(false);
+  });
 
   const speak = (text) => {
     console.log("speak: ", text);
@@ -227,6 +268,7 @@ export const VoiceAssistant = ({
             onPress={() => _startRecognizing()}
             isprocessing={isprocessing.toString()}
             islistening={islistening.toString()}
+            disabled={isDisabled}
           >
             {isprocessing ? (
               <ActivityIndicator color={currentStyle.voiceButton.color} />
@@ -255,23 +297,27 @@ export const VoiceAssistant = ({
             id={`sugar-ai-chat-message-${buttonId}`}
             style={messageStyle}
           >
-            {(partialOutput || finalOutput) && (
-              <ViewMessage
-                theme={currentStyle?.theme}
-                id={`sugar-ai-message-${buttonId}`}
-              >
-                {partialOutput || finalOutput}
-              </ViewMessage>
-            )}
-            {aiResponse && (
-              <ViewMessage
-                theme={currentStyle?.theme}
-                id={`sugar-ai-message-${buttonId}`}
-                role="assistant"
-              >
-                {aiResponse}
-              </ViewMessage>
-            )}
+            <Animated.View style={{ opacity: fadeAnim }}>
+              {(partialOutput || finalOutput) && (
+                <ViewMessage
+                  theme={currentStyle?.theme}
+                  id={`sugar-ai-message-${buttonId}`}
+                  isfading={isFading.toString()}
+                >
+                  {partialOutput || finalOutput}
+                </ViewMessage>
+              )}
+              {aiResponse && (
+                <ViewMessage
+                  theme={currentStyle?.theme}
+                  id={`sugar-ai-message-${buttonId}`}
+                  role="assistant"
+                  isfading={isFading.toString()}
+                >
+                  {aiResponse}
+                </ViewMessage>
+              )}
+            </Animated.View>
           </ViewChatMessage>
         )}
       </ViewCopilotContainer>
