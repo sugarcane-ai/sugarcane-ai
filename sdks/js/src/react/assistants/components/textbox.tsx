@@ -1,10 +1,13 @@
-import Keyboard from "../../icons/keyboard";
 import Mic from "../../icons/mic";
 import {
   TextBox as TextBoxStyled,
   TextBoxButton,
   TextBoxContainer,
 } from "../base_styled";
+import { useState } from "react";
+import Chat from "../../icons/chat";
+import Send from "../../icons/send";
+import Loader from "../../icons/loader";
 
 const TextBox = ({
   currentStyle,
@@ -14,8 +17,16 @@ const TextBox = ({
   textMessage,
   startSending,
   enableKeyboard,
+  isprocessing,
   iskeyboard,
 }) => {
+  const [isTyping, setIsTyping] = useState(false);
+
+  const onTyping = (text: string) => {
+    setTextMessage(text);
+    setIsTyping(text.length !== 0);
+  };
+
   return (
     <TextBoxContainer
       container={currentStyle?.container}
@@ -29,24 +40,49 @@ const TextBox = ({
         value={textMessage}
         color={currentStyle?.keyboardButton?.bgColor}
         onChange={(e) => {
-          setTextMessage(e.target.value);
+          onTyping(e.target.value);
         }}
         onKeyUp={(e) => {
-          if (e.key === "Enter") startSending();
+          if (e.key === "Enter") {
+            startSending();
+            setIsTyping(false);
+          }
         }}
         id={`sugar-ai-text-box-${buttonId}`}
         className="sugar-ai-text-box"
+        disabled={isprocessing}
       />
-      <TextBoxButton
-        onClick={enableKeyboard}
-        iskeyboard={iskeyboard.toString()}
-      >
-        {iskeyboard ? (
-          <Keyboard
-            width={"20"}
-            height={"14"}
+      <TextBoxButton iskeyboard={iskeyboard.toString()}>
+        {isTyping || iskeyboard ? (
+          isTyping ? (
+            <Send
+              width={"26"}
+              height={"30"}
+              color={currentStyle?.keyboardButton?.bgColor}
+              size={currentStyle?.keyboardButton?.iconSize}
+              onClick={(e) => {
+                e.preventDefault();
+                startSending();
+                setIsTyping(false);
+              }}
+            />
+          ) : (
+            <Chat
+              width={"26"}
+              height={"30"}
+              color={currentStyle?.keyboardButton?.bgColor}
+              size={currentStyle?.keyboardButton?.iconSize}
+              onClick={(e) => {
+                e.preventDefault();
+                enableKeyboard();
+              }}
+            />
+          )
+        ) : isprocessing ? (
+          <Loader
             color={currentStyle?.keyboardButton?.bgColor}
-            size={currentStyle?.keyboardButton?.iconSize}
+            width={"30"}
+            height={"30"}
           />
         ) : (
           <Mic
@@ -54,6 +90,10 @@ const TextBox = ({
             size={currentStyle?.keyboardButton?.iconSize}
             width={"26"}
             height={"30"}
+            onClick={(e) => {
+              e.preventDefault();
+              enableKeyboard();
+            }}
           />
         )}
       </TextBoxButton>

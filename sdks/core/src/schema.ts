@@ -76,6 +76,8 @@ export const copilotStyleKeyboardButtonSchema = z.object({
   position: copilotSyleKeyboardPositionSchema,
   iconSize: stringOptional,
   placeholder: stringOptional,
+  width: stringOptional,
+  height: stringOptional,
 });
 
 export type CopilotSyleButtonType = z.infer<
@@ -201,6 +203,8 @@ export const copilotStyleDefaults: CopilotSytleType = {
     position: "left",
     iconSize: "25",
     placeholder: "Start typing...",
+    width: "60px",
+    height: "60px",
   },
   // toolTip: {
   //   welcomeMessage: "Tap & Speak: Let AI Guide Your Journey!",

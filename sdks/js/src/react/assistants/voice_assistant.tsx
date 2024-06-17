@@ -796,6 +796,7 @@ export const VoiceAssistant = ({
                 style={keyboardButtonStyle}
                 currentStyle={currentStyle?.keyboardButton}
                 enableKeyboard={enableKeyboard}
+                withvoice={"true"}
               />
             )}
             {isUserEngaged && isRightPositioned && isCenterPositioned && (
@@ -818,6 +819,7 @@ export const VoiceAssistant = ({
                 style={keyboardButtonStyle}
                 currentStyle={currentStyle?.keyboardButton}
                 enableKeyboard={enableKeyboard}
+                withvoice={"true"}
               />
             )}
             {!hideToolTip && tipConfig?.isEnabled && (
@@ -854,6 +856,7 @@ export const VoiceAssistant = ({
           textMessage={textMessage}
           startSending={startSending}
           enableKeyboard={enableKeyboard}
+          isprocessing={isprocessing}
           iskeyboard={false}
         />
       )}
