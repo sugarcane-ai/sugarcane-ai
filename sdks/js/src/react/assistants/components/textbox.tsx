@@ -27,6 +27,28 @@ const TextBox = ({
     setIsTyping(text.length !== 0);
   };
 
+  const commonProps = {
+    width: "26",
+    height: "30",
+    color: currentStyle?.keyboardButton?.bgColor,
+    size: currentStyle?.keyboardButton?.iconSize,
+    onClick: (e) => {
+      e.preventDefault();
+      if (isTyping) {
+        startSending();
+        setIsTyping(false);
+      } else {
+        enableKeyboard();
+      }
+    },
+  };
+
+  const loaderProps = {
+    color: currentStyle?.keyboardButton?.bgColor,
+    width: "30",
+    height: "30",
+  };
+
   return (
     <TextBoxContainer
       container={currentStyle?.container}
@@ -55,46 +77,16 @@ const TextBox = ({
       <TextBoxButton iskeyboard={iskeyboard.toString()}>
         {isTyping || iskeyboard ? (
           isTyping ? (
-            <Send
-              width={"26"}
-              height={"30"}
-              color={currentStyle?.keyboardButton?.bgColor}
-              size={currentStyle?.keyboardButton?.iconSize}
-              onClick={(e) => {
-                e.preventDefault();
-                startSending();
-                setIsTyping(false);
-              }}
-            />
+            <Send {...commonProps} />
+          ) : isprocessing ? (
+            <Loader {...loaderProps} />
           ) : (
-            <Chat
-              width={"26"}
-              height={"30"}
-              color={currentStyle?.keyboardButton?.bgColor}
-              size={currentStyle?.keyboardButton?.iconSize}
-              onClick={(e) => {
-                e.preventDefault();
-                enableKeyboard();
-              }}
-            />
+            <Chat {...commonProps} />
           )
         ) : isprocessing ? (
-          <Loader
-            color={currentStyle?.keyboardButton?.bgColor}
-            width={"30"}
-            height={"30"}
-          />
+          <Loader {...loaderProps} />
         ) : (
-          <Mic
-            color={currentStyle?.keyboardButton?.bgColor}
-            size={currentStyle?.keyboardButton?.iconSize}
-            width={"26"}
-            height={"30"}
-            onClick={(e) => {
-              e.preventDefault();
-              enableKeyboard();
-            }}
-          />
+          <Mic {...commonProps} />
         )}
       </TextBoxButton>
     </TextBoxContainer>

@@ -171,7 +171,9 @@ export const TextAssistant = ({
       false,
       actions,
       actionCallbacks,
-    );
+    ).finally(() => {
+      setIsprocessing(false);
+    });
   };
 
   return (
