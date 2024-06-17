@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/consistent-indexed-object-style */
 import React, { useState, useEffect, useRef } from "react";
 import {
   type EmbeddingScopeWithUserType,
@@ -26,6 +27,7 @@ import Message from "./components/message";
 import ToolTip from "./components/tooltip";
 import TextBox from "./components/textbox";
 import Voice from "./components/voice";
+import * as Tone from "tone";
 
 export const VoiceAssistant = ({
   id = null,
@@ -45,6 +47,7 @@ export const VoiceAssistant = ({
 }: BaseAssistantProps) => {
   const [buttonId, setButtonName] = useState<string>(position as string);
   const [islistening, setIslistening] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const [hideToolTip, setHideToolTip] = useState(true);
   const [isprocessing, setIsprocessing] = useState(false);
   const [ispermissiongranted, setIspermissiongranted] = useState(false);
@@ -128,6 +131,7 @@ export const VoiceAssistant = ({
   };
 
   const startListening = async (e: any) => {
+    recognition.stop();
     let haveMicPermission = false;
     setIsUserEngaged(true);
     if (!ispermissiongranted) {
@@ -259,6 +263,8 @@ export const VoiceAssistant = ({
 
     utterance.onend = () => {
       root.removeEventListener("beforeunload", stopSpeakingOnPageUnload);
+      recognition?.start();
+      setIsSpeaking(false);
     };
 
     root.addEventListener("beforeunload", stopSpeakingOnPageUnload);
@@ -273,6 +279,14 @@ export const VoiceAssistant = ({
     console.log(
       `[nudge] ${voice?.name} paused:${synth.paused}, pending:${synth.pending}, speaking:${synth.speaking}`,
     );
+
+    setIsSpeaking(true);
+  };
+
+  const stopSpeaking = () => {
+    const synth = root.speechSynthesis;
+    synth.cancel();
+    setIsSpeaking(false);
   };
 
   const enableKeyboard = () => {
@@ -364,9 +378,12 @@ export const VoiceAssistant = ({
     });
 
     if (typeof aiResponse === "string") {
-      setAiResponse(aiResponse);
-      if (isSpeak) {
-        await speak(aiResponse);
+      if (currentAiConfig.successResponse !== aiResponse) {
+        setAiResponse(aiResponse);
+        isSpeak && (await speak(aiResponse));
+      } else {
+        const synth = new Tone.Synth().toDestination();
+        synth.triggerAttackRelease("C4", "8n");
       }
       recognition.stop();
     }
@@ -810,6 +827,8 @@ export const VoiceAssistant = ({
               ispermissiongranted={ispermissiongranted}
               isprocessing={isprocessing}
               islistening={islistening}
+              isSpeaking={isSpeaking}
+              stopSpeaking={stopSpeaking}
             />
             {isUserEngaged && isLeftPositioned && isCenterPositioned && (
               <KeyboardEmptyContainer></KeyboardEmptyContainer>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   type EmbeddingScopeWithUserType,
   type CopilotStylePositionType,
@@ -19,6 +19,8 @@ import Keyboard from "./components/keyboard";
 import Message from "./components/message";
 import ToolTip from "./components/tooltip";
 import TextBox from "./components/textbox";
+
+import root from "window-or-global";
 
 export const TextAssistant = ({
   id = null,
@@ -55,7 +57,7 @@ export const TextAssistant = ({
     currentAiConfig,
     currentNudgeConfig,
   } = loadCurrentConfig(config, actionsFn, actionCallbacksFn);
-
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [tipConfig, setTipConfig] = useState({
     isEnabled: false,
     text: "",
@@ -125,22 +127,24 @@ export const TextAssistant = ({
   };
 
   const welcomeNudge = async () => {
-    DEV: console.log("Idle nudge message", currentNudgeConfig.idle.text);
+    DEV: console.log("welcome nudge message", currentNudgeConfig.welcome.text);
     await triggerNudge(currentNudgeConfig?.welcome);
-    // await processSpeechToText(currentNudgeConfig?.idle?.text, false, true);
   };
 
   const idleNudge = async () => {
     DEV: console.log("Idle nudge message", currentNudgeConfig.idle.text);
     await triggerNudge(currentNudgeConfig?.idle);
-    // await processSpeechToText(currentNudgeConfig?.idle?.text, false, true);
   };
 
   const exitNudge = async () => {
     DEV: console.log("exit nudge message", currentNudgeConfig.exit.text);
     await triggerNudge(currentNudgeConfig?.exit);
-    // await processSpeechToText(currentNudgeConfig?.exit?.text, false, true);
   };
+
+  // const successNudge = async () => {
+  //   DEV: console.log("success nudge message", currentNudgeConfig.success.text);
+  //   await triggerNudge(currentNudgeConfig?.success);
+  // };
 
   const triggerNudge = async (config: any) => {
     setHideToolTip(false);
@@ -151,6 +155,33 @@ export const TextAssistant = ({
     });
     await processNudgeToText(config?.text);
   };
+
+  const resetTimer = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(
+      idleNudge,
+      currentNudgeConfig.idle.timeout * 1000,
+    );
+  };
+
+  useEffect(() => {
+    if (currentNudgeConfig?.idle?.enabled) {
+      root.addEventListener("mousemove", resetTimer);
+      root.addEventListener("keydown", resetTimer);
+    }
+    return () => {
+      if (currentNudgeConfig?.idle?.enabled) {
+        root.removeEventListener("mousemove", resetTimer);
+        root.removeEventListener("keydown", resetTimer);
+      }
+
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [currentNudgeConfig?.idle?.enabled]);
 
   const processNudgeToText = async (input: string) => {
     const newScope: EmbeddingScopeWithUserType = {

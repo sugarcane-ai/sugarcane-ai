@@ -61,6 +61,7 @@ const TextBox = ({
         placeholder={currentStyle?.keyboardButton?.placeholder}
         value={textMessage}
         color={currentStyle?.keyboardButton?.bgColor}
+        bgColor={currentStyle?.keyboardButton?.color}
         onChange={(e) => {
           onTyping(e.target.value);
         }}
