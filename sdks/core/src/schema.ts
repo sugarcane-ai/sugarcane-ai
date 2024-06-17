@@ -68,6 +68,7 @@ export const copilotStyleVoiceButtonSchema = z.object({
   width: stringOptional,
   height: stringOptional,
   iconSize: stringOptional,
+  audio: stringOptional,
 });
 
 export const copilotStyleKeyboardButtonSchema = z.object({
@@ -196,6 +197,8 @@ export const copilotStyleDefaults: CopilotSytleType = {
     width: "60px",
     height: "60px",
     iconSize: "25",
+    audio:
+      "https://commondatastorage.googleapis.com/codeskulptor-assets/Collision8-Bit.ogg",
   },
   keyboardButton: {
     bgColor: primaryColor,

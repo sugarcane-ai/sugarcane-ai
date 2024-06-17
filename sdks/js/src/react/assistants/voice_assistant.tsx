@@ -27,7 +27,6 @@ import Message from "./components/message";
 import ToolTip from "./components/tooltip";
 import TextBox from "./components/textbox";
 import Voice from "./components/voice";
-import * as Tone from "tone";
 
 export const VoiceAssistant = ({
   id = null,
@@ -382,10 +381,21 @@ export const VoiceAssistant = ({
         setAiResponse(aiResponse);
         isSpeak && (await speak(aiResponse));
       } else {
-        const synth = new Tone.Synth().toDestination();
-        synth.triggerAttackRelease("C4", "8n");
+        await playAudio(currentStyle.voiceButton?.audio as string);
       }
       recognition.stop();
+    }
+  };
+
+  const playAudio = async (url: string) => {
+    try {
+      const audio = new Audio(url);
+      await audio.play();
+      audio.addEventListener("error", (e) => {
+        console.error("Audio playback error:", e);
+      });
+    } catch (error) {
+      console.error("Error initializing audio:", error);
     }
   };
 
