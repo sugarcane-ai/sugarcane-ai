@@ -54,7 +54,7 @@ const Voice = ({
         <Spinner
           style={{
             position: "absolute",
-            bottom: "-6px",
+            bottom: "0px",
             left: "54px",
             opacity: "0.4",
           }}
