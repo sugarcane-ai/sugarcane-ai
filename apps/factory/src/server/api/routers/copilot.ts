@@ -240,7 +240,7 @@ async function clonePromptPackageWithTemplateAndVersion(
     const clonedPromptVersion = await prisma.promptVersion.create({
       data: {
         userId: userId,
-        version: "0.0.1",
+        version: pv.version,
         template: pv.template,
         promptData: pv.promptData,
         llmProvider: pv.llmProvider,
