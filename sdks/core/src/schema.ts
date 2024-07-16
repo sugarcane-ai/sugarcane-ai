@@ -8,6 +8,9 @@ export type PromptTemplateType = z.infer<typeof promptTemplateSchema>;
 export const primaryColor = "#8000FF";
 export const secondaryColor = "#FFFFFF";
 
+export const promptVariablesSchema = z.record(z.any()).default({});
+export type PromptVariablesType = z.infer<typeof promptVariablesSchema>;
+
 export const copilotSylePositionSchema = z.enum([
   "top-left",
   "top-right",
@@ -65,6 +68,7 @@ export const copilotStyleVoiceButtonSchema = z.object({
   width: stringOptional,
   height: stringOptional,
   iconSize: stringOptional,
+  audio: stringOptional,
 });
 
 export const copilotStyleKeyboardButtonSchema = z.object({
@@ -73,6 +77,8 @@ export const copilotStyleKeyboardButtonSchema = z.object({
   position: copilotSyleKeyboardPositionSchema,
   iconSize: stringOptional,
   placeholder: stringOptional,
+  width: stringOptional,
+  height: stringOptional,
 });
 
 export type CopilotSyleButtonType = z.infer<
@@ -94,6 +100,14 @@ export type copilotAssistantLangSchema = z.infer<
   typeof copilotAssistantLangType
 >;
 
+export const semanticRouterModes = z.enum(["auto", "manual"]);
+export type SemanticRouterModes = z.infer<typeof semanticRouterModes>;
+
+export const copilotRouterSchema = z.object({
+  mode: semanticRouterModes.optional(),
+  threshold: z.number().optional(),
+});
+
 export const copilotAiSchema = z.object({
   defaultPromptTemplate: promptTemplateSchema.optional(),
   defaultPromptVariables: z.record(z.any()).optional(),
@@ -109,22 +123,61 @@ export const copilotToolTipSchema = z.object({
   delay: z.number().optional(),
   duration: z.number().optional(),
   disabled: z.boolean(),
+  enabled: z.boolean(),
 });
 
 export type CopilotSyleTooltipType = z.infer<typeof copilotToolTipSchema>;
 
 export const copilotSytleSchema = z.object({
-  container: copilotSyleContainerSchema,
-  theme: copilotSyleThemeSchema,
-  voiceButton: copilotStyleVoiceButtonSchema,
-  keyboardButton: copilotStyleKeyboardButtonSchema,
-  toolTip: copilotToolTipSchema,
+  container: copilotSyleContainerSchema.optional(),
+  theme: copilotSyleThemeSchema.optional(),
+  voiceButton: copilotStyleVoiceButtonSchema.optional(),
+  keyboardButton: copilotStyleKeyboardButtonSchema.optional(),
+  // toolTip: copilotToolTipSchema.optional(),
+});
+
+export const nudgeTextMode = z.enum(["manual", "ai"]);
+
+const nudgeSectionSchema = z
+  .object({
+    text: stringOptional,
+    textMode: nudgeTextMode.optional().default("manual"),
+    delay: z.number().optional(),
+    timeout: z.number().optional(),
+    duration: z.number().optional(),
+    enabled: z.boolean().optional(),
+    voiceEnabled: z.boolean().optional(),
+    promptTemplate: promptTemplateSchema.optional(),
+    promptVariables: promptVariablesSchema.optional(),
+    chatHistorySize: z.number().optional().default(0),
+  })
+  .refine(
+    (data) => data.textMode !== "ai" || data.promptTemplate !== undefined,
+    {
+      message: "promptTemplate is required when textMode is 'ai'",
+      path: ["promptTemplate"],
+    },
+  );
+
+export const nudgeSchema = z.object({
+  welcome: nudgeSectionSchema.optional(),
+  idle: nudgeSectionSchema.optional(),
+  stuck: nudgeSectionSchema.optional(),
+  exit: nudgeSectionSchema.optional(),
+  success: nudgeSectionSchema.optional(),
 });
 
 export type CopilotSytleType = z.infer<typeof copilotSytleSchema>;
+export type CopilotRouterType = z.infer<typeof copilotRouterSchema>;
 export type CopilotAiType = z.infer<typeof copilotAiSchema>;
+export type NudgesType = z.infer<typeof nudgeSchema>;
 // export type CopilotContainerPropsType = z.infer<typeof copilotContainerProps>;
 // export type CopilotThemePropsType = z.infer<typeof copilotThemeProps>;
+
+export const copilotRouterDefaults: CopilotRouterType = {
+  mode: "auto",
+  threshold: 0.5,
+};
 
 export const copilotAiDefaults: CopilotAiType = {
   defaultPromptTemplate: "",
@@ -158,6 +211,8 @@ export const copilotStyleDefaults: CopilotSytleType = {
     width: "60px",
     height: "60px",
     iconSize: "25",
+    audio:
+      "https://commondatastorage.googleapis.com/codeskulptor-assets/Collision8-Bit.ogg",
   },
   keyboardButton: {
     bgColor: primaryColor,
@@ -165,12 +220,71 @@ export const copilotStyleDefaults: CopilotSytleType = {
     position: "left",
     iconSize: "25",
     placeholder: "Start typing...",
+    width: "60px",
+    height: "60px",
   },
-  toolTip: {
-    welcomeMessage: "Tap & Speak: Let AI Guide Your Journey!",
-    disabled: true,
-    delay: 3000,
+  // toolTip: {
+  //   welcomeMessage: "Tap & Speak: Let AI Guide Your Journey!",
+  //   disabled: true,
+  //   delay: 3000,
+  //   duration: 7,
+  //   enabled: false,
+  // },
+};
+
+export const copilotNudgeDefaults: NudgesType = {
+  welcome: {
+    text: "Tap & Speak, Let AI Guide Your Journey!",
+    delay: 3,
+    duration: 10,
+    enabled: true,
+    voiceEnabled: true,
+    textMode: "manual",
+    promptTemplate: "",
+    promptVariables: {},
+    chatHistorySize: 0,
+  },
+  idle: {
+    text: "You have been idle, how can i HELP?",
+    timeout: 30,
     duration: 7,
+    enabled: false,
+    voiceEnabled: false,
+    textMode: "manual",
+    promptTemplate: "",
+    promptVariables: {},
+    chatHistorySize: 0,
+  },
+  stuck: {
+    text: "Seems you are stuck, how can I help?",
+    timeout: 30,
+    duration: 7,
+    enabled: true,
+    voiceEnabled: false,
+    textMode: "manual",
+    promptTemplate: "",
+    promptVariables: {},
+    chatHistorySize: 0,
+  },
+  exit: {
+    text: "I have an offer for you!",
+    duration: 7,
+    enabled: false,
+    voiceEnabled: false,
+    textMode: "manual",
+    promptTemplate: "",
+    promptVariables: {},
+    chatHistorySize: 0,
+  },
+  success: {
+    text: "You might like this!",
+    duration: 7,
+    enabled: false,
+    voiceEnabled: false,
+    textMode: "manual",
+    promptTemplate: "",
+    promptVariables: {},
+    chatHistorySize: 0,
   },
 };
 
@@ -183,15 +297,19 @@ export const copilotConfigSchema = z.object({
     // headers: z.record(z.any()),
   }),
 
+  router: copilotRouterSchema.default(copilotRouterDefaults).optional(),
+
   ai: copilotAiSchema.default(copilotAiDefaults).optional(),
 
   style: copilotSytleSchema.default(copilotStyleDefaults),
 
+  clientUserId: z.string().nullable(),
   client: z
     .object({
       userId: z.string().or(z.null()),
     })
     .optional(),
+  nudges: nudgeSchema.default(copilotNudgeDefaults).optional(),
 });
 
 export type CopilotConfigType = z.infer<typeof copilotConfigSchema>;
@@ -209,7 +327,7 @@ export const embeddingScopeSchema = z.object({
   // copilotId: z.string(),
   scope1: z.string().optional().default(""),
   scope2: z.string().optional().default(""),
-  groupId: z.string().default(DEFAULT_GROUP_ID),
+  groupId: z.string().default(DEFAULT_GROUP_ID).optional(),
 });
 export type EmbeddingScopeType = z.infer<typeof embeddingScopeSchema>;
 
@@ -228,9 +346,6 @@ export type EmbeddingScopeWithUserType = z.infer<
 //   clientUserId?: string; // Optional string
 //   identifier: string;
 // }
-
-export const promptVariablesSchema = z.record(z.any());
-export type PromptVariablesType = z.infer<typeof promptVariablesSchema>;
 
 export const actionParameterDataTypeSchema = z.enum([
   "boolean",

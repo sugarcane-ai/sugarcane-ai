@@ -3,6 +3,7 @@ import { ToolTipContainer, TootTipMessage } from "../base_styled";
 
 const ToolTip = ({
   currentStyle,
+  config,
   position,
   buttonId,
   toolTipContainerStyle,
@@ -11,8 +12,9 @@ const ToolTip = ({
 }) => {
   return (
     <ToolTipContainer
+      key={Date.now()}
       container={currentStyle?.container}
-      config={currentStyle?.toolTip}
+      config={config}
       position={position}
       style={toolTipContainerStyle}
       id={`sugar-ai-tool-tip-${buttonId}`}

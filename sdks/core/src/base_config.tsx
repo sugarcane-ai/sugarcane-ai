@@ -2,6 +2,8 @@ import {
   type CopilotSytleType,
   copilotStyleDefaults,
   copilotAiDefaults,
+  copilotNudgeDefaults,
+  copilotRouterDefaults,
 } from "./schema";
 
 export const loadCurrentConfig = (config, actionsFn, actionCallbacksFn) => {
@@ -10,7 +12,7 @@ export const loadCurrentConfig = (config, actionsFn, actionCallbacksFn) => {
     ...config?.style?.theme,
   };
 
-  DEV: console.log(`currentTheme ---> ${JSON.stringify(currentTheme)}`);
+  // DEV: console.log(`currentTheme ---> ${JSON.stringify(currentTheme)}`);
 
   const actions = typeof actionsFn === "function" ? actionsFn() : [];
   const actionCallbacks =
@@ -35,26 +37,34 @@ export const loadCurrentConfig = (config, actionsFn, actionCallbacksFn) => {
       bgColor: currentTheme.primaryColor,
       color: currentTheme.secondaryColor,
     },
-    toolTip: {
-      ...copilotStyleDefaults.toolTip,
-      ...config?.style?.toolTip,
-    },
+    // toolTip: {
+    //   ...copilotStyleDefaults.toolTip,
+    //   ...config?.style?.toolTip,
+    // },
   };
 
-  DEV: console.log(
-    `copilotStyleDefaults ---> ${JSON.stringify(copilotStyleDefaults)}`,
-  );
-
-  DEV: console.log(`config?.style ---> ${JSON.stringify(config?.style)}`);
-
-  DEV: console.log(`current Style ---> ${JSON.stringify(currentStyle)}`);
+  // DEV: console.log(
+  //   `copilotStyleDefaults ---> ${JSON.stringify(copilotStyleDefaults)}`,
+  // );
+  // DEV: console.log(`config?.style ---> ${JSON.stringify(config?.style)}`);
+  // DEV: console.log(`current Style ---> ${JSON.stringify(currentStyle)}`);
 
   const currentAiConfig = {
+    ...copilotRouterDefaults,
     ...copilotAiDefaults,
     ...config?.ai,
   };
 
   DEV: console.log(`current AI config ---> ${JSON.stringify(currentAiConfig)}`);
+
+  const currentNudgeConfig = {
+    ...copilotNudgeDefaults,
+    ...config?.nudges,
+  };
+
+  // DEV: console.log(
+  //   `current voice nudge config ---> ${JSON.stringify(currentNudgeConfig)}`,
+  // );
 
   return {
     currentTheme,
@@ -62,5 +72,6 @@ export const loadCurrentConfig = (config, actionsFn, actionCallbacksFn) => {
     actionCallbacks,
     currentStyle,
     currentAiConfig,
+    currentNudgeConfig,
   };
 };

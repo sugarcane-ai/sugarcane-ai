@@ -10,6 +10,7 @@ import {
   messageRoleEnum,
   copilotStyleKeyboardButtonSchema,
 } from "@sugar-ai/core";
+import { type FC } from "react";
 
 const copilotVoiceButtonProps = z.object({
   button: copilotStyleVoiceButtonSchema,
@@ -49,10 +50,19 @@ export const sparkle = keyframes`
     transform: scale(1.2);
   }`;
 
-export const CopilotContainer = styled.div<{
+// export const CopilotContainer = styled.div<{
+//   container: CopilotSyleContainerType;
+//   position: CopilotStylePositionType;
+// }>`
+
+export const CopilotContainer: FC<{
   container: CopilotSyleContainerType;
   position: CopilotStylePositionType;
-}>`
+  children?: React.ReactNode;
+  id: string;
+  className: string;
+  style: string;
+}> = styled.div`
   position: fixed;
   ${({ container, position }) => {
     const positions =
@@ -99,13 +109,13 @@ export const CopilotContainer = styled.div<{
   margin: ${({ container }) => container?.margin};
   width: fit-content;
   height: fit-content;
-  z-index: 1000; /* Ensure the widget is above other elements */
+  z-index: 9999999; /* Ensure the widget is above other elements */
 `;
 
-export const ChatMessage = styled.div<{
+export const ChatMessage: FC<{
   container: CopilotSyleContainerType;
   position: CopilotStylePositionType;
-}>`
+}> = styled.div`
   position: fixed;
   width: 300px;
   max-height: calc(100vh - 120px);
@@ -115,7 +125,7 @@ export const ChatMessage = styled.div<{
   animation-name: d;
   animation-fill-mode: forwards;
   overflow-y: auto;
-  z-index: 1000; // Ensure the chat window is above most elements
+  z-index: 9999999; // Ensure the chat window is above most elements
 
   ${({ container, position }) => {
     const positions =
@@ -161,7 +171,7 @@ export const ChatMessage = styled.div<{
   }}
 `;
 
-export const VoiceButton = styled.button<CopilotVoiceButtonPropsType>`
+export const VoiceButton: FC<CopilotVoiceButtonPropsType> = styled.button`
   background-color: ${({ button }) => button?.bgColor};
   color: ${({ button }) => button?.color};
   border: none;
@@ -185,28 +195,50 @@ export const VoiceButton = styled.button<CopilotVoiceButtonPropsType>`
         `}
 `;
 
-export const KeyboardButton = styled.button<CopilotKeyboardButtonPropsType>`
-  position: relative;
-  background-color: ${({ button }) => button?.color};
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  box-shadow: rgba(0, 0, 0, 0.5) 0px 3px 12px;
-  text-align: -webkit-center;
-  text-align: -moz-center;
-  border-radius: 10px;
-  margin-left: 10px;
-  margin-right: 10px;
-  bottom: 5px;
-  border: unset;
+export const KeyboardButton: FC<{
+  button: CopilotKeyboardButtonPropsType["button"];
+  withvoice: string;
+}> = styled.button`
+  ${({ withvoice, button }) => {
+    if (withvoice === "true") {
+      return css`
+        position: relative;
+        background-color: ${button?.color};
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        box-shadow: rgba(0, 0, 0, 0.5) 0px 3px 12px;
+        text-align: -webkit-center;
+        text-align: -moz-center;
+        border-radius: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+        bottom: 5px;
+        border: unset;
+      `;
+    } else {
+      return css`
+        background-color: ${button?.bgColor};
+        color: ${button?.color};
+        border: none;
+        border-radius: 50%;
+        width: ${button?.width};
+        height: ${button?.height};
+        cursor: pointer;
+        box-shadow: rgba(0, 0, 0, 0.5) 0px 3px 12px;
+        text-align: -webkit-center;
+        text-align: -moz-center;
+      `;
+    }
+  }}
 `;
 
-export const ButtonContainer = styled.div``;
+export const ButtonContainer: FC = styled.div``;
 
-export const Message = styled.div<{
+export const Message: FC<{
   theme: CopilotSyleThemeType;
   role?: string;
-}>`
+}> = styled.div`
   background-color: ${({ theme, role }) =>
     messageRoleEnum.options.includes(role as MessageRoleType)
       ? "white"
@@ -226,18 +258,8 @@ export const Message = styled.div<{
 
 const fadeInOut = keyframes`
   0% { opacity: 0; }
-  10% { opacity: 0.25; }
-  20% { opacity: 0.50; }
-  30% { opacity: 0.75; }
-  40% { opacity: 1; }
-  45% { opacity: 1; }
-  50% { opacity: 1; }
-  55% { opacity: 1; }
-  60% { opacity: 1; }
-  65% { opacity: 1; }
-  70% { opacity: 0.75; }
-  80% { opacity: 0.50; }
-  90% { opacity: 0.25; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
   100% { opacity: 0; }
 `;
 
@@ -263,15 +285,15 @@ export const TootTipMessage = styled(Message)`
 `;
 
 // Wrapper component to contain input box and button
-export const TextBoxContainer = styled.div<{
+export const TextBoxContainer: FC<{
   container: CopilotSyleContainerType;
   position: CopilotStylePositionType;
-}>`
+}> = styled.div`
   position: fixed;
   right: 25px;
 
   margin: 0;
-  z-index: 1000;
+  z-index: 9999999;
   // width: -webkit-fill-available;
   // max-width: 300px; // Adjust this as needed
   // width: -webkit-fill-available;
@@ -305,12 +327,13 @@ export const TextBoxContainer = styled.div<{
   }}
 `;
 
-export const TextBox = styled.input<{ color: string }>`
+export const TextBox: FC<{ color: string; bgColor: string }> = styled.input`
   padding: 15px 32px 15px 8px;
   border: 1px solid ${({ color }) => color};
   border-radius: 5px;
   outline: none;
   width: 100%;
+  background: ${({ bgColor }) => bgColor};
   // width: -webkit-fill-available; // Only on small screens
   margin-left: 25px;
   @media (max-width: 768px) {
@@ -320,7 +343,7 @@ export const TextBox = styled.input<{ color: string }>`
 `;
 
 // Styled button
-export const TextBoxButton = styled.button<{ iskeyboard?: string }>`
+export const TextBoxButton: FC<{ iskeyboard?: string }> = styled.button`
   position: absolute;
   top: 5px;
   right: 0;
@@ -336,12 +359,13 @@ export const TextBoxButton = styled.button<{ iskeyboard?: string }>`
     css`
       top: 13px;
       right: 5px;
+      padding: 0px;
     `}
 `;
 
 // button, voice -> theme -> defaults
 
-export const KeyboardEmptyContainer = styled(KeyboardButton)`
+export const KeyboardEmptyContainer: FC = styled(KeyboardButton)`
   box-shadow: none;
   height: 0px;
   background: unset;

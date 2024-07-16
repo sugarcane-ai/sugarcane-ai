@@ -11,6 +11,7 @@ import {
   type EmbeddingScopeType,
   type EmbeddingScopeWithUserType,
   copilotAiDefaults,
+  copilotRouterDefaults,
 } from "./schema";
 import { generateUserId } from "./utils";
 import { SugarAiApiClient } from "./api-client";
@@ -39,6 +40,8 @@ export const CopilotContext = createContext({
     userQuery: string,
     promptVariables: any,
     scope: EmbeddingScopeType,
+    isAssitant: boolean = false,
+    chatHistorySize: number = 4,
     actions: Record<string, ActionDefinitionType> = {},
     actionCallbacks: Record<string, Function> = {},
   ) => Promise<string>,
@@ -60,6 +63,10 @@ export const CopilotProvider = function ({
   // 0. setup config
   config = {
     ...config,
+    router: {
+      ...copilotRouterDefaults,
+      ...config.router,
+    },
     ai: {
       ...copilotAiDefaults,
       ...config.ai,
@@ -71,6 +78,7 @@ export const CopilotProvider = function ({
   // 1. Setup userId
   const clientUserId: string = generateUserId(config?.client?.userId ?? null);
   DEV: console.log(`clientUserId: ${clientUserId}`);
+  config.clientUserId = clientUserId;
 
   // 2. Setup User Auth
   // 3. Setup API Client
@@ -117,6 +125,8 @@ export const CopilotProvider = function ({
     userQuery,
     promptVariables,
     scope: EmbeddingScopeWithUserType,
+    isAssitant: boolean = false,
+    chatHistorySize: number = 4,
     actions: Record<string, ActionDefinitionType> = {},
     actionCallbacks: Record<string, Function> = {},
   ): Promise<string> {
@@ -126,6 +136,8 @@ export const CopilotProvider = function ({
       promptVariables,
       scope,
       config,
+      isAssitant,
+      chatHistorySize,
       { ...uxActions, ...actions },
       { ...uxActionCallbacks, ...actionCallbacks },
       // uxActions.concat(actions),
