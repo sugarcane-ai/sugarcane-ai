@@ -174,6 +174,7 @@ export const clonePrompt = (
     {
       promptPackagePath: "COPILOT_DEFAULT_PACKAGES" as string,
       copilotId: copilot?.id as string,
+      copilotName: copilot?.name as string,
       autoGenerate: autoGenerate,
     },
     {

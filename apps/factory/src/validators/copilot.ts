@@ -65,6 +65,7 @@ export const copilotCloneInput = z
   .object({
     promptPackagePath: z.string(),
     copilotId: z.string(),
+    copilotName: z.string(),
     autoGenerate: z.boolean().optional(),
   })
   .required();

@@ -133,6 +133,7 @@ export const copilotRouter = createTRPCRouter({
               pt as PromptTemplate,
               pv as PromptVersion,
               input?.copilotId,
+              input?.copilotName,
             );
           });
         } catch (error) {
@@ -198,6 +199,7 @@ async function clonePromptPackageWithTemplateAndVersion(
   pt: PromptTemplate,
   pv: PromptVersion,
   copilotId: string,
+  copilotName: string,
 ) {
   if (!pp) {
     throw new Error("Prompt package not found.");
@@ -217,7 +219,7 @@ async function clonePromptPackageWithTemplateAndVersion(
     const clonePromptPackage = await prisma.promptPackage.create({
       data: {
         userId: userId,
-        name: pp?.name,
+        name: `${copilotName}-${pp?.name}`,
         description: pp?.description,
         visibility: pp?.visibility,
         forkedId: pp?.id,
