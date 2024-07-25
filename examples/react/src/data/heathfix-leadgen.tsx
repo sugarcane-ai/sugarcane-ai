@@ -65,8 +65,8 @@ export const questions: Question[] = [
     question_text: {
       mode: "manual",
       lang: {
-        en: "On a scale of 1 - 5 (5 being worst), What is the intensity of your pain?",
-        hi: "1 से 5 के पैमाने पर (5 सबसे खराब होने पर), आपको कितना दर्द हो रहा है?",
+        en: "What is the intensity of your pain ?",
+        hi: "आप अभी कितना दर्द महसूस कर रहे हैं ?",
       },
       voice: true,
       output: "none",
@@ -75,8 +75,8 @@ export const questions: Question[] = [
       options: [
         {
           lang: {
-            en: "1",
-            hi: "1",
+            en: "Very Mild",
+            hi: "बहुत हल्का",
           },
           mode: "manual",
           voice: true,
@@ -84,8 +84,8 @@ export const questions: Question[] = [
         },
         {
           lang: {
-            en: "2",
-            hi: "2",
+            en: "Slight Pain",
+            hi: "थोड़ा दर्द",
           },
           mode: "manual",
           voice: true,
@@ -93,8 +93,8 @@ export const questions: Question[] = [
         },
         {
           lang: {
-            en: "3",
-            hi: "3",
+            en: "Moderate Pain",
+            hi: "मध्यम दर्द",
           },
           mode: "manual",
           voice: true,
@@ -102,8 +102,8 @@ export const questions: Question[] = [
         },
         {
           lang: {
-            en: "4",
-            hi: "4",
+            en: "Severe Pain",
+            hi: "काफ़ी गंभीर दर्द",
           },
           mode: "manual",
           voice: true,
@@ -111,8 +111,8 @@ export const questions: Question[] = [
         },
         {
           lang: {
-            en: "5",
-            hi: "5",
+            en: "Very Severe pain",
+            hi: "बहुत ज्यादा गंभीर दर्द",
           },
           mode: "manual",
           voice: true,
