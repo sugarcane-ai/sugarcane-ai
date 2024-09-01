@@ -27,6 +27,7 @@ import { InputJsonValueType } from "~/generated/prisma-client-zod.ts";
 import { validate as isUuid, v4 as uuidv4 } from "uuid";
 import { bulkUpdate } from "~/services/prisma"; // Adjust import paths as necessary
 import { defaultFormTranslations, geti18nMessage } from "@sugar-ai/core";
+// import { ElevenLabsClient, play } from "elevenlabs";
 
 export const formRouter = createTRPCRouter({
   getForms: protectedProcedure
@@ -531,3 +532,16 @@ const getEmptyMessage = (text: string = ""): I18nMessageWithRules => {
 
   return msg;
 };
+
+// export const speakMessageAsyncx = async (message: string): Promise<void> => {
+//   const elevenlabs = new ElevenLabsClient({
+//     apiKey: "sk_d0ddb585e9a039212b9a81436908883fc8877d2f5f0e07d0", // Defaults to process.env.ELEVENLABS_API_KEY
+//   });
+
+//   const audio = await elevenlabs.generate({
+//     voice: "Rachel",
+//     text: message,
+//     model_id: "eleven_turbo_v2_5",
+//   });
+//   await play(audio);
+// };
