@@ -22,8 +22,8 @@ const QuickReplies = ({
           key={index}
           onClick={() => onClick(quickReply)}
           theme={{
-            bgColor: currentStyle?.keyboardButton?.color || "#f5f5f5",
-            textColor: currentStyle?.theme?.textColor || "#333",
+            bgColor: currentStyle?.keyboardButton?.color,
+            color: currentStyle?.keyboardButton?.bgColor,
             borderColor: currentStyle?.theme?.primaryColor,
             // hoverBgColor: "#e0e0e0",
             // focusColor: "#2563eb",
@@ -31,7 +31,7 @@ const QuickReplies = ({
         >
           <span className="hidden-on-sm">{quickReply?.short}</span>
           <span className="hidden-on-md">{quickReply?.text}</span>
-          <Arrow size="16" color="#333" />
+          <Arrow size="16" color={currentStyle?.keyboardButton?.bgColor} />
         </QuickReplyButton>
       ))}
     </QuickRepliesContainer>

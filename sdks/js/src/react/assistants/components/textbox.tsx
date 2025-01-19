@@ -61,8 +61,6 @@ const TextBox = ({
     console.log("Question clicked:", questionText);
   };
 
-  debugger;
-
   return (
     <TextBoxContainer
       container={currentStyle?.container}

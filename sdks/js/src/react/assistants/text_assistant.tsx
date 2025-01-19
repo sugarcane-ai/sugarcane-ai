@@ -131,9 +131,7 @@ export const TextAssistant = ({
     // }
   };
 
-  const startSending = async (newTextMessage) => {
-    // const newTextMessage = textMessage;
-    // setTextMessage("");
+  const startSending = async (newTextMessage: string) => {
     setAiResponse("");
     setFinalOutput(newTextMessage);
     await processTextToText(newTextMessage);
@@ -417,7 +415,7 @@ export const TextAssistant = ({
       <GlobalStyle />
       <CopilotContainer
         id={`sugar-ai-copilot-${buttonId}`}
-        className="sugar-ai-copilot-container"
+        className="sugar-ai-copilot-container sai"
         container={currentStyle?.container as CopilotSyleContainerType}
         position={position as CopilotStylePositionType}
         style={style}

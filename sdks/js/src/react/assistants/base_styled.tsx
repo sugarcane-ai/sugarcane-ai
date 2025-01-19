@@ -173,8 +173,8 @@ export const ChatMessage: FC<{
 `;
 
 export const VoiceButton: FC<CopilotVoiceButtonPropsType> = styled.button`
-  background-color: ${({ button }) => button?.bgColor};
-  color: ${({ button }) => button?.color};
+  background-color: ${({ button }) => button?.bgColor} !important;
+  color: ${({ button }) => button?.color} !important;
   border: none;
   border-radius: 50%;
   width: ${({ button }) => button?.width};
@@ -219,8 +219,8 @@ export const KeyboardButton: FC<{
       `;
     } else {
       return css`
-        background-color: ${button?.bgColor};
-        color: ${button?.color};
+        background-color: ${button?.bgColor} !important;
+        color: ${button?.color} !important;
         border: none;
         border-radius: 50%;
         width: ${button?.width};
@@ -243,11 +243,11 @@ export const Message: FC<{
   background-color: ${({ theme, role }) =>
     messageRoleEnum.options.includes(role as MessageRoleType)
       ? "white"
-      : theme?.primaryColor};
+      : theme?.primaryColor} !important;
   color: ${({ theme, role }) =>
     messageRoleEnum.options.includes(role as MessageRoleType)
       ? "black"
-      : theme?.secondaryColor};
+      : theme?.secondaryColor} !important;
   font-size: ${({ theme }) => theme?.fontSize};
   font-family: ${({ theme }) => theme?.fontFamily};
   padding: 10px;
@@ -342,11 +342,12 @@ export const TextBox: FC<{ color: string; bgColor: string }> =
     shouldForwardProp: (prop) => !["color", "bgColor"].includes(prop),
   })`
     padding: 15px 32px 15px 8px;
-    border: 1px solid ${({ color }) => color};
-    border-radius: 5px;
+    border: 1px solid ${({ color }) => color} !important;
+    border-radius: 5px !important;
     outline: none;
     width: 100%;
-    background: ${({ bgColor }) => bgColor};
+    background: ${({ bgColor }) => bgColor} !important;
+    color: ${({ color }) => color} !important;
     // width: -webkit-fill-available; // Only on small screens
     // margin-left: 25px;
     @media (max-width: 768px) {
@@ -393,69 +394,77 @@ export const QuickRepliesContainer: FC = styled.div`
   opacity: 1;
   padding-bottom: 0.25rem;
   margin-left: 25px;
+  background: ${({ bgColor }) => bgColor} !important;
+  color: ${({ color }) => color} !important;
   @media (max-width: 768px) {
     width: 100%;
     margin-left: 25px;
   }
 `;
 
-export const QuickReplyButton: FC = styled.button`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.375rem 0.75rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  text-align: center;
-  white-space: nowrap;
-  border-radius: 9999px; /* Rounded full */
-  background-color: ${({ theme }) => theme?.bgColor || "#f5f5f5"};
-  color: ${({ theme }) => theme?.textColor || "#333"};
-  border: 1px solid ${({ theme }) => theme?.borderColor || "#ccc"};
-  cursor: pointer;
-  transition: all 0.3s ease;
+// export const TextBox: FC<{ color: string; bgColor: string }> =
+styled.input;
 
-  &:hover {
-    background-color: ${({ theme }) => theme?.hoverBgColor || "#e0e0e0"};
-  }
+export const QuickReplyButton: FC<{ theme: CopilotSyleThemeType }> =
+  styled.button.withConfig({
+    shouldForwardProp: (prop) => !["theme"].includes(prop),
+  })`
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-align: center;
+    white-space: nowrap;
+    border-radius: 9999px; /* Rounded full */
+    background-color: ${({ theme }) => theme?.bgColor} !important;
+    color: ${({ theme }) => theme?.color} !important;
+    border: 1px solid ${({ theme }) => theme?.borderColor} !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
 
-  &:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 2px ${({ theme }) => theme?.focusColor || "#2563eb"};
-  }
-
-  &:disabled {
-    cursor: not-allowed;
-    background-color: ${({ theme }) => theme?.disabledBgColor || "#e0e0e0"};
-    color: ${({ theme }) => theme?.disabledTextColor || "#a3a3a3"};
-  }
-
-  span {
-    display: block;
-
-    &.hidden-on-md {
-      display: none;
+    &:hover {
+      background-color: ${({ theme }) => theme?.hoverBgColor || "#e0e0e0"};
     }
 
-    @media (min-width: 768px) {
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px ${({ theme }) => theme?.focusColor || "#2563eb"};
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      background-color: ${({ theme }) => theme?.disabledBgColor || "#e0e0e0"};
+      color: ${({ theme }) => theme?.disabledTextColor || "#a3a3a3 !important"};
+    }
+
+    span {
+      display: block;
+
       &.hidden-on-md {
-        display: inline;
-      }
-    }
-
-    &.hidden-on-sm {
-      display: inline;
-
-      @media (min-width: 768px) {
         display: none;
       }
-    }
-  }
 
-  svg {
-    margin-left: 0.5rem;
-    color: currentColor;
-    width: 1rem;
-    height: 1rem;
-  }
-`;
+      @media (min-width: 768px) {
+        &.hidden-on-md {
+          display: inline;
+        }
+      }
+
+      &.hidden-on-sm {
+        display: inline;
+
+        @media (min-width: 768px) {
+          display: none;
+        }
+      }
+    }
+
+    svg {
+      margin-left: 0.5rem;
+      color: currentColor;
+      width: 1rem;
+      height: 1rem;
+    }
+  `;
