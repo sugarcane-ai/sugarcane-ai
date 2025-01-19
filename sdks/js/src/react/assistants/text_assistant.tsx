@@ -35,6 +35,7 @@ export const TextAssistant = ({
   toolTipMessageStyle = {},
   position = copilotStyleDefaults?.container?.position ?? "bottom-right",
   keyboardPosition = copilotStyleDefaults?.keyboardButton?.position,
+  quickReplies = [],
   actionsFn,
   actionCallbacksFn,
 }: BaseAssistantProps) => {
@@ -47,7 +48,7 @@ export const TextAssistant = ({
   const [aiResponse, setAiResponse] = useState<string>("");
 
   const [hideTextButton, setHideTextButton] = useState(false);
-  const [textMessage, setTextMessage] = useState("");
+  // const [textMessage, setTextMessage] = useState("");
 
   const { config, clientUserId, textToAction } = useCopilot();
 
@@ -92,6 +93,11 @@ export const TextAssistant = ({
   scope = { ...scopeDefaults, ...scope };
 
   const processTextToText = async (input: string) => {
+    if (input.trim() === "") {
+      DEV: console.warn("[t2t] TextInput is empty. Skipping action.");
+      return;
+    }
+
     const newScope: EmbeddingScopeWithUserType = {
       clientUserId: clientUserId!,
       ...scope,
@@ -125,9 +131,9 @@ export const TextAssistant = ({
     // }
   };
 
-  const startSending = async () => {
-    const newTextMessage = textMessage;
-    setTextMessage("");
+  const startSending = async (newTextMessage) => {
+    // const newTextMessage = textMessage;
+    // setTextMessage("");
     setAiResponse("");
     setFinalOutput(newTextMessage);
     await processTextToText(newTextMessage);
@@ -454,12 +460,13 @@ export const TextAssistant = ({
           currentStyle={currentStyle}
           position={position}
           buttonId={buttonId}
-          setTextMessage={setTextMessage}
-          textMessage={textMessage}
+          // setTextMessage={setTextMessage}
+          // textMessage={textMessage}
           startSending={startSending}
           enableKeyboard={enableKeyboard}
           isprocessing={isprocessing}
           iskeyboard={true}
+          quickReplies={quickReplies}
         />
       )}
     </StyleSheetManager>

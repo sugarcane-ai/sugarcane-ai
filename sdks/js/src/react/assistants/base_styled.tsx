@@ -161,7 +161,8 @@ export const ChatMessage: FC<{
         `;
       case "bottom-center":
         return css`
-          bottom: 70px;
+          // bottom: 70px;
+          bottom: 130px;
           left: 50%;
           transform: translateX(-50%);
         `;
@@ -327,6 +328,15 @@ export const TextBoxContainer: FC<{
   }}
 `;
 
+// Flexbox container to align input and button
+export const TextBoxWrapper: FC = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 8px;
+  margin-left: 25px;
+`;
+
 export const TextBox: FC<{ color: string; bgColor: string }> =
   styled.input.withConfig({
     shouldForwardProp: (prop) => !["color", "bgColor"].includes(prop),
@@ -338,18 +348,20 @@ export const TextBox: FC<{ color: string; bgColor: string }> =
     width: 100%;
     background: ${({ bgColor }) => bgColor};
     // width: -webkit-fill-available; // Only on small screens
-    margin-left: 25px;
+    // margin-left: 25px;
     @media (max-width: 768px) {
       width: 100%;
-      margin-left: 25px;
+      // margin-left: 25px;
     }
   `;
 
 // Styled button
 export const TextBoxButton: FC<{ iskeyboard?: string }> = styled.button`
+  display: flex;
   position: absolute;
-  top: 5px;
-  right: 0;
+  right: 0px;
+  align-items: center;
+  justify-content: center;
   padding: 8px;
   border: none;
   border-radius: 0 5px 5px 0;
@@ -360,9 +372,8 @@ export const TextBoxButton: FC<{ iskeyboard?: string }> = styled.button`
   ${({ iskeyboard }) =>
     iskeyboard === "true" &&
     css`
-      top: 13px;
-      right: 5px;
-      padding: 0px;
+      // top: 20px;
+      // padding: 0px;
     `}
 `;
 
@@ -372,4 +383,79 @@ export const KeyboardEmptyContainer: FC = styled(KeyboardButton)`
   box-shadow: none;
   height: 0px;
   background: unset;
+`;
+
+export const QuickRepliesContainer: FC = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem;
+  opacity: 1;
+  padding-bottom: 0.25rem;
+  margin-left: 25px;
+  @media (max-width: 768px) {
+    width: 100%;
+    margin-left: 25px;
+  }
+`;
+
+export const QuickReplyButton: FC = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+  border-radius: 9999px; /* Rounded full */
+  background-color: ${({ theme }) => theme?.bgColor || "#f5f5f5"};
+  color: ${({ theme }) => theme?.textColor || "#333"};
+  border: 1px solid ${({ theme }) => theme?.borderColor || "#ccc"};
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: ${({ theme }) => theme?.hoverBgColor || "#e0e0e0"};
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px ${({ theme }) => theme?.focusColor || "#2563eb"};
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    background-color: ${({ theme }) => theme?.disabledBgColor || "#e0e0e0"};
+    color: ${({ theme }) => theme?.disabledTextColor || "#a3a3a3"};
+  }
+
+  span {
+    display: block;
+
+    &.hidden-on-md {
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      &.hidden-on-md {
+        display: inline;
+      }
+    }
+
+    &.hidden-on-sm {
+      display: inline;
+
+      @media (min-width: 768px) {
+        display: none;
+      }
+    }
+  }
+
+  svg {
+    margin-left: 0.5rem;
+    color: currentColor;
+    width: 1rem;
+    height: 1rem;
+  }
 `;

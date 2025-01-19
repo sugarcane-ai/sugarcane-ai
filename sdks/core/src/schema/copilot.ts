@@ -20,6 +20,15 @@ export const copilotSylePositionSchema = z.enum([
   "bottom-center",
 ]);
 
+export const quickReplySchema = z.object({
+  text: z.string(), // Validates that `text` is a string
+  short: z.string(), // Validates that `short` is a string
+});
+export type QuickReplyType = z.infer<typeof quickReplySchema>;
+
+export const quickRepliesSchema = z.array(quickReplySchema);
+export type QuickRepliesType = z.infer<typeof quickRepliesSchema>;
+
 export const copilotSyleKeyboardPositionSchema = z.enum([
   "left",
   "right",
@@ -430,6 +439,7 @@ export interface BaseAssistantProps {
   toolTipContainerStyle?: any;
   toolTipMessageStyle?: any;
   position?: CopilotStylePositionType;
+  quickReplies?: QuickRepliesType;
   keyboardPosition?: CopilotSyleKeyboardPositionSchema;
   actionsFn?: Function;
   actionCallbacksFn?: Function;
