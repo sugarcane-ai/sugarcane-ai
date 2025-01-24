@@ -440,6 +440,7 @@ export interface BaseAssistantProps {
   toolTipMessageStyle?: any;
   position?: CopilotStylePositionType;
   quickReplies?: QuickRepliesType;
+  quickReplyContainers?: Array<any>;
   keyboardPosition?: CopilotSyleKeyboardPositionSchema;
   actionsFn?: Function;
   actionCallbacksFn?: Function;

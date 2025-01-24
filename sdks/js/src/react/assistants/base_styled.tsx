@@ -162,7 +162,7 @@ export const ChatMessage: FC<{
       case "bottom-center":
         return css`
           // bottom: 70px;
-          bottom: 130px;
+          bottom: 140px;
           left: 50%;
           transform: translateX(-50%);
         `;
@@ -272,6 +272,7 @@ export const ToolTipContainer = styled(ChatMessage)<{
   border: 1px solid #ccc;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.2);
   opacity: 0;
+  margin-bottom: 0.25rem;
 
   animation: ${fadeInOut} ${(props) => props.config?.duration}s linear forwards;
   animation-fill-mode: forwards;
@@ -283,6 +284,7 @@ export const TootTipMessage = styled(Message)`
   border: none;
   box-shadow: none;
   margin-bottom: 0px;
+  margin-bottom: 0.25rem;
 `;
 
 // Wrapper component to contain input box and button

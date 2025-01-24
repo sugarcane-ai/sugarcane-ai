@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { createRoot } from "react-dom/client";
 import {
   type EmbeddingScopeWithUserType,
   type CopilotStylePositionType,
@@ -22,6 +23,7 @@ import TextBox from "./components/textbox";
 
 import root from "window-or-global";
 import { getKeyInSession, setKeyInSession } from "../session";
+import QuickReplies from "./components/quick_replies";
 
 export const TextAssistant = ({
   id = null,
@@ -36,6 +38,7 @@ export const TextAssistant = ({
   position = copilotStyleDefaults?.container?.position ?? "bottom-right",
   keyboardPosition = copilotStyleDefaults?.keyboardButton?.position,
   quickReplies = [],
+  quickReplyContainers = [],
   actionsFn,
   actionCallbacksFn,
 }: BaseAssistantProps) => {
@@ -409,6 +412,29 @@ export const TextAssistant = ({
       root.removeEventListener("load", trackTimeSpentOnPage);
     };
   }, [currentNudgeConfig?.exit?.enabled, currentNudgeConfig?.stuck?.enabled]);
+
+  const handleQuickReplyClick = (question) => {
+    setHideTextButton(true);
+    const questionText = question.text;
+    startSending(questionText);
+    console.log("Question clicked:", questionText);
+  };
+
+  quickReplyContainers.forEach(([selector, , replies]) => {
+    const targetElement = document.querySelector(selector);
+    if (targetElement) {
+      const root = createRoot(targetElement);
+      root.render(
+        <QuickReplies
+          quickReplies={replies}
+          currentStyle={currentStyle}
+          onClick={handleQuickReplyClick}
+        />,
+      );
+    } else {
+      console.warn(`No element found for selector: ${selector}`);
+    }
+  });
 
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
