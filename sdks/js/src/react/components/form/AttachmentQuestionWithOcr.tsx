@@ -90,8 +90,6 @@ export const AttachmentQuestionWithOcr = ({
         logger: (m) => console.log(m), // Progress logging
       });
 
-      debugger;
-
       const text = result.data.text;
       setOcrResult(text);
 

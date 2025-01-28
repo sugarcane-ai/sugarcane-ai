@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { createRoot } from "react-dom/client";
+import { createRoot, Root } from "react-dom/client";
 import {
   type EmbeddingScopeWithUserType,
   type CopilotStylePositionType,
@@ -24,6 +24,9 @@ import TextBox from "./components/textbox";
 import root from "window-or-global";
 import { getKeyInSession, setKeyInSession } from "../session";
 import QuickReplies from "./components/quick_replies";
+import ContainersManager from "./components/containers_manager";
+
+const containersManager = new ContainersManager();
 
 export const TextAssistant = ({
   id = null,
@@ -420,21 +423,38 @@ export const TextAssistant = ({
     console.log("Question clicked:", questionText);
   };
 
-  quickReplyContainers.forEach(([selector, , replies]) => {
-    const targetElement = document.querySelector(selector);
-    if (targetElement) {
-      const root = createRoot(targetElement);
-      root.render(
-        <QuickReplies
-          quickReplies={replies}
-          currentStyle={currentStyle}
-          onClick={handleQuickReplyClick}
-        />,
+  useEffect(() => {
+    let previousSelectors: string[] = [];
+
+    const currentSelectors = quickReplyContainers.map(([selector]) => selector);
+
+    // // Remove components for selectors no longer in the list
+    // previousSelectors
+    //   .filter((prev) => !currentSelectors.includes(prev))
+    //   .forEach((removedSelector) => {
+    //     containersManager.removeComponent(removedSelector);
+    //   });
+
+    // Add or update components for current selectors
+    quickReplyContainers.forEach(([selector, position, replies]) => {
+      containersManager.renderComponent(
+        selector,
+        <QuickReplies />,
+        {
+          currentStyle: currentStyle,
+          quickReplies: replies,
+          onClick: handleQuickReplyClick,
+        },
+        position,
       );
-    } else {
-      console.warn(`No element found for selector: ${selector}`);
-    }
-  });
+    });
+
+    previousSelectors = currentSelectors;
+
+    return () => {
+      containersManager.cleanup();
+    };
+  }, [quickReplyContainers]);
 
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>

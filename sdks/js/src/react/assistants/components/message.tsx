@@ -61,7 +61,6 @@ const Message = ({
   }, [aiResponse]); // Reset logic when these props change
 
   useEffect(() => {
-    debugger;
     resetHideSettings(); // Reset settings whenever aiResponse or finalOutput changes
   }, [finalOutput]);
 
