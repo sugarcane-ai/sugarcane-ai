@@ -43,8 +43,9 @@ import {
         payload,
       });
     },
-    loadFaqs: function parseFAQs(selector) {
-      const faqs = this.parseFAQs(selector);
+    loadFaqs: function parseFAQs(selector, staticFaqs = []) {
+      const dynamicfaqs = this.parseFAQs(selector);
+      const faqs = staticFaqs.concat(dynamicfaqs);
       console.log(`nudges FAQs loaded: ${faqs.length} `, faqs);
       this.upsertEmbedding(faqs, win.location.host, "faqs");
     },
