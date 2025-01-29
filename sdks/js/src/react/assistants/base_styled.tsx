@@ -396,7 +396,6 @@ export const QuickRepliesContainer: FC = styled.div`
   opacity: 1;
   padding-bottom: 0.25rem;
   margin-left: 25px;
-  background: ${({ bgColor }) => bgColor} !important;
   color: ${({ color }) => color} !important;
   @media (max-width: 768px) {
     width: 100%;

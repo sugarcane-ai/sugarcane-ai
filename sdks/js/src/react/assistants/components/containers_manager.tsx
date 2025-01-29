@@ -19,7 +19,7 @@ class ContainersManager {
   renderComponent(
     selector: string,
     component: ReactElement,
-    props: ContainerProps = {},
+    // props: ContainerProps = {},
     position: InsertPosition = "afterend", // Default is "afterend"
     identifier: string = "sai-container-injected", // Default is "default"
   ): void {
@@ -59,7 +59,7 @@ class ContainersManager {
     }
 
     // Render the component with the provided props
-    root.render(React.cloneElement(component, props));
+    root.render(React.cloneElement(component));
   }
 
   /**

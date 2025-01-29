@@ -21,7 +21,7 @@
   "bugs": "https://github.com/SugarAI-HQ/CopilotOne/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/SugarAI-HQ/CopilotOne.git"
+    "url": "git+https://github.com/SugarAI-HQ/CopilotOne.git"
   },
   "rootDir": ".",
   "scripts": {

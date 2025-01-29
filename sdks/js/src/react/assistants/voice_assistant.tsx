@@ -719,11 +719,12 @@ export const VoiceAssistant = ({
       </CopilotContainer>
       {hideVoiceButton && (
         <TextBox
+          quickReplies={[]}
           currentStyle={currentStyle}
           position={position}
           buttonId={buttonId}
-          setTextMessage={setTextMessage}
-          textMessage={textMessage}
+          // setTextMessage={setTextMessage}
+          // textMessage={textMessage}
           startSending={startSending}
           enableKeyboard={enableKeyboard}
           isprocessing={isprocessing}

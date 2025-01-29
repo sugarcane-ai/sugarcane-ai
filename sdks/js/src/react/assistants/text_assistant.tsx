@@ -439,12 +439,11 @@ export const TextAssistant = ({
     quickReplyContainers.forEach(([selector, position, replies]) => {
       containersManager.renderComponent(
         selector,
-        <QuickReplies />,
-        {
-          currentStyle: currentStyle,
-          quickReplies: replies,
-          onClick: handleQuickReplyClick,
-        },
+        <QuickReplies
+          quickReplies={replies}
+          currentStyle={currentStyle}
+          onClick={handleQuickReplyClick}
+        />,
         position,
       );
     });
